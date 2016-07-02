@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    title Admin Login
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400', rel='stylesheet')
+    link(href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900', rel='stylesheet')
+    link(rel='stylesheet', href='/_static/libs/ace/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/animate.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/bootstrap-switch.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/checkbox3.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/jquery.dataTables.min.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/dataTables.bootstrap.css')
+    link(rel='stylesheet', href='/_static/libs/ace/css/select2.min.css')
+    link(rel='stylesheet', href='/_self/css/style.css')
+    link(rel='stylesheet', href='/_self/css/flat-blue.css')
+    script(src='/_static/libs/jquery/jquery.min.js')
+  body.flat-blue.login-page(style='background-color: lightblue')
+    .container
+      .login-box
+        div
+          .login-form.row
+            .col-sm-12.text-center.login-header
+              i.login-logo.fa.fa-connectdevelop.fa-5x
+              h4.login-title Admin 1.0
+            .col-sm-12
+              .login-body
+                #login-progress.progress.hidden
+                  .progress-bar.progress-bar-success.progress-bar-striped.active(role='progressbar', aria-valuenow='100', aria-valuemin='0', aria-valuemax='100', style='width: 100%')
+                    | Log In...
+                form(action='/session/login', method='post')
+                  .control
+                    input.form-control(type='text', name='email', value='', placeholder='Email')
+                  .control
+                    input.form-control(type='password', name='secret', value='', placeholder='Password')
+                  .login-button.text-center
+                    input.btn.btn-primary(type='submit', value='Login')
+              .login-footer
+                span.text-right
+                  a.color-white(href='#') Forgot password?
+    script(src='/_static/libs/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/_static/libs/ace/js/Chart.min.js')
+    script(src='/_static/libs/ace/js/bootstrap-switch.min.js')
+    script(src='/_static/libs/ace/js/jquery.matchHeight-min.js')
+    script(src='/_static/libs/ace/js/jquery.dataTables.min.js')
+    script(src='/_static/libs/ace/js/dataTables.bootstrap.min.js')
+    script(src='/_static/libs/ace/js/select2.full.min.js')
+    script(src='/_static/libs/ace/js/ace/ace.js')
+    script(src='/_static/libs/ace/js/ace/mode-html.js')
+    script(src='/_static/libs/ace/js/ace/theme-github.js')
+    script(src='/_self/js/app.js')

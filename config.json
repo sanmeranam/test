@@ -1,0 +1,34 @@
+{
+    "db": {
+        "url": "mongodb://localhost:27017/open",
+        "user": "",
+        "password": ""
+    },
+    "server": {
+        "port": 8090,
+        "domain": "localhost"
+    },
+    "email": {
+        "service": "Gmail",
+        "user": "info@remoiot.com",
+        "pass": "gayatri@00"
+    },
+    "notif": [
+        "sanmeranam@gmail.com"
+    ],
+    "common": {
+        "site_base": "remoiot.com",
+        "activation_base": "http://localhost:8090/activate/",
+        "password_rest_base": "http://localhost:8090/reset/"
+    },
+    "blacklist_wc": [
+        "www", "secure", "api", "remoiot", "admin", "forms", "static", "http", "https", "ftp", "ssl", "ssh", "sftp", "remoiotdigital", "design","account","create"
+    ],
+    "files": {
+        "upload_path": "D:/test_files"
+    },
+    "http_auth": {
+        "user": "user",
+        "pass": "pass"
+    }
+}

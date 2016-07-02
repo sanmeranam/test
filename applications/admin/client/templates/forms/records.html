@@ -1,0 +1,42 @@
+<div class="row" ng-controller="FormRecordsController">
+    <div class="col-sm-12">
+        <div class="btn-toolbar" role="toolbar" >
+            <div class="btn-group" role="group" >
+                <button ng-click="switchView('/_self/templates/forms/records_table_view.html')" type="button" class="btn btn-default"><i class="fa fa-table"></i></button>
+                <button ng-click="switchView('/_self/templates/forms/records_map_view.html')" type="button" class="btn btn-default"><i class="fa fa-map-marker"></i></button>                
+                <button ng-click="switchView('/_self/templates/forms/records_time_view.html')" type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
+                <button ng-click="switchView('/_self/templates/forms/records_chart_view.html')" type="button" class="btn btn-default"><i class="fa fa-pie-chart"></i></button>                
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    All
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">All</a></li>
+                    <li><a href="#">Completed</a></li>
+                    <li><a href="#">In Progress</a></li>
+                </ul>
+            </div>
+            <div  class="btn-group number_view_sm" role="group">
+                <label>Count</label>
+                <label class="text-info">100</label>
+            </div>
+            
+            <div class="btn-group pull-right" role="group" >
+                <div class="input-group stylish-input-group" style="width: 150px">
+                    <input type="text" ng-model="formSearchText" class="form-control"  placeholder="Filter" >
+                    <span class="input-group-addon">
+                        <button type="submit">
+                            <span class="glyphicon glyphicon-filter"></span>
+                        </button>  
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12" id="recordsViewContainer" >
+        <div ng-include="currentPage"></div>
+    </div>
+
+</div>

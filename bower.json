@@ -1,0 +1,19 @@
+{
+    "name": "FormAdmin",
+    "version": "1.0.0",
+    "main": "path/to/main.css",
+    "ignore": [
+        ".jshintrc",
+        "**/*.txt"
+    ],
+    "dependencies": {
+        "angular-sanitize": "^1.4.0",
+        "angular-resource": "^1.4.0",
+        "angular": "^1.5.0",
+        "angular-google-maps":"^2.3.0",
+        "bootstrap": "~3.0.0",
+        "jquery": "~1.10.2"
+    },
+    "devDependencies": {
+    }
+}

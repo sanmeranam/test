@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Admin Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="/_static/libs/ace/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/animate.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/bootstrap-switch.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/checkbox3.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/dataTables.bootstrap.css">
+        <link rel="stylesheet" href="/_static/libs/ace/css/select2.min.css">
+        <link rel="stylesheet" href="/_self/css/style.css">
+        <link rel="stylesheet" href="/_self/css/flat-blue.css">
+        <script src="/_static/libs/jquery/jquery.min.js"></script>
+    </head>
+
+    <body class="flat-blue login-page" style="background-color: lightblue">
+        <div class="container">
+            <div class="login-box">
+                <div>
+                    <div class="login-form row">
+                        <div class="col-sm-12 text-center login-header">
+                            <i class="login-logo fa fa-connectdevelop fa-5x"></i>
+                            <h4 class="login-title">Admin 1.0</h4>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="login-body">
+                                <div class="progress hidden" id="login-progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                        Log In...
+                                    </div>
+                                </div>
+                                <form action="/session/login" method="post">
+                                    <div class="control">
+                                        <input type="text" name="email" class="form-control" value="" placeholder="Email" />
+                                    </div>
+                                    <div class="control">
+                                        <input type="password" name="secret" class="form-control" value="" placeholder="Password" />
+                                    </div>
+                                    <div class="login-button text-center">
+                                        <input type="submit" class="btn btn-primary" value="Login">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="login-footer">
+                                <span class="text-right"><a href="#" class="color-white">Forgot password?</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/_static/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/_static/libs/ace/js/Chart.min.js"></script>
+        <script src="/_static/libs/ace/js/bootstrap-switch.min.js"></script>
+        <script src="/_static/libs/ace/js/jquery.matchHeight-min.js"></script>
+        <script src="/_static/libs/ace/js/jquery.dataTables.min.js"></script>
+        <script src="/_static/libs/ace/js/dataTables.bootstrap.min.js"></script>
+        <script src="/_static/libs/ace/js/select2.full.min.js"></script>
+        <script src="/_static/libs/ace/js/ace/ace.js"></script>
+        <script src="/_static/libs/ace/js/ace/mode-html.js"></script>
+        <script src="/_static/libs/ace/js/ace/theme-github.js"></script>
+        <script src="/_self/js/app.js"></script>
+    </body>
+
+</html>
