@@ -1,15 +1,17 @@
 window.core = {
     Profile: null,
     init: function () {
-        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps']);
+        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps',"dndLists"]);
         this.ngApp.config(
                 ['uiGmapGoogleMapApiProvider', function (GoogleMapApiProviders) {
                         GoogleMapApiProviders.configure({
                             v: '3.17',
+                            key:"AIzaSyDYSJ8fbbC-_NcpUKAUlp_bF9qdCWZjk8Y",
                             china: true
                         });
                     }]);
         this._initRestful();
+        this._defineDirective();
     },
     _initRestful: function () {
         this.ngApp.factory('Session', function ($resource) {
@@ -41,6 +43,9 @@ window.core = {
     },
     createController: function (sName, fnMethod) {
         this.ngApp.controller(sName, fnMethod);
+    },
+    _defineDirective: function () {
+        
     }
 };
 window.core.init();

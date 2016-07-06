@@ -1,0 +1,24 @@
+[
+    {
+        "_i": "fa-crop",
+        "_n": "TextInput",
+        "_a": {
+            "id": "1",
+            "value": "",
+            "label": "label",
+            "type": ["Text", "Number", "Email", "Telephone"]
+        },
+        "_c": []
+    },
+    {
+        "_i": "fa-time",
+        "_n": "DatePicker",
+        "_a": {
+            "id": "1",
+            "value": "",
+            "label": "label",
+            "type": ["Text", "Number", "Email", "Telephone"]
+        },
+        "_c": []
+    }
+]

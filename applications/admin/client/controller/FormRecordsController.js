@@ -7,6 +7,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady) 
 
     $scope.map = {center: {latitude: 45, longitude: -73}, zoom: 8};
     $scope.control = {};
+    $scope.loaded=true;
 
     $scope.currentPage = "/_self/templates/forms/records_table_view.html";
     $scope.switchView = function (view) {

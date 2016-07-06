@@ -1292,7 +1292,7 @@ body.login-page .login-footer {
 /*
 Force table width to 100%
 */
- table.table-fixedheader {
+table.table-fixedheader {
     width: 100%;   
 }
 /*
@@ -1300,7 +1300,7 @@ Set table elements to block mode.  (Normally they are inline).
 This allows a responsive table, such as one where columns can be stacked
 if the display is narrow.
 */
- table.table-fixedheader, table.table-fixedheader>thead, table.table-fixedheader>tbody, table.table-fixedheader>thead>tr, table.table-fixedheader>tbody>tr, table.table-fixedheader>thead>tr>th, table.table-fixedheader>tbody>td {
+table.table-fixedheader, table.table-fixedheader>thead, table.table-fixedheader>tbody, table.table-fixedheader>thead>tr, table.table-fixedheader>tbody>tr, table.table-fixedheader>thead>tr>th, table.table-fixedheader>tbody>td {
     display: block;
 }
 table.table-fixedheader>thead>tr:after, table.table-fixedheader>tbody>tr:after {
@@ -1319,17 +1319,17 @@ Also, we force the scrollbar to always be displayed so that the usable
 width for the table contents doesn't change (such as becoming narrower
 when a scrollbar is visible and wider when it is not).
 */
- table.table-fixedheader>tbody {
+table.table-fixedheader>tbody {
     overflow-y: scroll;
     height: 100px;
-    
+
 }
 /*
 We really don't want to scroll the thead contents, but we want to force
 a scrollbar to be displayed anyway so that the usable width of the thead
 will exactly match the tbody.
 */
- table.table-fixedheader>thead {
+table.table-fixedheader>thead {
     overflow-y: scroll;    
 }
 /*
@@ -1338,7 +1338,7 @@ the unneeded scrollbar in the thead to make it invisible.  (Setting
 visiblity: hidden defeats the purpose, as this alters the usable width
 of the thead.)
 */
- table.table-fixedheader>thead::-webkit-scrollbar {
+table.table-fixedheader>thead::-webkit-scrollbar {
     background-color: inherit;
 }
 
@@ -1357,10 +1357,53 @@ and the <td>).  We set to 20% here a default placeholder, but it can be
 overridden elsewhere.
 */
 
- table.table-fixedheader>thead tr th, table.table-fixedheader>tbody tr td {
+table.table-fixedheader>thead tr th, table.table-fixedheader>tbody tr td {
     float: left;    
     word-wrap:break-word;     
 }
 
 
 .angular-google-map-container { height: 500px; }
+
+.dndPlaceholder{
+    height: 30px;
+    border: 1px dashed darkgray;
+    background-color: #f4f44b
+}
+
+ul[dnd-list], ul[dnd-list] > li {
+    position: relative;
+}
+
+.filed_block{
+    padding-left: 0;
+    list-style: none;
+}
+
+.filed_item{
+    width: 60px;
+    font-size: 12px;
+    float: left;
+    display: inline;
+    height: 70px;
+    padding: 5px;
+    font-size: 10px;
+    line-height: 1.4;
+    text-align: center;
+    background-color: #f3f3f3;
+    border: 1px solid #fff;
+    cursor: pointer;
+}
+.filed_item:hover{
+    transform: scale(1.2);
+}
+.filed_block .fa{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+.filed_block .field_name{
+    display: block;
+    text-align: center;
+    word-wrap: break-word;
+}

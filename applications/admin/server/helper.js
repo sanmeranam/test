@@ -1,4 +1,5 @@
 var util = require('./util');
+var fs=require('fs');
 
 module.exports = {
     doLogin: function (req, res, next) {
@@ -74,5 +75,8 @@ module.exports = {
         req.db.insertToTable('form_meta', req.body, function (data) {
             res.json(data);
         });
+    },
+    getControlSchema:function(req, res, next){
+        res.json(JSON.parse(fs.readFileSync("./applications/admin/server/control_schema.json")));
     }
 };
