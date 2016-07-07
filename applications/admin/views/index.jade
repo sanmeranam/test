@@ -1,17 +1,14 @@
 doctype html
 html(ng-app='ngAdmin') 
     head
-        title=title         
+        title=title
         link(href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet')
         link(href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet')
         link(rel="stylesheet" href="/_static/libs/ace/css/bootstrap.min.css")
         link(rel="stylesheet" href="/_static/libs/ace/css/font-awesome.min.css")
-        link(rel="stylesheet" href="/_static/libs/ace/css/animate.min.css")
+        link(rel="stylesheet" href="/_static/css/custom.min.css")
         link(rel="stylesheet" href="/_static/libs/ace/css/bootstrap-switch.min.css")
-        link(rel="stylesheet" href="/_static/libs/ace/css/checkbox3.min.css")
-        link(rel="stylesheet" href="/_static/libs/ace/css/jquery.dataTables.min.css")
-        link(rel="stylesheet" href="/_static/libs/ace/css/dataTables.bootstrap.css")
-        link(rel="stylesheet" href="/_static/libs/ace/css/select2.min.css")
+        link(rel="stylesheet" href="/_static/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css")
         link(rel="stylesheet" href="/_self/css/style.css")
         link(rel="stylesheet" href="/_self/css/timeline.css")
         link(rel="stylesheet" href="/_self/css/flat-blue.css")        
@@ -33,19 +30,12 @@ html(ng-app='ngAdmin')
         
         each valtl in ngCtl
             script(src='#{valtl}')
-    body(ng-controller='RootController',class="flat-blue")
+    body(ng-controller='RootController',class="nav-sm")
         include ../client/index.html
-        
-        script(src='/_static/libs/bootstrap/dist/js/bootstrap.min.js')        
-        script( src="/_static/libs/ace/js/Chart.min.js")
         script( src="/_static/libs/ace/js/bootstrap-switch.min.js")
-        script( src="/_static/libs/ace/js/jquery.matchHeight-min.js")
-        script( src="/_static/libs/ace/js/jquery.dataTables.min.js")
-        script( src="/_static/libs/ace/js/dataTables.bootstrap.min.js")
-        script( src="/_static/libs/ace/js/select2.full.min.js")
-        script( src="/_static/libs/ace/js/ace/ace.js")
-        script( src="/_static/libs/ace/js/ace/mode-html.js")
-        script( src="/_static/libs/ace/js/ace/theme-github.js")
+        script(src='/_static/libs/bootstrap/dist/js/bootstrap.min.js')
+        script(src='/_static/vendors/fastclick/fastclick.js')
+        script(src='/_static/vendors/nprogress/nprogress.js')
+        script(src='/_static/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')
         script( src="/_static/js/draw_chart_helper.js")
-        script( src="/_self/js/index.js")
-        script( src="/_self/js/app.js")
+        script(src='/_static/js/custom.js')    

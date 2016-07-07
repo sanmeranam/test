@@ -8,6 +8,7 @@ core.createController('FormController', function ($scope, FormMeta) {
 
     FormMeta.getAll({}, function (data) {
         $scope.FormMetaList = data;
+        $scope.SelectedFormMeta=data && data.length?data[0]:null;
     });
 
     

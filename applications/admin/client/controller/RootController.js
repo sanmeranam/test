@@ -32,7 +32,7 @@ core.createController('RootController', function ($scope, Session) {
                     window.location.hash = toPage.split(" ").join("_");
                     this._page = this[toPage].path;
                     this._title = toPage;
-                    jQuery(".navbar-nav").find(".active").removeClass("active");
+                    jQuery(".menu_section").find(".active").removeClass("active");
                     jQuery("[menu='" + toPage + "']").addClass("active");
                 } else {
                     this._switch("Dashboard");
