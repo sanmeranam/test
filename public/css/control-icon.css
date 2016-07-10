@@ -1,0 +1,107 @@
+@font-face {
+    font-family: 'controls';
+    src:    url('fonts/controls.eot?x888ev');
+    src:    url('fonts/controls.eot?x888ev#iefix') format('embedded-opentype'),
+        url('fonts/controls.ttf?x888ev') format('truetype'),
+        url('fonts/controls.woff?x888ev') format('woff'),
+        url('fonts/controls.svg?x888ev#controls') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.ca {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'controls' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ca-add-photo:before {
+    content: "\e900";
+}
+.ca-audio-record:before {
+    content: "\e901";
+}
+.ca-calendar-day-15:before {
+    content: "\e902";
+}
+.ca-check-box:before {
+    content: "\e903";
+}
+.ca-compass:before {
+    content: "\e904";
+}
+.ca-electronic-wishlist:before {
+    content: "\e905";
+}
+.ca-image-selection:before {
+    content: "\e906";
+}
+.ca-link:before {
+    content: "\e907";
+}
+.ca-location:before {
+    content: "\e908";
+}
+.ca-products:before {
+    content: "\e909";
+}
+.ca-qr-scan:before {
+    content: "\e90a";
+}
+.ca-radio-on-button:before {
+    content: "\e90b";
+}
+.ca-section:before {
+    content: "\e90c";
+}
+.ca-signature:before {
+    content: "\e90d";
+}
+.ca-sort-ascending:before {
+    content: "\e90e";
+}
+.ca-star:before {
+    content: "\e90f";
+}
+.ca-switch:before {
+    content: "\e910";
+}
+.ca-text-view:before {
+    content: "\e911";
+}
+.ca-time-management:before {
+    content: "\e912";
+}
+.ca-title .path1:before {
+    content: "\e913";
+    color: rgb(51, 62, 72);
+}
+.ca-title .path2:before {
+    content: "\e914";
+    margin-left: -1em;
+    color: rgb(30, 37, 43);
+}
+.ca-title .path3:before {
+    content: "\e915";
+    margin-left: -1em;
+    color: rgb(30, 37, 43);
+}
+.ca-upload-file:before {
+    content: "\e916";
+}
+.ca-video-record:before {
+    content: "\e917";
+}
+.ca-write:before {
+    content: "\e918";
+}
+

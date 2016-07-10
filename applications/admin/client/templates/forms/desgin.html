@@ -7,29 +7,16 @@
                 </div>
                 <div id="collapse1" class="panel-collapse collapse in">
                     <div class="panel-body accorContent" style="padding: 20px">
-                        
-<!--                        <ul class="filed_block">
-                            <li ng-repeat="item in Palette" 
-                                dnd-draggable="item"
-                                dnd-effect-allowed="copy"
-                                dnd-copied="item.meta._a.id =item.meta._a.id + 1">
-                                <div  ng-class="pv.class" class="filed_item">
-                                    <input type="hidden" ng-value="pk">
-                                    <span ng-class="item._i" class="fa" aria-hidden="true"></span>
-                                    <span class="field_name">{{item._n}}</span>
-                                </div>
-                            </li>                                     
-                        </ul>-->
-                        
-                        <ul>                            
+                        <ul style="list-style-type: none;padding: 5px">                            
                             <li ng-repeat="item in Palette"
                                 dnd-draggable="item"
+                                dnd-type="item._t"
                                 dnd-effect-allowed="copy"
-                                dnd-copied="item.meta._a.id =item.meta._a.id + 1"
+                                dnd-copied="generateId(event)"
                                 >
-                                <span class="btn btn-default btn-lg">
-                                    <i class="fa" ng-class="item._i"></i>
-                                    {{item._n}}
+                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                    <i class="ca" ng-class="item._i"></i>
+                                    {{formatText(item._n)}}
                                 </span>
                             </li>
                         </ul>
@@ -42,9 +29,7 @@
                 </div>
                 <div id="collapse2" class="panel-collapse collapse">
                     <div class="panel-body accorContent">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
                     </div>
                 </div>
             </div>
@@ -54,25 +39,32 @@
                 </div>
                 <div id="collapse3" class="panel-collapse collapse">
                     <div class="panel-body accorContent">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-sm-6  no-padding">
-        <div style="border: 1px dashed gray" id="designerPane">
-            <div class="row">
-                <div ng-init="list = oModelDesigned" class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Panel Heading</div>
-                        <div class="panel-body">
-                            <div ng-include="'/_self/controls/list.html'"></div>
-                        </div>
-                    </div>
-                </div>
+        <div style="border: 1px dashed gray; padding: 5px" id="designerPane">
+
+            <div class="col-sm-12">
+                <ul class="row" ng-init="list = oModelDesigned" style="list-style-type: none;padding-left: 0px;min-height: 200px" dnd-list="list" dnd-allowed-types="['p']" >
+                    <li ng-repeat="item in list"        
+                        dnd-draggable="item"     
+                        dnd-type="item._t"
+                        dnd-dragover="dragoverCallback(event, index, external, type)"
+                        dnd-horizontal-list="true"
+                        dnd-effect-allowed="move"
+                        dnd-moved="list.splice($index, 1)"
+                        dnd-selected="models.selected = item"
+                        ng-class="{selected: models.selected === item}"
+                        ng-include="'/_self/controls/' + item._n.toLowerCase() + '.html'">
+
+                    </li>
+                    <li class="dndPlaceholder">
+                        Drop <strong>Section</strong> here
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -81,12 +73,22 @@
             <div class="panel-heading">
                 Properties
             </div>
-            <div class="panel-body accorContent2">
-                <div class="form-group" ng-repeat="(p,v) in models.selected._a">
-                    <label>{{p}}</label>
-                    <input type="text" ng-model='models.selected._a[p]' class="form-control">
-                </div>
+            <div class="panel-body accorContent2 no-padding">
+                <table class="table table-borderless table-striped" style="font-size: 90%">
+                    <tr ng-repeat="(p,v) in models.selected._a">
+                        <td style="text-align: right;vertical-align: middle;padding: 2px">
+                            <label>{{formatText(p)}}</label>
+                        </td>
+                        <td style="padding: 2px">
+                            <input ng-if="models.selected._a[p].type == 'boolean'" ng-model='models.selected._a[p].value' type="checkbox" class="js-switch" checked />
+                            <input ng-if="models.selected._a[p].type == 'string'" type="text" ng-model='models.selected._a[p].value' class="form-control">
+                            <select class="form-control" ng-if="models.selected._a[p].type == 'options' && models.selected._a[p].list" ng-model="models.selected._a[p].value">                                
+                                <option ng-repeat="i in models.selected._a[p].list">{{i}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-    </div>
+    </div>        
 </div>

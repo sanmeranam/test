@@ -6,7 +6,7 @@ body {
     height: 100%;
     position: relative;
     font-size: 13px; 
-    overflow: hidden
+    /*overflow: hidden*/
 }
 
 * {
@@ -1363,7 +1363,9 @@ table.table-fixedheader>thead tr th, table.table-fixedheader>tbody tr td {
 }
 
 
-.angular-google-map-container { height: 500px; }
+.angular-google-map-container { 
+    height: 500px; 
+}
 
 .dndPlaceholder{
     height: 30px;
@@ -1406,4 +1408,8 @@ ul[dnd-list], ul[dnd-list] > li {
     display: block;
     text-align: center;
     word-wrap: break-word;
+}
+
+.selected{
+    border: 2px solid lightseagreen;
 }

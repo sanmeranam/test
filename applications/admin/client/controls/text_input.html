@@ -1,0 +1,13 @@
+<!--<div ng-if="field._a.type.value=='text'" class="form-group">
+    <label for="{{field._d}}">{{field._a.label.value}}</label>
+    <input type="text" ng-model='field._a.value.value' class="form-control" id="{{field._d}}">
+</div>-->
+<div ng-switch="field._a.input_type.value" class="form-group">
+    <label for="{{field._d}}">{{field._a.label.value}}</label>
+
+    <input ng-switch-when="text" type="text" class="form-control" id="{{field._d}}" placeholder="{{field._a.hints.value}}"> 
+    <input ng-switch-when="phone" type="text" class="form-control" id="{{field._d}}" placeholder="{{field._a.hints.value}}">
+    <span ng-switch-when="phone" class="fa fa-phone form-control-feedback right" style="display: block"></span>
+
+
+</div>

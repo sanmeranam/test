@@ -1,24 +1,623 @@
 [
     {
-        "_i": "fa-crop",
-        "_n": "TextInput",
+        "_i": "ca-section",
+        "_t": "p",
+        "_n": "section",
+        "_d": "section_{1}",
+        "_c": [],
         "_a": {
-            "id": "1",
-            "value": "",
-            "label": "label",
-            "type": ["Text", "Number", "Email", "Telephone"]
-        },
-        "_c": []
+            "title": {
+                "type": "string",
+                "value": "<Section Title>"
+            },
+            "theme": {
+                "type": "options",
+                "value": "",
+                "list": []
+            },
+            "collapsible": {
+                "type": "boolean",
+                "value": false
+            },
+            "scope": {
+                "type": "list",
+                "value": [],
+                "source": "$user_group"
+            }
+        }
     },
     {
-        "_i": "fa-time",
-        "_n": "DatePicker",
+        "_i": "ca-write",
+        "_t": "f",
+        "_n": "text_input",
+        "_d": "text_{1}",
         "_a": {
-            "id": "1",
-            "value": "",
-            "label": "label",
-            "type": ["Text", "Number", "Email", "Telephone"]
-        },
-        "_c": []
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            },
+            "rich_text": {
+                "type": "boolean",
+                "value": false
+            },
+            "multi_line": {
+                "type": "boolean",
+                "value": false
+            },
+            "input_type": {
+                "type": "options",
+                "value": "text",
+                "list": ["text", "url", "email", "phone", "number", "currency"]
+            },
+            "width": {
+                "type": "options",
+                "value": "full",
+                "list": ["full", "relative"]
+            },
+            "mask": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-calendar-day-15",
+        "_t": "f",
+        "_n": "date_picker",
+        "_d": "date_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "format": {
+                "type": "string",
+                "value": "ddmmyyyy"
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-time-management",
+        "_t": "f",
+        "_n": "time_picker",
+        "_d": "time_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "format": {
+                "type": "string",
+                "value": "hh:mm:ss"
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-switch",
+        "_t": "f",
+        "_n": "switch",
+        "_d": "switch_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "boolean",
+                "value": false
+            }
+        }
+    }, {
+        "_i": "ca-radio-on-button",
+        "_t": "f",
+        "_n": "single_option",
+        "_d": "radio_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "options": {
+                "type": "list",
+                "value": ["option 1"]
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-check-box",
+        "_t": "f",
+        "_n": "multi_options",
+        "_d": "checkbox_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": "<Label>"
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "options": {
+                "type": "list",
+                "value": ["option 1"]
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-sort-ascending",
+        "_t": "f",
+        "_n": "ranking",
+        "_d": "rank_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "list",
+                "value": []
+            },
+            "items": {
+                "type": "list",
+                "value": [],
+                "source": "$"
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-electronic-wishlist",
+        "_t": "f",
+        "_n": "matrix_selection",
+        "_d": "matrix_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "list",
+                "value": []
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "columns": {
+                "type": "list",
+                "value": []
+            },
+            "rows": {
+                "type": "list",
+                "value": []
+            },
+            "mutli_column": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-upload-file",
+        "_t": "f",
+        "_n": "file_attach",
+        "_d": "file_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "binary",
+                "value": "",
+                "mime": "application/pdf"
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "scan": {
+                "type": "boolean",
+                "value": true
+            },
+            "multi_files": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-add-photo",
+        "_t": "f",
+        "_n": "photo_attach",
+        "_d": "photo_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "binary",
+                "value": "",
+                "mime": "image/png"
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "crop": {
+                "type": "boolean",
+                "value": true
+            },
+            "multi_photo": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-star",
+        "_t": "f",
+        "_n": "rating",
+        "_d": "rating_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "number",
+                "value": 0
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "stars": {
+                "type": "number",
+                "value": 5,
+                "min": 1,
+                "max": 10
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-audio-record",
+        "_t": "f",
+        "_n": "audio_record",
+        "_d": "audio_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "binary",
+                "value": "",
+                "mime": "audio/wav"
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "durations": {
+                "type": "number",
+                "value": 10,
+                "min": 0,
+                "max": 60
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-video-record",
+        "_t": "f",
+        "_n": "video_record",
+        "_d": "video_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "binary",
+                "value": "",
+                "mime": "video/mp4"
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "durations": {
+                "type": "number",
+                "value": 10,
+                "min": 0,
+                "max": 60
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-signature",
+        "_t": "f",
+        "_n": "sign_input",
+        "_d": "sign_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "binary",
+                "value": "",
+                "mime": "image/png"
+            },
+            "name_value": {
+                "type": "string",
+                "value": "",
+                "hidden": true
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "name": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-location",
+        "_t": "f",
+        "_n": "location",
+        "_d": "location_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "address": {
+                "type": "string",
+                "value": ""
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-compass",
+        "_t": "f",
+        "_n": "compass",
+        "_d": "compass_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-qr-scan",
+        "_t": "f",
+        "_n": "barcode_scan",
+        "_d": "barcode_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "string",
+                "value": ""
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "editable": {
+                "type": "boolean",
+                "value": false
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-products",
+        "_t": "f",
+        "_n": "products",
+        "_d": "product_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "value": {
+                "type": "list",
+                "value": []
+            },
+            "mandatory": {
+                "type": "boolean",
+                "value": false
+            },
+            "items": {
+                "type": "list",
+                "value": [],
+                "source": "$products"
+            },
+            "hints": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-title",
+        "_t": "f",
+        "_n": "heading",
+        "_d": "heading_{1}",
+        "_a": {
+            "title": {
+                "type": "string",
+                "value": "Heading"
+            },
+            "subtitle": {
+                "type": "string",
+                "value": "same text here"
+            },
+            "type": {
+                "type": "options",
+                "value": "heading1",
+                "list": ["heading1", "heading2", "heading3"]
+            },
+            "align": {
+                "type": "options",
+                "value": "left",
+                "list": ["left", "center", "right"]
+            }
+        }
+    }, {
+        "_i": "ca-link",
+        "_t": "f",
+        "_n": "link",
+        "_d": "link_{1}",
+        "_a": {
+            "label": {
+                "type": "string",
+                "value": ""
+            },
+            "link": {
+                "type": "string",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-text-view",
+        "_t": "f",
+        "_n": "text",
+        "_d": "text_{1}",
+        "_a": {
+            "content": {
+                "type": "html",
+                "value": ""
+            }
+        }
+    }, {
+        "_i": "ca-image-selection",
+        "_t": "f",
+        "_n": "image",
+        "_d": "image_{1}",
+        "_a": {
+            "content": {
+                "type": "media",
+                "value": "",
+                "mime": "image/png",
+                "source": "$"
+            },
+            "size": {
+                "type": "number",
+                "value": 100,
+                "min": 5,
+                "max": 200
+            },
+            "align": {
+                "type": "options",
+                "value": "left",
+                "list": ["left", "center", "right"]
+            }
+        }
     }
 ]

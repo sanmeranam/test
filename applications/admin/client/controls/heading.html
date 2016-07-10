@@ -1,1 +1,3 @@
-<h1 ng-if="item._a.type=='x-large'">{{item._a.title}} <small>{{item._a.sub_title}}</small></h1>
+<h1 ng-if="field._a.type.value=='heading1'" style="text-align:{{field._a.align}}">{{field._a.title.value}} <small>{{field._a.subtitle.value}}</small></h1>
+<h2 ng-if="field._a.type.value=='heading2'" style="text-align:{{field._a.align}}">{{field._a.title.value}} <small>{{field._a.subtitle.value}}</small></h2>
+<h3 ng-if="field._a.type.value=='heading3'" style="text-align:{{field._a.align}}">{{field._a.title.value}} <small>{{field._a.subtitle.value}}</small></h3>
