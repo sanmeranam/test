@@ -1,1 +1,10 @@
-<div></div>
+<div class="row" id="{{field._d}}">
+    <div class="col-sm-12" style="margin-bottom: 0px">
+        <label for="{{field._d}}">{{field._a.label.value}}</label>
+    </div>
+    <div class="col-sm-12">
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-repeat="it in field._a.items.value"><i class="fa fa-sort"></i> <span class="badge">{{$index + 1}}</span>{{it}}</a>
+        </div>
+    </div>
+</div>

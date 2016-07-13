@@ -3,51 +3,249 @@ core.createController('FormDesignController', function ($scope, FormMeta) {
     jQuery(".accorContent").height(window.innerHeight * 0.58).css("overflow", "auto");
     jQuery(".accorContent2").height(window.innerHeight * 0.7).css("overflow", "auto");
 
-    $scope.models = {
-        selected: null
-    };
-    $scope.Palette = [];
-    $scope.oModelDesigned = [
-        
-    ];
-    
-    jQuery.getJSON("/service/control_schema", function (oSchemaData) {
-        $scope.Palette = oSchemaData;
-    });
-
-    $scope.dragoverCallback = function () {
-        debugger
-    };
-    $scope.generateId = function (item) {
-//        item._d = item._d.replace("{1}", Math.round(Math.random() * 9999));
-    };
-
-    $scope.formatText = function (sText) {
-        sText = sText.replace(/_/g, ' ');
-        var aText = sText.split(" ");
-        aText = aText.map(function (v) {
-            return v.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
-                return letter.toUpperCase();
-            }).replace(/\s+/g, ' ').replace(/_/g, ' ');
-        });
-        return aText.join(" ");
-    };
 
 
-
-    $scope.$watch('oModelDesigned', function (model) {
-//        $scope.modelAsJson = angular.toJson(model, true);
-//        console.log(model);
-    }, true);
-
-
-
-
-    $scope.$watch('models.selected', function (model) {
-        setTimeout(function () {
-            $(".js-switch").bootstrapSwitch({
-                size: "small"
+    $scope.DesignerConfig = {
+        selected: null,
+        model: {
+            _l: false,
+            _c: []
+        },
+        pallets: [],
+        parent_map: {},
+        init: function () {
+            jQuery.getJSON("/service/control_schema", function (oSchemaData) {
+                $scope.DesignerConfig.pallets = oSchemaData;
             });
-        }, 100);
+        },
+        _getRandomNumber: function (num) {
+            return Math.round(Math.random() * num);
+        },
+        itemSelected: function (item, parent) {
+            if (parent && parent._l) {
+                this.selected = null;
+            } else {
+                this.selected = item;
+            }
+            this.evtSelectionChange();
+        },
+        evtDropCallback: function (event, index, item, external, type) {
+            item._d = item._d.replace("{1}", this._getRandomNumber(99999));
+            return item;
+        },
+        evtClone: function () {
+            var oClone = angular.copy(this.selected);
+            var oParent = null;
+            var iIndex = -1;
+
+            this.visitModel(this.model, function (item, parent, index) {
+                if (item._d == oClone._d) {
+                    oParent = parent;
+                    iIndex = index;
+                    return false;
+                }
+                return true;
+            });
+
+            oClone._d = oClone._d + this._getRandomNumber(9);
+
+            this.visitModel(oClone, function (item, parent, index) {
+                item._d = item._d + $scope.DesignerConfig._getRandomNumber(9);
+                return true;
+            });
+
+            oParent._c.splice(iIndex + 1, 0, oClone);
+        },
+        evtLock: function () {
+            if (this.selected && this.selected._l) {
+                delete(this.selected._l);
+            } else {
+                this.selected._l = true;
+            }
+        },
+        evtRemove: function () {
+            var selItem = this.selected;
+            var oParent, iIndex;
+
+            this.visitModel(this.model, function (item, parent, index) {
+                if (item._d === selItem._d) {
+                    oParent = parent;
+                    iIndex = index;
+                    return false;
+                }
+                return true;
+            });
+            oParent._c.splice(iIndex, 1);
+        },
+        evtSelectionChange: function () {
+
+        },
+        evtModelChange: function () {
+            setTimeout(function () {
+                $('input.flat').iCheck({
+                    checkboxClass: 'icheckbox_flat-green',
+                    radioClass: 'iradio_flat-green'
+                });
+                $("#designerPane .js-switch").bootstrapSwitch({
+                    size: "small"
+                });
+            }, 100);
+        },
+        visitModel: function (oBase, callback) {
+            if (!oBase._c) {
+                callback(oBase, null, -1);
+                return;
+            }
+            var len = oBase._c.length;
+            for (var i = 0; i < len; i++) {
+                var item = oBase._c[i];
+                var res = callback(item, oBase, i);
+                if (!res) {
+                    break;
+                }
+                if (item._c && item._c.length) {
+                    this.visitModel(item, callback);
+                }
+            }
+        },
+        clsSelection: function (item) {
+            if (item == this.selected) {
+                return (item._l ? 'selected_red' : 'selected');
+            }
+            return '';
+        },
+        clsSectionLayout: function (oBase, oItem) {
+            if (oItem && oItem._a.space && oItem._a.space.value === "Full") {
+                return "col-sm-12";
+            }
+            return "col-sm-" + (12 / oBase._a.columns.value);
+        },
+        formatText: function (sText) {
+            sText = sText.replace(/_/g, ' ');
+            var aText = sText.split(" ");
+            aText = aText.map(function (v) {
+                return v.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
+                    return letter.toUpperCase();
+                }).replace(/\s+/g, ' ').replace(/_/g, ' ');
+            });
+            return aText.join(" ");
+        }
+    };
+
+    $scope.DesignerConfig.init();
+
+    $scope.$watch('DesignerConfig.model', function (model) {
+        $scope.DesignerConfig.evtModelChange(model);
     }, true);
+
+    $scope.oOptionsEditor = {
+        backup: [],
+        target: null,
+        eleModal: $("#modalOptionsEditor"),
+        insertItem: function (index, value) {
+            if (index == -1) {
+                this.target.value.push("");
+            } else {
+                this.target.value.splice(index + 1, 0, value);
+            }
+        },
+        removeItem: function (index) {
+            this.target.value.splice(index, 1);
+        },
+        showEditor: function (trg) {
+            this.target = trg;
+            this.backup = angular.copy(trg.value);
+            this.eleModal.modal("show");
+        },
+        dialoag_ok: function () {
+            this.eleModal.modal("hide");
+        },
+        dialoag_cancel: function () {
+            this.target.value = this.backup;
+            this.eleModal.modal("hide");
+        }
+    };
+
+    $scope.oRichEditorConfig = {
+        target: null,
+        backup: "",
+        eleEditor: $("#editor"),
+        eleModal: $('#modalHTMLContentEditor'),
+        setTarget: function (trg) {
+            this.target = trg;
+            this.backup = trg.value;
+            this.eleEditor.html(trg.value);
+        },
+        reset: function () {
+            this.backup = "";
+            this.target = null;
+        },
+        dialoag_ok: function () {
+            this.target.value = this.eleEditor.html();
+            this.eleModal.modal('hide');
+        },
+        dialoag_cancel: function () {
+            this.target.value = this.backup;
+            this.eleModal.modal('hide');
+        },
+        showEditor: function (oItem) {
+            this.reset();
+            this.setTarget(oItem);
+            this.eleModal.modal('show');
+            this.init();
+        },
+        init: function () {
+            var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
+                'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
+                'Times New Roman', 'Verdana'
+            ];
+            var fontTarget = $('[title=Font]').siblings('.dropdown-menu');
+            $.each(fonts, function (idx, fontName) {
+                fontTarget.append($('<li><a data-edit="fontName ' + fontName + '" style="font-family:\'' + fontName + '\'">' + fontName + '</a></li>'));
+            });
+            $('a[title]').tooltip({
+                container: 'body'
+            });
+            $('.dropdown-menu input').click(function () {
+                return false;
+            }).change(function () {
+                $(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');
+            }).keydown('esc', function () {
+                this.value = '';
+                $(this).change();
+            });
+
+            $('[data-role=magic-overlay]').each(function () {
+                var overlay = $(this),
+                        target = $(overlay.data('target'));
+                overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
+            });
+
+            if ("onwebkitspeechchange" in document.createElement("input")) {
+                var editorOffset = $('#editor').offset();
+
+                $('.voiceBtn').css('position', 'absolute').offset({
+                    top: editorOffset.top,
+                    left: editorOffset.left + $('#' + editorId).innerWidth() - 35
+                });
+            } else {
+                $('.voiceBtn').hide();
+            }
+
+            this.eleEditor.wysiwyg({
+                fileUploadError: function (reason, detail) {
+                    var msg = '';
+                    if (reason === 'unsupported-file-type') {
+                        msg = "Unsupported format " + detail;
+                    } else {
+                        console.log("error uploading file", reason, detail);
+                    }
+                    $('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                            '<strong>File upload error</strong> ' + msg + ' </div>').prependTo('#alerts');
+                }
+            });
+        }
+
+    };
+
 });

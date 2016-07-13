@@ -1,1 +1,12 @@
-<div></div>
+<div class="row" id="{{field._d}}">
+    <div class="col-sm-12" style="margin-bottom: 0px">
+        <label for="{{field._d}}">{{field._a.label.value}}</label>
+    </div>
+    <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in field._a.options.value">
+        <div class="radio">
+            <label>
+                <input type="radio" value="{{op}}" class="flat" name="{{field._d+'_option'}}">  {{op}}
+            </label>
+        </div>
+    </div>
+</div>

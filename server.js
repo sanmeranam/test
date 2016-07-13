@@ -58,18 +58,22 @@ app.use(function (req, res, next) {
 
 
 
-app.use('/wildcard/admin/_self', express.static(path.join(__dirname, 'applications/admin/client')));
-app.use('/wildcard/admin/_static', express.static(path.join(__dirname, 'public')));
+//app.use('/wildcard/admin/_self', express.static(path.join(__dirname, 'applications/admin/client')));
+//app.use('/wildcard/admin/_static', express.static(path.join(__dirname, 'public')));
+//
+//app.use('/wildcard/app/_self', express.static(path.join(__dirname, 'applications/portal/client')));
+//app.use('/wildcard/app/_static', express.static(path.join(__dirname, 'public')));
+//
+//
+//
+//app.use('/wildcard/admin', _mRouteAdmin);
+//app.use('/wildcard/app', _mRoutePortal);
+//app.use('/wildcard/api', _mRouteApi);
+//app.use('/', _mRouteWebsite);
 
-app.use('/wildcard/app/_self', express.static(path.join(__dirname, 'applications/portal/client')));
-app.use('/wildcard/app/_static', express.static(path.join(__dirname, 'public')));
-
-
-
-app.use('/wildcard/admin', _mRouteAdmin);
-app.use('/wildcard/app', _mRoutePortal);
-app.use('/wildcard/api', _mRouteApi);
-app.use('/', _mRouteWebsite);
+app.use('/_self', express.static(path.join(__dirname, 'applications/admin/client')));
+app.use('/_static', express.static(path.join(__dirname, 'public')));
+app.use('/', _mRouteAdmin);
 
 
 // catch 404 and forward to error handler

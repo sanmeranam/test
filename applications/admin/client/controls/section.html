@@ -1,21 +1,25 @@
-<div class="panel panel-default">
-    <div class="panel-heading">{{item._a.title.value}}</div>
+<div class="panel panel-default"  id="{{item._d}}">
+    <div class="panel-heading" ng-if="item._a.title.value">{{item._a.title.value}}</div>
     <div class="panel-body" style="padding: 10px">
-        <div class="row" style="list-style-type: none;padding-left: 0px;min-height: 100px;" dnd-list="item._c" dnd-allowed-types="['f']">
-            <div class="{{field._n=='heading'?'col-sm-12':'col-sm-6'}}" 
+        <div class="row" style="list-style-type: none;padding-left: 0px;min-height: 100px;" 
+             dnd-list="item._c"
+             dnd-disable-if="item._l==true"
+             dnd-drop="DesignerConfig.evtDropCallback(event, index, item, external, type)"
+             dnd-allowed-types="['f','v']">
+            <div class="{{DesignerConfig.clsSectionLayout(item,field)}}" 
                  ng-repeat="field in item._c"        
                  dnd-draggable="field"     
                  dnd-type="field._t"
                  dnd-horizontal-list="true"
-                 dnd-effect-allowed="move"
+                 dnd-effect-allowed="move"                 
                  dnd-moved="item._c.splice($index, 1)"
-                 dnd-selected="models.selected = field"
-                 ng-class="{selected: models.selected === field}"
+                 dnd-selected="DesignerConfig.itemSelected(field,item)"
+                 ng-class="DesignerConfig.clsSelection(field)"
                  ng-include="'/_self/controls/' + field._n.toLowerCase() + '.html'">
 
             </div>
             <div class="dndPlaceholder col-sm-6">
-                Drop any <strong>{{item._t}} fields</strong> here
+                Drop any fields here.
             </div>
         </div>
     </div>

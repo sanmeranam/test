@@ -1,1 +1,35 @@
-<div></div>
+<div class="row" id="{{field._d}}">
+    <div class="col-sm-12" style="margin-bottom: 0px">
+        <label for="{{field._d}}">{{field._a.label.value}}</label>
+    </div>
+    <div class="col-sm-12 no-margin-bottom" >
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th ng-repeat="col in field._a.columns.value">{{col}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in field._a.rows.value">
+                    <td style="vertical-align: middle">{{row}}</td>
+                    <td ng-repeat="col in field._a.columns.value" style="vertical-align: middle;text-align: center" ng-switch="field._a.type.value">
+                        <div class="radio no-padding no-margin" ng-switch-when="Single Option">
+                            <label>
+                                <input type="radio" value="{{op}}" class="flat" name="{{row + '_option'}}">
+                            </label>
+                        </div>
+                        <div class="checkbox no-padding no-margin" ng-switch-when="Mutli Options">
+                            <label>
+                                <input type="checkbox" value="{{op}}" class="flat" name="{{row + '_option'}}">
+                            </label>
+                        </div>
+                        <div class="text no-padding no-margin" ng-switch-when="Text">
+                            <input type="text" value="{{op}}" class="form-control" name="{{row + '_option'}}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

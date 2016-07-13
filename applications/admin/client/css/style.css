@@ -1411,5 +1411,8 @@ ul[dnd-list], ul[dnd-list] > li {
 }
 
 .selected{
-    border: 2px solid lightseagreen;
+    border: 1px solid lightseagreen;
+}
+.selected_red{
+    border: 1px solid lightcoral;
 }
