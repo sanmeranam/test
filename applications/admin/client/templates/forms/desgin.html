@@ -8,7 +8,7 @@
                 <div id="collapse1" class="panel-collapse collapse in">
                     <div class="panel-body accorContent" style="padding: 20px">
                         <ul style="list-style-type: none;padding: 5px">                            
-                            <li ng-repeat="item in DesignerConfig.pallets"
+                            <li ng-repeat="item in DesignerConfig.pallets.common"
                                 dnd-draggable="item"
                                 dnd-type="item._t"
                                 dnd-effect-allowed="copy"
@@ -25,20 +25,45 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Advanced Fields</a>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Display Fields</a>
                 </div>
                 <div id="collapse2" class="panel-collapse collapse">
                     <div class="panel-body accorContent">
-
+                        <ul style="list-style-type: none;padding: 5px">                            
+                            <li ng-repeat="item in DesignerConfig.pallets.display"
+                                dnd-draggable="item"
+                                dnd-type="item._t"
+                                dnd-effect-allowed="copy"
+                                dnd-copied="generateId(event)"
+                                >
+                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                    <i class="ca" ng-class="item._i"></i>
+                                    {{DesignerConfig.formatText(item._n)}}
+                                </span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Complex Fields</a>                        
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Advanced Fields</a>                        
                 </div>
                 <div id="collapse3" class="panel-collapse collapse">
                     <div class="panel-body accorContent">
+                        <ul style="list-style-type: none;padding: 5px">                            
+                            <li ng-repeat="item in DesignerConfig.pallets.advanced"
+                                dnd-draggable="item"
+                                dnd-type="item._t"
+                                dnd-effect-allowed="copy"
+                                dnd-copied="generateId(event)"
+                                >
+                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                    <i class="ca" ng-class="item._i"></i>
+                                    {{DesignerConfig.formatText(item._n)}}
+                                </span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

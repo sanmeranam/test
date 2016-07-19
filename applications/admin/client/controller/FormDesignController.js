@@ -21,6 +21,18 @@ core.createController('FormDesignController', function ($scope, FormMeta) {
         _getRandomNumber: function (num) {
             return Math.round(Math.random() * num);
         },
+        getRateCal: function (max, val) {
+            var m=[];
+            m.length=max;
+            m.fill(1);
+            var u=Math.floor(val);
+            m.fill(0,u);
+            if((Math.round(val) > Math.floor(val))){
+                m.fill(2,u);
+                m.fill(0,u+1);
+            }
+            return m;
+        },
         itemSelected: function (item, parent) {
             if (parent && parent._l) {
                 this.selected = null;

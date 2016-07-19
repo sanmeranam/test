@@ -22,7 +22,7 @@
                     <div class="col-md-3">
                         <h2>{{SelectedFormMeta.form_name}}<small>{{SelectedFormMeta.history.created.date|date}}</small></h2>
                     </div>
-                    <div class="col-md-5" style="margin-top: -10px">
+                    <div class="col-md-5" style="margin-top: -3px">
                         <ul class="nav nav-tabs" style="border-bottom: 0" id="form_tabs" role="tablist">
                             <li role="presentation" class="active"><a class="side_menu_link" ng-click="switchTabs('/_self/templates/forms/form_details.html')" aria-controls="home" role="tab" data-toggle="tab">Details</a></li>
                             <li role="presentation"><a class="side_menu_link"  ng-click="switchTabs('/_self/templates/forms/records.html')" aria-controls="messages" role="tab" data-toggle="tab">Records</a></li>
@@ -31,17 +31,11 @@
                         </ul>
                     </div>
                     <ul class="nav navbar-right panel_toolbox">                        
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Settings 1</a>
-                                </li>
-                                <li><a href="#">Settings 2</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        <li><a class="btn btn-link btn-sm"><i class="fa fa-floppy-o"></i> Save</a></li>
+                        <li><a class="btn btn-link btn-sm"><i class="fa fa-pencil"></i> Edit</a></li>
+                        <li><a class="btn btn-link btn-sm"><i class="fa fa-times"></i> Cancel</a></li>
+                        <li><a class="btn btn-link btn-sm"><i class="fa fa-eye"></i> Preview</a></li>
+                        <li><a class="btn btn-link btn-sm"><i class="fa fa-check-square"></i> Activate</a></li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
