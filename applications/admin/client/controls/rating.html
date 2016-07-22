@@ -2,7 +2,7 @@
     <div class="col-sm-12" style="margin-bottom: 0px">
         <label for="{{field._d}}">{{field._a.label.value}}</label>
     </div>
-    <div class="col-sm-12" ng-init="">
+    <div class="col-sm-12" style="margin-bottom: 15px">
         <span style="display: none">{{t=DesignerConfig.getRateCal(field._a.stars.value, field._a.value.value, field._d)|json}}</span>
         <i class="fa fa-2x text-warning" ng-repeat="i in t track by $index" ng-class="(i==0)?'fa-star-o':(i==1?'fa-star':'fa-star-half-o')"></i> 
     </div>

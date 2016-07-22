@@ -1,13 +1,48 @@
-core.createController('RootController', function ($scope, Session) {
+core.createController('RootController', function ($scope, Session, Message) {
     $scope.Profile = {};
-    
+
 
     Session.getData({}, function (data) {
-        if (data.status == "OK") {
+        if (data.status === "OK") {
             $scope.Profile = data.message;
-            core.Profile=JSON.parse(JSON.stringify(data.message));
+            core.Profile = JSON.parse(JSON.stringify(data.message));
         }
     });
+
+
+    $scope._alerts = null;
+    $scope._confirm = {
+        callback: null,
+        text: "",
+        yes: function () {
+            this.text = "";
+            if (this.callback)
+                this.callback(true);
+        },
+        no: function () {
+            this.text = "";
+            if (this.callback)
+                this.callback(false);
+        }
+    };
+
+    $scope.clearAlert = function () {
+        setTimeout(function () {
+            $scope._alerts = null;
+            $scope.$apply();
+        }, 5000);
+    };
+
+    Message.alertcb = function (text) {
+        $scope._alerts = text;
+        $scope.clearAlert();
+    };
+
+    Message.confirmcb = function (text, callback) {
+        $scope._alerts = null;
+        $scope._confirm.callback = callback;
+        $scope._confirm.text = text;
+    };
 
 
     $scope.checkPageSwitch = function () {
@@ -21,21 +56,28 @@ core.createController('RootController', function ($scope, Session) {
             var hash = window.location.hash.replace("#/", "");
             if (hash) {
                 var contxt = hash.split("_").join(" ");
-                this._switch(contxt);
+                var bcontxt = contxt;
+                if (contxt.indexOf("::") > -1)
+                    contxt = contxt.substr(0, contxt.indexOf("::"));
+                this._switch(contxt, bcontxt);
             } else {
-                this._switch("Dashboard");
+                this._switch("Dashboard", "Dashboard");
             }
         },
-        _switch: function (toPage) {
+        _switch: function (toPage, org) {
             if ($scope.checkPageSwitch()) {
+                if (toPage.indexOf("::") > -1)
+                    toPage = toPage.substr(0, toPage.indexOf("::"));
+
                 if (this[toPage]) {
-                    window.location.hash = toPage.split(" ").join("_");
+                    org = org || toPage;
+                    window.location.hash = org.split(" ").join("_");
                     this._page = this[toPage].path;
                     this._title = toPage;
                     jQuery(".menu_section").find(".active").removeClass("active");
                     jQuery("[menu='" + toPage + "']").addClass("active");
                 } else {
-                    this._switch("Dashboard");
+                    this._switch("Dashboard", "Dashboard");
                 }
             }
         },
@@ -60,4 +102,5 @@ core.createController('RootController', function ($scope, Session) {
     };
     $scope.PageConfig._checkHash();
 
+    jQuery("#GlobalAlertInit").show();
 });

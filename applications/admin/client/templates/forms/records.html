@@ -20,18 +20,7 @@
             </div>
             <div  class="btn-group number_view_sm" role="group">
                 <label>Count</label>
-                <label class="text-info">100</label>
-            </div>
-            
-            <div class="btn-group pull-right" role="group" >
-                <div class="input-group stylish-input-group" style="width: 150px">
-                    <input type="text" ng-model="formSearchText" class="form-control"  placeholder="Filter" >
-                    <span class="input-group-addon" style="padding: 0px">
-                        <button type="submit">
-                            <span class="glyphicon glyphicon-filter"></span>
-                        </button>  
-                    </span>
-                </div>
+                <label class="text-info" ng-bind="BaseData.elements.length"></label>
             </div>
         </div>
     </div>

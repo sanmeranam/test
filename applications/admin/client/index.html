@@ -1,3 +1,19 @@
+<div id="GlobalAlertInit" style="position: fixed;z-index: 9999;left: 50%;top: 7px;display: none">
+    <div ng-show="_alerts" class="alert alert-warning fade in" role="alert">
+        {{_alerts}}
+    </div>
+    <div ng-show="_confirm.text"  class="alert alert-info fade in" role="alert">
+        <table style="margin: -8px;">
+            <tr>
+                <td style="padding-right: 30px">{{_confirm.text}}</td>
+                <td>
+                    <button type="button" ng-click="_confirm.yes()" class="btn btn-sm btn-success no-margin">YES</button>
+                    <button type="button" ng-click="_confirm.no()" class="btn btn-sm btn-danger no-margin">NO</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
@@ -30,13 +46,16 @@
         <div class="top_nav">
             <div class="nav_menu">
                 <nav class="" role="navigation">
-                    <div class="nav toggle">
-                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                    </div>
+                    <div class="navbar-header" style="background: transparent">
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <a class="navbar-brand" href="javascript:void(0)" style="color: #34495E !important;" ng-bind="PageConfig._title"></a>
+                    </div>                    
                     <ul class="nav navbar-nav navbar-right">
                         <li class="">
                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <img src="images/img.jpg" alt="">{{Profile.user.first_name + " " + Profile.user.last_name}}
+                                <img src="/_static/images/avatar_2x.png" style="width: 40px;height: 40px" alt="">{{Profile.user.first_name + " " + Profile.user.last_name}}
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">

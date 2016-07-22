@@ -9,14 +9,18 @@ core.createController('FormFlowController', function ($scope) {
             oRoot = oRoot || item;
             item.next = item.next.map(function (v) {
                 var ch = oData[v];
-                ch.id = v;
+                if (ch)
+                    ch.id = v;
                 return ch;
             });
         }
         return oRoot;
     };
-
-    $scope.flowData = fnDataToNode(angular.copy($scope.$parent.SelectedFormMeta.flow));
+    $scope.flowDataSave=null;
+    
+    $scope.$on('FormItemSelected', function (event, data) {
+        $scope.flowData = data.flow;
+    });
 
     var oChartHelper = new ChartHelper({
         canvas: Snap("#formFlowDrawPane"),
@@ -26,7 +30,7 @@ core.createController('FormFlowController', function ($scope) {
         cardHGap: 50
     });
 
-    $scope._renderGraph=function(){
+    $scope._renderGraph = function () {
         oChartHelper.clear();
         oChartHelper.drawFlow(40, 50, $scope.flowData);
     };
@@ -46,7 +50,7 @@ core.createController('FormFlowController', function ($scope) {
     $scope.trailAdd = function () {
         if ($scope.SelectedNode) {
             $scope.SelectedNode.next.push({
-                id:Math.round(Math.random()*999999),
+                id: Math.round(Math.random() * 999999),
                 action: "TEST",
                 target: "USER_GROUP",
                 system: "admin",
@@ -56,6 +60,7 @@ core.createController('FormFlowController', function ($scope) {
             $scope._renderGraph();
         }
     };
-    
-    jQuery("#grapContainer").height(window.innerHeight*0.7);
+
+    jQuery("#grapContainer").height(window.innerHeight * 0.65);
+    jQuery("#flowDetailsHolder").height(window.innerHeight * 0.7).css("overflow", "auto");
 });

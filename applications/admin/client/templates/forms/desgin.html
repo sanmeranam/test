@@ -70,19 +70,25 @@
         </div>
     </div>
     <div class="col-sm-6  no-padding">
+        <div class="col-sm-12">
+            <div style="max-width: 80%;overflow: auto;display: inline-flex">
+                <button class="btn btn-sm" ng-class="(DesignerConfig.CurrentPage == meta ? 'btn-info' : 'btn-default')" ng-repeat="(page,meta) in DesignerConfig.model" ng-click="DesignerConfig.CurrentPage = meta"><i class="fa fa-file-o"></i> Page #{{page}}</button>
+            </div>
+            <button class="btn btn-sm btn-default" ng-click="DesignerConfig.addPage()"><i class="fa fa-plus"></i> Page</button>
+            <button class="btn btn-sm btn-default pull-right" ng-click="DesignerConfig.showPageManager()"><i class="fa fa-navicon"></i></button>
+        </div>
         <div style="border: 1px dashed gray; padding: 5px" id="designerPane">
-
             <div class="col-sm-12">
                 <div class="row"  style="list-style-type: none;padding-left: 0px;min-height: 200px" 
-                     dnd-list="DesignerConfig.model._c" 
+                     dnd-list="DesignerConfig.CurrentPage._c" 
                      dnd-drop="DesignerConfig.evtDropCallback(event, index, item, external, type)"
                      dnd-allowed-types="['p','v']" >
-                    <div class="col-sm-12 no-padding" ng-repeat="item in DesignerConfig.model._c"        
+                    <div class="col-sm-12 no-padding" ng-repeat="item in DesignerConfig.CurrentPage._c"        
                          dnd-draggable="item"     
                          dnd-type="item._t"
                          dnd-horizontal-list="true"
                          dnd-effect-allowed="move"
-                         dnd-moved="DesignerConfig.model.meta.splice($index, 1)"
+                         dnd-moved="DesignerConfig.CurrentPage._c.splice($index, 1)"
                          dnd-selected="DesignerConfig.itemSelected(item,null)"
                          ng-class="DesignerConfig.clsSelection(item)"
                          ng-include="'/_self/controls/' + item._n.toLowerCase() + '.html'">
@@ -259,6 +265,45 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" ng-click="oOptionsEditor.dialoag_cancel()">Cancel</button>
                     <button type="button" class="btn btn-primary" ng-click="oOptionsEditor.dialoag_ok()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalPageManager" aria-hidden="true" data-backdrop="static"  data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">   
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Page Manager</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 no-margin" style="max-height: 400px;overflow: auto">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="(page,meta) in DesignerConfig.model">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">                                            
+                                            <button type="button" class="btn btn-default dropdown-toggle no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Scope <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a href="#">None</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Admin</a></li>
+                                                <li><a href="#">User</a></li>
+                                            </ul>
+                                        </div>
+                                        <input readonly ng-value="'Page #'+page" type="text" class="form-control" style="margin-top: 5px">
+                                        <div class="input-group-btn">
+                                            <button type="button" ng-click="DesignerConfig.removePage(page)" class="btn btn-danger no-margin"><i class="fa fa-trash"></i></button>                                           
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>

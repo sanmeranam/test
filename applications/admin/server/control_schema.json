@@ -55,11 +55,7 @@
                 "hints": {
                     "type": "string",
                     "value": ""
-                },
-                "rich_text": {
-                    "type": "boolean",
-                    "value": false
-                },
+                },                
                 "multi_line": {
                     "type": "boolean",
                     "value": false

@@ -91,7 +91,7 @@ ChartHelper.prototype.clear = function () {
     this.gList = [];
     this.nodeGrad1 = this.oConfig.canvas.gradient("L(100, 100, 100, 0)#4E9AF8-#4E9AF8");
 
-    var arrPath = this.oConfig.canvas.path("M0,0 V4 L2,2 Z").attr({fill:"#353D47",stroke: "#353D47"});
+    var arrPath = this.oConfig.canvas.path("M0,0 V4 L2,2 Z").attr({fill: "#353D47", stroke: "#353D47"});
 
     this.arrowMark = arrPath.marker(0, 0, 4, 6, 0.1, 2);
 
@@ -125,6 +125,9 @@ ChartHelper.prototype._clearSelection = function () {
  * @returns {ChartHelper.prototype.drawFlow.ly}
  */
 ChartHelper.prototype.drawFlow = function (sx, sy, oData) {
+    if (!oData)
+        return;
+
     var oEl = this.drawNode(sx, sy, oData);
     this.gList.push(oEl);
     jQuery.data(oEl.node, "data", oData);
@@ -140,11 +143,11 @@ ChartHelper.prototype.drawFlow = function (sx, sy, oData) {
     });
 
     var ly = sy;
-    if (oData.next.length) {
+    if (oData.next && oData.next.length) {
         for (var i = 0; i < oData.next.length; i++) {
             var ch = oData.next[i];
             var cx = sx + this.oConfig.cardWidth + this.oConfig.cardHGap;
-            var cy = ly + (this.oConfig.cardHeight + this.oConfig.cardVGap) * (i?1:0);
+            var cy = ly + (this.oConfig.cardHeight + this.oConfig.cardVGap) * (i ? 1 : 0);
 
             var ly = this.drawFlow(cx, cy, ch);
             this.drawLine(sx + this.oConfig.cardWidth, sy + this.oConfig.cardHeight / 2, cx, cy + this.oConfig.cardHeight / 2);

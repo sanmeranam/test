@@ -1,16 +1,15 @@
-core.createController('FormDesignController', function ($scope, FormMeta) {
+core.createController('FormDesignController', function ($scope, FormMeta, Message) {
     jQuery("#designerPane").height(window.innerHeight * 0.78).css("overflow", "auto");
-    jQuery(".accorContent").height(window.innerHeight * 0.58).css("overflow", "auto");
+    jQuery(".accorContent").height(window.innerHeight * 0.5).css("overflow", "auto");
     jQuery(".accorContent2").height(window.innerHeight * 0.7).css("overflow", "auto");
 
 
+    
 
     $scope.DesignerConfig = {
         selected: null,
-        model: {
-            _l: false,
-            _c: []
-        },
+        model: null,
+        CurrentPage: null,
         pallets: [],
         parent_map: {},
         init: function () {
@@ -21,15 +20,29 @@ core.createController('FormDesignController', function ($scope, FormMeta) {
         _getRandomNumber: function (num) {
             return Math.round(Math.random() * num);
         },
+        addPage: function () {
+            var keys = Object.keys(this.model);
+            var newKey = 1;
+            if (keys.length)
+                newKey = parseInt(keys[keys.length - 1]) + 1;
+
+            this.model[newKey] = {_l: false, _c: []};
+        },
+        removePage: function (index) {
+            delete(this.model[index]);
+        },
+        showPageManager: function () {
+            jQuery("#modalPageManager").modal("show");
+        },
         getRateCal: function (max, val) {
-            var m=[];
-            m.length=max;
+            var m = [];
+            m.length = max;
             m.fill(1);
-            var u=Math.floor(val);
-            m.fill(0,u);
-            if((Math.round(val) > Math.floor(val))){
-                m.fill(2,u);
-                m.fill(0,u+1);
+            var u = Math.floor(val);
+            m.fill(0, u);
+            if ((Math.round(val) > Math.floor(val))) {
+                m.fill(2, u);
+                m.fill(0, u + 1);
             }
             return m;
         },
@@ -145,6 +158,15 @@ core.createController('FormDesignController', function ($scope, FormMeta) {
     };
 
     $scope.DesignerConfig.init();
+    
+    $scope.$on('FormItemSelected', function (event, data) {
+        $scope.DesignerConfig.model = data.model_view;
+        $scope.DesignerConfig.CurrentPage = ($scope.DesignerConfig.model[Object.keys($scope.DesignerConfig.model)[0]]);
+        
+    });
+    
+    
+    
 
     $scope.$watch('DesignerConfig.model', function (model) {
         $scope.DesignerConfig.evtModelChange(model);

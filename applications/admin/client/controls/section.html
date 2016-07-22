@@ -1,4 +1,4 @@
-<div class="panel panel-default"  id="{{item._d}}">
+<div class="panel panel-default"  id="{{item._d}}" style="margin-bottom: 0px">
     <div class="panel-heading" ng-if="item._a.title.value">{{item._a.title.value}}</div>
     <div class="panel-body" style="padding: 10px">
         <div class="row" style="list-style-type: none;padding-left: 0px;min-height: 100px;" 
@@ -13,6 +13,7 @@
                  dnd-horizontal-list="true"
                  dnd-effect-allowed="move"                 
                  dnd-moved="item._c.splice($index, 1)"
+                 style="margin-bottom: 0px"
                  dnd-selected="DesignerConfig.itemSelected(field,item)"
                  ng-class="DesignerConfig.clsSelection(field)"
                  ng-include="'/_self/controls/' + field._n.toLowerCase() + '.html'">

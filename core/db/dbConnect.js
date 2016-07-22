@@ -16,6 +16,7 @@ module.exports.prototype.openConnection = function (document, callBack) {
     };
     mongo.connect(this.sDBURL, function (err, db) {
         if (err) {
+            console.error(err);
             callBack(null, null,err);
         } else {
             callBack(db, db.collection(document));
@@ -159,16 +160,17 @@ module.exports.prototype.updateById = function (sTable, sId, oNewData, callback)
     };
     this.openConnection(sTable, function (db, conn,err) {
         if (db && conn) {
-            conn.update({"_id": new mongoAPI.ObjectId(sId)}, {$set: oNewData}, function (err, result) {
+            oNewData._id=new mongoAPI.ObjectId(sId);
+            conn.update({"_id": new mongoAPI.ObjectId(sId)},oNewData, function (err, result) {
                 if (result) {
                     callback(result);
                 } else {
-                    callback(null);
+                    callback(err);
                 }
                 db.close();
             });
         } else {
-            callback(null);
+            callback(err);
         }
     });
 };
