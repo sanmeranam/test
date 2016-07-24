@@ -18,7 +18,7 @@
         </div>
         <div class="col-sm-12 no-margin"  ng-style="DivTimeLineStyle">
             <div class="qa-message-list" id="wallmessages">
-                <div class="message-item" ng-click="onSelectTimeLineItem(ele)" ng-repeat="ele in BaseData.elements | filter:getFilterParam() as filtered">
+                <div class="message-item" ng-click="onSelectTimeLineItem(ele)" ng-repeat="ele in BaseData.elements | filter:TimeViewConfig.getFilterParam() as filtered">
                     <div class="message-inner">                    
                         <div class="qa-message-content">
                             <table class="table no-margin-bottom">

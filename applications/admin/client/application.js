@@ -16,7 +16,7 @@ window.core = {
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
         if (hash.indexOf("::") > -1) {
-            hash = hash.substr(hash.indexOf("::")+2, hash.length);
+            hash = hash.substr(hash.indexOf("::") + 2, hash.length);
             return hash.split(":");
         }
         return [];
@@ -52,6 +52,15 @@ window.core = {
 
         this.ngApp.factory('FormMeta', function ($resource) {
             var data = $resource('/service/formmeta/:id', {id: '@id'}, {
+                'get': {method: 'GET', id: '@id'},
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'}
+            });
+            return data;
+        });
+        this.ngApp.factory('FormData', function ($resource) {
+            var data = $resource('/service/formdata/:id', {id: '@id'}, {
                 'get': {method: 'GET', id: '@id'},
                 'save': {method: 'POST', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},

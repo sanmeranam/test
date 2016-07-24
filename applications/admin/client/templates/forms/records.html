@@ -2,12 +2,12 @@
     <div class="col-sm-12">
         <div class="btn-toolbar" role="toolbar" >
             <div class="btn-group" role="group" >
-                <button ng-click="switchView('/_self/templates/forms/records_table_view.html')" type="button" class="btn btn-default"><i class="fa fa-table"></i></button>
-                <button ng-click="switchView('/_self/templates/forms/records_map_view.html')" type="button" class="btn btn-default"><i class="fa fa-map-marker"></i></button>                
-                <button ng-click="switchView('/_self/templates/forms/records_time_view.html')" type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
-                <button ng-click="switchView('/_self/templates/forms/records_chart_view.html')" type="button" class="btn btn-default"><i class="fa fa-pie-chart"></i></button>                
+                <button ng-click="switchView('TABLE')" type="button" class="btn" ng-class="_selectedView=='TABLE'?'btn-info':'btn-default'"><i class="fa fa-table"></i></button>
+                <button ng-click="switchView('MAP')" type="button" class="btn" ng-class="_selectedView=='MAP'?'btn-info':'btn-default'"><i class="fa fa-map-marker"></i></button>                
+                <button ng-click="switchView('TIME')" type="button" class="btn" ng-class="_selectedView=='TIME'?'btn-info':'btn-default'"><i class="fa fa-clock-o"></i></button>
+                <button ng-click="switchView('CHART')" type="button" class="btn" ng-class="_selectedView=='CHART'?'btn-info':'btn-default'"><i class="fa fa-pie-chart"></i></button>                
             </div>
-            <div class="btn-group" role="group">
+<!--            <div class="btn-group" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     All
                     <span class="caret"></span>
@@ -17,7 +17,7 @@
                     <li><a href="#">Completed</a></li>
                     <li><a href="#">In Progress</a></li>
                 </ul>
-            </div>
+            </div>-->
             <div  class="btn-group number_view_sm" role="group">
                 <label>Count</label>
                 <label class="text-info" ng-bind="BaseData.elements.length"></label>

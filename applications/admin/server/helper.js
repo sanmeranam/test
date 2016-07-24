@@ -1,5 +1,5 @@
 var util = require('./util');
-var fs=require('fs');
+var fs = require('fs');
 
 module.exports = {
     doLogin: function (req, res, next) {
@@ -36,7 +36,7 @@ module.exports = {
                 } else {
                     res.redirect("/login?error=true");
                 }
-            }else{
+            } else {
                 res.redirect("/login?error=true");
             }
         }
@@ -61,7 +61,7 @@ module.exports = {
         });
     },
     getFormMetaAll: function (req, res, next) {
-        req.db.find('form_meta', {"account_id":req.session.user.account}, function (data) {
+        req.db.find('form_meta', {"account_id": req.session.user.account}, function (data) {
             res.json(data);
         });
     },
@@ -76,7 +76,29 @@ module.exports = {
             res.json(data);
         });
     },
-    getControlSchema:function(req, res, next){
+    getFormData: function (req, res, next) {
+        var id = req.params.id;
+        req.db.findById('form_data', id, function (data) {
+            res.json(data);
+        });
+    },
+    getFormDataAll: function (req, res, next) {
+        req.db.find('form_data', {"account_id": req.session.user.account}, function (data) {
+            res.json(data);
+        });
+    },
+    updateFormData: function (req, res, next) {
+        var id = req.params.id;
+        req.db.updateById('form_data', id, req.body, function (data) {
+            res.json(data);
+        });
+    },
+    saveFormData: function (req, res, next) {
+        req.db.insertToTable('form_data', req.body, function (data) {
+            res.json(data);
+        });
+    },
+    getControlSchema: function (req, res, next) {
         res.json(JSON.parse(fs.readFileSync("./applications/admin/server/control_schema.json")));
     }
 };

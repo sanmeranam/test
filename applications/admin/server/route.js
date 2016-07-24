@@ -29,6 +29,11 @@ router.get('/service/formmeta', helper.getFormMetaAll);
 router.post('/service/formmeta/:id', helper.updateFormMeta);
 router.put('/service/formmeta', helper.saveFormMeta);
 
+router.get('/service/formdata/:id', helper.getFormData);
+router.get('/service/formdata', helper.getFormDataAll);
+router.post('/service/formdata/:id', helper.updateFormData);
+router.put('/service/formdata', helper.saveFormData);
+
 router.get('/service/control_schema', helper.getControlSchema);
 
 
