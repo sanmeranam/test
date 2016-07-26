@@ -42,7 +42,7 @@ ChartHelper.prototype.drawNode = function (x, y, data) {
         stroke: "#2c3e50",
         strokeWidth: 0.2
     });
-    var r3 = this.oConfig.canvas.text(x + 15, y + 30, data.action).attr({
+    var r3 = this.oConfig.canvas.text(x + 15, y + 30, data.model.name).attr({
         fill: "#fff",
         stroke: "#fff"
     });

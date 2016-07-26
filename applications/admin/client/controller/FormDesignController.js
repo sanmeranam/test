@@ -4,7 +4,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
     jQuery(".accorContent2").height(window.innerHeight * 0.7).css("overflow", "auto");
 
 
-    
+    $scope.EditDisabled = true;
 
     $scope.DesignerConfig = {
         selected: null,
@@ -158,15 +158,23 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
     };
 
     $scope.DesignerConfig.init();
-    
+
+    if ($scope.$parent.SelectedFormMeta) {
+        var data = $scope.$parent.SelectedFormMeta;
+        if (data.model_view) {
+            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
+            $scope.DesignerConfig.model = data.model_view;
+        }
+    }
     $scope.$on('FormItemSelected', function (event, data) {
-        $scope.DesignerConfig.model = data.model_view;
-        $scope.DesignerConfig.CurrentPage = ($scope.DesignerConfig.model[Object.keys($scope.DesignerConfig.model)[0]]);
-        
+        if (data.model_view) {
+            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
+            $scope.DesignerConfig.model = data.model_view;
+        }
     });
-    
-    
-    
+
+
+
 
     $scope.$watch('DesignerConfig.model', function (model) {
         $scope.DesignerConfig.evtModelChange(model);
@@ -177,7 +185,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         target: null,
         eleModal: $("#modalOptionsEditor"),
         insertItem: function (index, value) {
-            if (index == -1) {
+            if (index === -1) {
                 this.target.value.push("");
             } else {
                 this.target.value.splice(index + 1, 0, value);

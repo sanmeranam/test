@@ -1,6 +1,7 @@
 <div class="" ng-controller="UserGroupController">
     <div class="row">
-        <div class="col-md-3 col-xs-12 widget widget_tally_box">
+        <!--User Group-->
+        <div class="col-md-3 col-xs-12 widget widget_tally_box" ng-hide="CurrentUserProfile||newUser">
             <div class="x_panel small_view">
                 <div class="x_title">
                     <h2>User Groups</h2>             
@@ -11,13 +12,14 @@
                         <div class="input-group">
                             <input type="text" class="form-control" ng-model="userGrpFilterText" placeholder="Filter" style="border-radius: 20px 0px 0px 20px;">
                             <span class="input-group-btn">
-                                <button ng-click="onCreateForm()" class="btn btn-default btn-success no-margin" type="button"><i class="fa fa-plus"></i></button>
+                                <button title="Create new user group" ng-click="onCreateGroup()" class="btn btn-default btn-success no-margin" type="button"><i class="fa fa-plus"></i></button>
                             </span>
                         </div>
                     </div>
                     <div class="clearfix"></div>
+                    <h4 ng-show="!UserGroup.length" class="text-center">-Empty-</h4>
                     <div class="list-group">
-                        <a href="javascript:void(0)"   ng-click="onSelectUserGroup(userGrp)" class="list-group-item" ng-class="CurrentUserGroup == userGrp ? 'active' : ''" ng-repeat="userGrp in UserGroup|filter:{group_name:formFilterText}">
+                        <a href="javascript:void(0)"   ng-click="onSelectUserGroup(userGrp);" class="list-group-item" ng-class="CurrentUserGroup == userGrp ? 'active' : ''" ng-repeat="userGrp in UserGroup|filter:{group_name:formFilterText}">
                             <h4 class="list-group-item-heading text-uppercase">
                                 <i class="fa fa-users fa-2x"></i>&nbsp;
                                 {{userGrp.group_name}}<small class="pull-right">{{userGrp.history.created.date|date}}</small></h4>
@@ -31,31 +33,71 @@
                 </div>
             </div>
         </div>
-
-
-
-        <div class="col-md-3 col-xs-12" ng-show="CurrentUserGroup">
+        <!--New Group-->
+        <div class="col-md-3 col-xs-12 widget widget_tally_box" ng-show="newGroup">
             <div class="x_panel small_view">
                 <div class="x_title">
-                    <h2>User Groups</h2>             
+                    <h2>New Groups</h2>         
+                    <ul class="nav navbar-right panel_toolbox">                       
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="close-link" ng-click="newGroup = null;"><i class="fa fa-close"></i></a></li>
+                    </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <div class="col-xs-6">
+                    <div class="input-group">
+                        <label >Group Name:</label>
+                        <input type="text" class="form-control" ng-model="newGroup.group_name" />
+                    </div>
+                    <div class="input-group">
+                        <label ><input type="checkbox" class="checkbox" style="display: inline" ng-model="newGroup.access_admin" />Access Admin</label>                        
+                    </div>
+                    <div class="input-group">
+                        <label ><input type="checkbox" class="checkbox" style="display: inline" ng-model="newGroup.access_user" /> Access Profiles</label>                        
+                    </div>
+                    <div class="input-group">
+                        <label ><input type="checkbox" class="checkbox" style="display: inline" ng-model="newGroup.access_setting" /> Access Settings</label>                        
+                    </div>
+                    <div class="input-group">
+                        <label ><input type="checkbox" class="checkbox" style="display: inline" ng-model="newGroup.access_meta" /> Access Change Form</label>                        
+                    </div>
+                    <div class="input-group">
+                        <label ><input type="checkbox" class="checkbox" style="display: inline" ng-model="newGroup.access_billing" /> Access Billing</label>                        
+                    </div>
+                    <button class="btn btn-success" ng-click="onSaveGroup()">Create</button>
+                </div>
+            </div>
+        </div>
+        <!--Users-->
+        <div class="col-md-3 col-xs-12" ng-show="CurrentUserGroup">
+            <div class="x_panel small_view">
+                <div class="x_title">
+                    <h2>{{CurrentUserGroup.group_name}}'s users</h2>             
+                    <ul class="nav navbar-right panel_toolbox">                       
+                        <li><a class="collapse-link" ng-click="onDeleteGroup()" title="Delete User Group"><i class="fa fa-trash"></i></a></li>
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="close-link" title="Close" ng-click="CurrentUserGroup = null;CurrentUserProfile = null;newUser=null"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="col-xs-10">
                         <div class="input-group">
-                            <input type="text" class="form-control" ng-model="userGrpFilterText" placeholder="Filter" style="border-radius: 20px 0px 0px 20px;">
+                            <input type="text" class="form-control" ng-model="usersFilterText" placeholder="Filter" style="border-radius: 20px 0px 0px 20px;">
                             <span class="input-group-btn">
-                                <button ng-click="onCreateForm()" class="btn btn-default btn-success no-margin" type="button"><i class="fa fa-plus"></i></button>
+                                <button title="Create new user profile" ng-click="onCreateProfile()" class="btn btn-default btn-success no-margin" type="button"><i class="fa fa-plus"></i></button>
                             </span>
                         </div>
                     </div>
                     <div class="clearfix"></div>
                     <div class="row" id="profileScrillView">
-                        <div class="col-md-12 col-sm-12 col-xs-12 profile_details no-margin-bottom" ng-repeat="user in CurrentUserGroup.users">
+                        <h4 ng-show="!CurrentUserGroup.users.length" class="text-center">-Empty-</h4>
+                        <div class="col-md-12 col-sm-12 col-xs-12 profile_details no-margin-bottom" ng-repeat="user in CurrentUserGroup.users|filter:{first_name:usersFilterText}">
                             <div class="well profile_view">
                                 <div class="col-sm-12">
                                     <div class="left col-xs-9">
-                                        <h2 ng-bind="user.first_name+' '+user.last_name"></h2>
+                                        <h2 ng-bind="user.first_name + ' ' + user.last_name"></h2>
                                         <ul class="list-unstyled">
                                             <li><i class="fa fa-envelope"></i> Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
                                             <li><i class="fa fa-phone"></i> Phone #: {{user.contact}}</li>
@@ -66,17 +108,189 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 bottom text-center">
-                                    <div class="col-xs-12 col-sm-6 emphasis">
+                                    <div class="col-xs-4 col-sm-4 emphasis">
                                         <p class="ratings"></p>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6 emphasis">
+                                    <div class="col-xs-8 col-sm-8 emphasis">
                                         <button type="button" class="btn btn-success btn-xs"> <i class="fa fa-user">
                                             </i> <i class="fa fa-comments-o"></i> </button>
-                                        <button type="button" class="btn btn-primary btn-xs">
+                                        <button type="button" ng-click='onSelectUserProfile(user)' class="btn btn-primary btn-xs">
                                             <i class="fa fa-user"> </i> View Profile
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--New User-->
+        <div class="col-md-3 col-xs-12 widget widget_tally_box" ng-show="newUser">
+            <div class="x_panel small_view">
+                <div class="x_title">
+                    <h2>New Profile</h2>         
+                    <ul class="nav navbar-right panel_toolbox">                       
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="close-link" ng-click="newUser = null;"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="text-danger" ng-show="newUser.error" ng-bind="newUser.error"></div>
+                    <div class="input-group">
+                        <label >First Name:</label>
+                        <input type="text" class="form-control" ng-model="newUser.first_name" />
+                    </div>
+                   <div class="input-group">
+                        <label >Last Name:</label>
+                        <input type="text" class="form-control" ng-model="newUser.last_name" />
+                    </div>
+                    <div class="input-group">
+                        <label >Email:</label>
+                        <input type="email" class="form-control" ng-model="newUser.email" />
+                    </div>
+                    <div class="input-group">
+                        <label >Contact:</label>
+                        <input type="tel" class="form-control" ng-model="newUser.contact" />
+                    </div>
+                    <div class="input-group">
+                        <label >Password:</label>
+                        <input type="password" class="form-control" ng-model="newUser.secret" />
+                    </div>
+                    <div class="input-group">
+                        <label >Re-Password:</label>
+                        <input type="password" class="form-control" ng-model="newUser.secret2" />
+                    </div>
+                    <button class="btn btn-success" ng-click="onSaveProfile()">Create</button>
+                </div>
+            </div>
+        </div>
+        <!--Profile-->
+        <div class="col-md-9 col-xs-12"  ng-show="CurrentUserProfile">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>User Profile</h2>   
+                    <ul class="nav navbar-right panel_toolbox">                       
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
+                        <li><a class="close-link" ng-click="CurrentUserProfile = null"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content small_view2">
+                    <div class="col-md-4 col-sm-4 col-xs-12 profile_left">
+
+                        <div class="profile_img">
+
+                            <!-- end of image cropping -->
+                            <div id="crop-avatar">
+                                <!-- Current avatar -->
+                                <img class="img-responsive avatar-view" src="/_static/images/default-user.png" alt="Avatar" title="Change the avatar">
+
+                            </div>
+                            <!-- end of image cropping -->
+
+                        </div>
+                        <h3 ng-bind="CurrentUserProfile.first_name + ' ' + CurrentUserProfile.last_name">Samuel Doe</h3>
+
+                        <ul class="list-unstyled user_data">
+                            <li><i class="fa fa-map-marker user-profile-icon"></i> {{CurrentUserProfile.address}}_address</li>
+
+                            <li>
+                                <i class="fa fa-envelope user-profile-icon"></i> {{CurrentUserProfile.email}}
+                            </li>
+
+                            <li class="m-top-xs">
+                                <i class="fa fa-phone user-profile-icon"></i> {{CurrentUserProfile.contact}}
+                            </li>
+                        </ul>
+
+                        <a class="btn btn-success"><i class="fa fa-key m-right-xs"></i> Reset Password</a>
+                        <a class="btn btn-danger" ng-click="onDeleteProfile()"><i class="fa fa-trash m-right-xs"></i> Delete User</a>
+                        <br />
+
+                        <!-- start skills -->
+                        <h4>Form Usage</h4>
+                        <ul class="list-unstyled user_data">
+                            <li>
+                                <p>Web Applications</p>
+                                <div class="progress progress_sm">
+                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <p>Website Design</p>
+                                <div class="progress progress_sm">
+                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="70"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <p>Automation & Testing</p>
+                                <div class="progress progress_sm">
+                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="30"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <p>UI / UX</p>
+                                <div class="progress progress_sm">
+                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                        <div class="profile_title">
+                            <div class="col-md-6">
+                                <h2>User Activity Report</h2>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="reportrange" class="pull-right" style="margin-top: 5px; background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #E6E9ED">
+                                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                    <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- start of user-activity-graph -->
+                        <div id="graph_bar" style="width:100%; height:280px;"></div>
+                        <!-- end of user-activity-graph -->
+
+                        <div class="" role="tabpanel" data-example-id="togglable-tabs" ng-init="selTab = 1">
+                            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                <li role="presentation" class="active"><a ng-click="selTab = 1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Recent Activity</a></li>
+                                <li role="presentation" class=""><a ng-click="selTab = 2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Track</a></li>
+
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade active in"  ng-show="selTab == 1" aria-labelledby="home-tab">
+
+                                    <!-- start recent activity -->
+                                    <ul class="messages">
+                                        <li>
+                                            <div class="message_date">
+                                                <h3 class="date text-info">24</h3>
+                                                <p class="month">May</p>
+                                            </div>
+                                            <div class="message_wrapper">
+                                                <h4 class="heading">Desmond Davison</h4>
+                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                <br />
+                                                <p class="url">
+                                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                                    <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                                </p>
+                                            </div>
+                                        </li>                                       
+
+                                    </ul>
+                                    <!-- end recent activity -->
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" ng-show="selTab == 2" aria-labelledby="profile-tab">
+                                    <ui-gmap-google-map center="CurrentUserProfileTrack.center" zoom="CurrentUserProfileTrack.zoom" refresh="true"></ui-gmap-google-map>
+                                </div>                               
                             </div>
                         </div>
                     </div>

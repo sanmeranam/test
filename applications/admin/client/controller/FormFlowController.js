@@ -1,28 +1,9 @@
-core.createController('FormFlowController', function ($scope) {
-    $scope.actions = [];
-
-    var fnDataToNode = function (oData) {
-        var oRoot = null;
-        for (var m in oData) {
-            var item = oData[m];
-            item.id = m;
-            oRoot = oRoot || item;
-            item.next = item.next.map(function (v) {
-                var ch = oData[v];
-                if (ch)
-                    ch.id = v;
-                return ch;
-            });
-        }
-        return oRoot;
-    };
-    $scope.flowDataSave=null;
-    
-    $scope.$on('FormItemSelected', function (event, data) {
-        $scope.flowData = data.flow;
-    });
-
-    var oChartHelper = new ChartHelper({
+core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util) {
+    $scope.flowDataSave = null;
+    $scope.FlowFactory = null;
+    $scope.flowData = null;
+    $scope._gv = {};
+    $scope.oChartHelper = new ChartHelper({
         canvas: Snap("#formFlowDrawPane"),
         cardHeight: 100,
         cardWidth: 150,
@@ -30,9 +11,52 @@ core.createController('FormFlowController', function ($scope) {
         cardHGap: 50
     });
 
+    $scope._resetAll = function () {
+        $scope.flowDataSave = null;
+        $scope.FlowFactory = null;
+        $scope.flowData = null;
+        $scope._gv = {};
+        $scope.oChartHelper.clear();
+    };
+
+    if ($scope.$parent.SelectedFormMeta) {
+        $scope._resetAll();
+        $scope.flowData = $scope.$parent.SelectedFormMeta.flow;
+    }
+
+    $scope.$on('FormItemSelected', function (event, data) {
+        $scope._resetAll();
+        $scope.flowData = data.flow;
+    });
+
+
+
+    $scope._loadFlowFactory = function () {
+        GlobalConfig.load({context: 'flow_factory'}, function (aData) {
+            if (aData && aData[0]) {
+                var oBase = {};
+                aData[0].value.map(function (v) {
+                    oBase[v.type] = v;
+                });
+                $scope.FlowFactory = oBase;
+            }
+        });
+    };
+
+    $scope.loadGlobalVar = function (sVar) {
+        if (!$scope._gv[sVar]) {
+            GlobalVar.get({context: sVar, account: core.Profile.account}, function (res) {
+                $scope._gv[sVar] = res;
+            });
+        }
+    };
+
+    $scope.isArray = Util.isArray;
+    $scope.formatText = Util.formatText;
+
     $scope._renderGraph = function () {
-        oChartHelper.clear();
-        oChartHelper.drawFlow(40, 50, $scope.flowData);
+        $scope.oChartHelper.clear();
+        $scope.oChartHelper.drawFlow(40, 50, $scope.flowData);
     };
 
     $scope.$watchCollection('flowData', function () {
@@ -46,21 +70,55 @@ core.createController('FormFlowController', function ($scope) {
     }, false);
 
 
+    $scope.checkVisibleProp = function (item) {
+        if (item.visible) {
+            return $scope.$eval("SelectedNode.model.fields." + item.visible);
+        }
+        return true;
+    };
 
-    $scope.trailAdd = function () {
+    $scope.$watch('SelectedNode', function () {
         if ($scope.SelectedNode) {
-            $scope.SelectedNode.next.push({
-                id: Math.round(Math.random() * 999999),
-                action: "TEST",
-                target: "USER_GROUP",
-                system: "admin",
-                next: [],
-                config: {}
-            });
+            delete($scope.SelectedNode.edit);
+        }
+    });
+
+    $scope.AddNextAction = function (oItem) {
+        if ($scope.SelectedNode) {
+            var item = angular.copy(oItem);
+            item.id = Math.floor(Math.random() * 9999999);
+            $scope.SelectedNode.next.push(item);
             $scope._renderGraph();
         }
     };
 
+    var findParentNode = function (oBase, iId) {
+        for (var i = 0; i < oBase.next.length; i++) {
+            if (oBase.next[i].id === iId) {
+                return {p: oBase, i: i};
+            }
+            if (oBase.next[i].next.length) {
+                return findParentNode(oBase.next[i], iId);
+            }
+        }
+        return {p: null, i: -1};
+    };
+
+    $scope.deleteFlowAction = function () {
+        if ($scope.SelectedNode) {
+            Message.confirm("Are you sure want to delete flow action?", function (v) {
+                if (v) {
+                    var res = findParentNode($scope.flowData, $scope.SelectedNode.id);
+                    if (res && res.p) {
+                        res.p.next.splice(res.i, 1);
+                        $scope.SelectedNode = null;
+                        $scope._renderGraph();
+                    }
+                }
+            });
+        }
+    };
+
     jQuery("#grapContainer").height(window.innerHeight * 0.65);
-    jQuery("#flowDetailsHolder").height(window.innerHeight * 0.7).css("overflow", "auto");
+    jQuery("#flowDetailsHolder").height(window.innerHeight * 0.55).css("overflow", "auto");
 });

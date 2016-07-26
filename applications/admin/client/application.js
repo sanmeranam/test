@@ -40,6 +40,24 @@ window.core = {
             return obj;
         });
 
+        this.ngApp.factory('Util', function () {
+            return {
+                formatText: function (sText) {
+                    sText = sText.replace(/_/g, ' ');
+                    var aText = sText.split(" ");
+                    aText = aText.map(function (v) {
+                        return v.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
+                            return letter.toUpperCase();
+                        }).replace(/\s+/g, ' ').replace(/_/g, ' ');
+                    });
+                    return aText.join(" ");
+                },
+                isArray: function (item) {
+                    return jQuery.isArray(item);
+                }
+            };
+        });
+
 
         this.ngApp.factory('Session', function ($resource) {
             var data = $resource('/session/data', {service: '@service'}, {
@@ -65,6 +83,28 @@ window.core = {
                 'save': {method: 'POST', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},
                 'create': {method: 'PUT'}
+            });
+            return data;
+        });
+
+        this.ngApp.factory('UserGroup', function ($resource) {
+            var data = $resource('/service/usergroup', {}, {
+                'get': {method: 'GET', isArray: true},
+                'save': {method: 'POST'}
+            });
+            return data;
+        });
+
+        this.ngApp.factory('GlobalConfig', function ($resource) {
+            var data = $resource('/service/global/:context', {context: '@context'}, {
+                'load': {method: 'GET', context: '@context', isArray: true}
+            });
+            return data;
+        });
+
+        this.ngApp.factory('GlobalVar', function ($resource) {
+            var data = $resource('/service/var/:account/:context', {context: '@context', account: '@account'}, {
+                'get': {method: 'GET', context: '@context', isArray: true}
             });
             return data;
         });

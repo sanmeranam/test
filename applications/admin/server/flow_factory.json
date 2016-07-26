@@ -1,0 +1,201 @@
+[
+    {
+        "type": "_blank",
+        "next": [],
+        "model": {
+            "name": "No Action",
+            "fields": {
+            }
+        }
+    },
+    {
+        "type": "email",
+        "next": [],
+        "model": {
+            "name": "Send Email",
+            "fields": {
+                "to": {
+                    "type": "string",
+                    "value": ""
+                },
+                "cc": {
+                    "type": "string",
+                    "value": ""
+                },
+                "subject": {
+                    "type": "string",
+                    "value": ""
+                },
+                "inclue_attach": {
+                    "type": "boolean",
+                    "value": true
+                }
+            }
+
+        }
+    },
+    {
+        "type": "user",
+        "next": [],
+        "model": {
+            "name": "Forward to User",
+            "fields": {
+                "user": {
+                    "type": "options",
+                    "value": "",
+                    "list": "$users"
+                },
+                "mode": {
+                    "type": "options",
+                    "value": "",
+                    "list": ["Read Only", "Approval", "Editable"]
+                }
+            }
+
+        }
+    },
+    {
+        "type": "user_group",
+        "next": [],
+        "model": {
+            "name": "Forward to Group",
+            "fields": {
+                "user": {
+                    "type": "options",
+                    "value": "",
+                    "list": "$users"
+                },
+                "instance": {
+                    "type": "options",
+                    "value": "",
+                    "list": ["Single", "Share"]
+                },
+                "mode": {
+                    "type": "options",
+                    "value": "",
+                    "list": ["Read Only", "Approval", "Editable"]
+                }
+            }
+
+        }
+
+    },
+    {
+        "type": "api",
+        "next": [],
+        "model": {
+            "name": "Forward to Group",
+            "fields": {
+                "protocol": {
+                    "type": "options",
+                    "value": "HTTP",
+                    "list": ["HTTP", "HTTPS"]
+                },
+                "host": {
+                    "type": "string",
+                    "value": ""
+                },
+                "port": {
+                    "type": "number",
+                    "value": 80,
+                    "min": 10
+                },
+                "path": {
+                    "type": "string",
+                    "value": ""
+                },
+                "method": {
+                    "type": "options",
+                    "value": "POST",
+                    "list": ["POST", "PUT", "GET"]
+                },
+                "data_model": {
+                    "type": "options",
+                    "value": "POST",
+                    "list": ["RAW JSON", "TABLE JSON", "XML", "BASE64", "MULTI_PART"]
+                },
+                "auth_type": {
+                    "type": "options",
+                    "value": "NONE",
+                    "list": ["NONE", "BASIC AUTH", "CLIENT CER"]
+                },
+                "user_name": {
+                    "visible": "auth_type.value=='BASIC AUTH'",
+                    "type": "string",
+                    "value": ""
+                },
+                "password": {
+                    "visible": "auth_type.value=='BASIC AUTH'",
+                    "type": "password",
+                    "value": ""
+                },
+                "certificate": {
+                    "visible": "auth_type.value=='CLIENT CER'",
+                    "type": "string",
+                    "value": ""
+                },
+                "public_key": {
+                    "visible": "auth_type.value=='CLIENT CER'",
+                    "type": "password",
+                    "value": ""
+                }
+            }
+
+        }
+
+    },
+    {
+        "type": "ftp",
+        "next": [],
+        "model": {
+            "name": "Send to FTP",
+            "fields": {
+                "host": {
+                    "type": "string",
+                    "value": ""
+                },
+                "port": {
+                    "type": "number",
+                    "value": 25
+                },
+                "path": {
+                    "type": "string",
+                    "value": ""
+                },
+                "user_name": {
+                    "type": "string",
+                    "value": ""
+                },
+                "password": {
+                    "type": "password",
+                    "value": ""
+                },
+                "file_type": {
+                    "type": "options",
+                    "value": "PDF",
+                    "list": ["PDF", "EXCEL", "JSON", "XML", "TEXT"]
+                },
+                "copy_attachemts": {
+                    "type": "boolean",
+                    "value": false
+                }
+            }
+
+        }
+
+    },
+    {
+        "type": "wall",
+        "next": [],
+        "model": {
+            "name": "Display in Wall",
+            "fields": {
+                "template": {
+                    "type": "options",
+                    "value": "",
+                    "list": "$walls"
+                }
+            }
+        }
+    }
+]

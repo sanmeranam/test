@@ -1430,3 +1430,19 @@ ul[dnd-list], ul[dnd-list] > li {
 .dataTables_paginate{
     margin-top: -20px;   
 }
+
+.overlay_disabled{
+    top: -80px;
+    position: absolute;
+    background-color: rgba(202, 202, 202, 0.55);
+    z-index: 9999;
+    right: -16px;
+    left: -17px;
+    bottom: 0px;
+    text-align: center;
+    padding-top: 20%;
+}
+
+.active>.list-group-item-text>div{
+    color:#fff
+}

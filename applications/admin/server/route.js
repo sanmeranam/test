@@ -34,7 +34,14 @@ router.get('/service/formdata', helper.getFormDataAll);
 router.post('/service/formdata/:id', helper.updateFormData);
 router.put('/service/formdata', helper.saveFormData);
 
+router.get('/service/usergroup', helper.getAllUserGroup);
+router.post('/service/usergroup', helper.updateUserGroup);
+
+
 router.get('/service/control_schema', helper.getControlSchema);
+
+router.get('/service/global/:context', helper.getGlobalConfig);
+router.get('/service/var/:account/:context', helper.getGlobalVariables);
 
 
 

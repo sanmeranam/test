@@ -2,7 +2,7 @@ core.createController('FormController', function ($scope, FormMeta) {
     jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow", "auto");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#historyContainerId").height(window.innerHeight * 0.3).css("overflow", "auto");
-    
+
     $scope.sPages = {
         data: "/_self/templates/forms/records.html",
         design: "/_self/templates/forms/desgin.html",
@@ -33,30 +33,34 @@ core.createController('FormController', function ($scope, FormMeta) {
             }
         }
     };
-
     $scope.hashManager.init();
 
-    var ctx = document.getElementById("mybarChart");
-    var mybarChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["10", "11", "12", "13", "14", "15", "16"],
-            datasets: [{
-                    label: '# Created',
-                    backgroundColor: "#03586A",
-                    data: [41, 56, 25, 48, 72, 34, 12]
-                }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
+    $scope.inlineTrend = function () {
+        Chart.defaults.global.legend.display = false;
+        var ctx = document.getElementById("mybarChart");
+        var mybarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["10", "11", "12", "13", "14", "15", "16"],
+                datasets: [{
+                        label: '# Created',
+                        backgroundColor: "#03586A",
+                        data: [41, 56, 25, 48, 72, 34, 12]
                     }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                }
             }
-        }
-    });
+        });
+    };
+    $scope.inlineTrend();
+
 
 
     $scope.loadFormMeta = function () {
@@ -65,21 +69,18 @@ core.createController('FormController', function ($scope, FormMeta) {
 
             $scope.hashManager.init();
             if ($scope.hashManager.p0) {
-                var notFound = true;
-                $scope.FormMetaList.filter(function (v) {
-                    if (v._id === $scope.hashManager.p0) {
-                        notFound = false;
-                        $scope.onSelectForm(v);
-                    }
-                    return true;
+                var oExist = $scope.FormMetaList.filter(function (v) {
+                    return v._id === $scope.hashManager.p0;
                 });
-                if (notFound) {
+                if (oExist && oExist.length) {
+                    if ($scope.hashManager.p1) {
+                        $scope.SelectedFormView = $scope.hashManager.p1;
+                    }
+
+                    $scope.onSelectForm(oExist[0]);
                     $scope.hashManager.setParams();
                 }
-            }
 
-            if ($scope.hashManager.p1) {
-                $scope.SelectedFormView = $scope.hashManager.p1;
             }
         });
     };
@@ -108,16 +109,40 @@ core.createController('FormController', function ($scope, FormMeta) {
     $scope.onCreateForm = function () {
         $scope.SelectedFormMeta = null;
         $scope.SelectedFormView = 0;
+
+        var intiFlow = {
+            "type": "create",
+            "id": Math.floor(Math.random() * 9999999),
+            "next": [],
+            "model": {
+                "name": "Create Form",
+                "fields": {
+                    "by": {
+                        "type": "options",
+                        "value": "Any",
+                        "list": ["Any", "User", "Group"]
+                    },
+                    "user": {
+                        "visible": "by.value=='User'",
+                        "type": "options",
+                        "value": "",
+                        "list": "$users"
+                    },
+                    "user_group": {
+                        "visible": "by.value=='Group'",
+                        "type": "options",
+                        "value": "",
+                        "list": "$user_group"
+                    }
+                }
+            }
+        };
+
+
         $scope.NewFormMeta = {
             "form_name": "",
             "account_id": core.Profile.account,
-            "flow": {
-                action: "CREATE",
-                target: "",
-                system: "",
-                next: [],
-                config: {}
-            },
+            "flow": intiFlow,
             "model_view": {
                 "1": {
                     "_l": false,
@@ -140,13 +165,15 @@ core.createController('FormController', function ($scope, FormMeta) {
         };
     };
     $scope.onSaveNewForm = function () {
+        if (!jQuery.trim($scope.NewFormMeta.form_name)) {
+            return;
+        }
         FormMeta.create(angular.copy($scope.NewFormMeta), function () {
             $scope.NewFormMeta = null;
             $scope.loadFormMeta();
         });
 
     };
-
     $scope.onUpdateForm = function (changeTitle) {
         if (changeTitle) {
             $scope.SelectedFormMeta.history.modified.push({

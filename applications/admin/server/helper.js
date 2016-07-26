@@ -11,9 +11,11 @@ module.exports = {
             if (oData) {
                 var userGp = oData.user_group;
                 var thisUser = null;
+                var thisGroup = null;
                 var users = userGp.filter(function (ug) {
                     ug = ug.users.filter(function (v) {
                         if (v.email === user && v.secret === password) {
+                            thisGroup = ug;
                             thisUser = v;
                             return true;
                         }
@@ -26,6 +28,8 @@ module.exports = {
                     var access = users[0];
                     delete(access.users);
                     delete(thisUser.secret);
+
+                    thisUser.path = thisGroup.id + ":" + thisUser.id;
 
                     req.session.user = {
                         account: oData.account_id,
@@ -100,5 +104,82 @@ module.exports = {
     },
     getControlSchema: function (req, res, next) {
         res.json(JSON.parse(fs.readFileSync("./applications/admin/server/control_schema.json")));
+    },
+    getGlobalConfig: function (req, res, next) {
+        var type = req.params.context;
+        req.db.find('global_config', {"key": type}, function (data) {
+            res.json(data);
+        });
+    },
+    getAllUserGroup: function (req, res, next) {
+        var user = req.session.user;
+        if (user) {
+            req.db.find("accounts", {'account_id': user.account}, function (result) {
+                var oData = result.length ? result[0] : null;
+                if (oData) {
+                    res.json(oData.user_group);
+                }
+            });
+        } else {
+            res.json([]);
+        }
+    },
+    updateUserGroup: function (req, res, next) {
+        var user = req.session.user;
+        if (user) {
+            req.db.find("accounts", {'account_id': user.account}, function (result) {
+                var oData = result.length ? result[0] : null;
+                if (oData) {
+                    oData.user_group = req.body;
+                    req.db.updateById('accounts', oData._id, oData, function (data) {
+                        res.json(data);
+                    });
+                }
+            });
+        } else {
+            res.json({error: "error"});
+        }
+    },
+    getGlobalVariables: function (req, res, next) {
+        var type = req.params.context;
+        var account = req.params.account;
+
+        req.db.find("accounts", {'account_id': account}, function (result) {
+            var oData = result.length ? result[0] : null;
+            if (oData) {
+                switch (type) {
+                    case '$users':
+                        var aUserGrp = oData.user_group;
+                        var users = [];
+                        for (var i = 0; i < aUserGrp.length; i++) {
+                            users = users.concat(aUserGrp[i].users);
+                        }
+                        users = users.map(function (v) {
+                            delete(v.secret);
+                            delete(v.inbox);
+                            v.name = v.first_name + " " + v.last_name;
+                            v.value = v.email;
+                            return v;
+                        });
+                        res.json(users);
+                        break;
+                    case '$products':
+                        break;
+                    case '$user_group':
+                        var aUserGrp = oData.user_group;
+                        aUserGrp = aUserGrp.map(function (v) {
+                            delete(v.users);
+                            v.name = v.group_name;
+                            v.value = v.group_name;
+                            return v;
+                        });
+                        res.json(aUserGrp);
+                        break;
+                    default:
+
+
+                }
+            }
+        });
     }
 };

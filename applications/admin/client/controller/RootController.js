@@ -48,6 +48,11 @@ core.createController('RootController', function ($scope, Session, Message) {
     $scope.checkPageSwitch = function () {
         return true;
     };
+    
+    $scope.toPagehash=function(hash){
+        window.location.hash=hash;
+        $scope.PageConfig._checkHash();
+    };
 
     $scope.PageConfig = {
         _title: "",
@@ -90,7 +95,7 @@ core.createController('RootController', function ($scope, Session, Message) {
         "Billing": {
             path: "/_self/templates/billing.html"
         },
-        "Data Manager": {
+        "Data Factory": {
             path: "/_self/templates/dataprocess.html"
         },
         "Users": {

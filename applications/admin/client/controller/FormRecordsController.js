@@ -16,7 +16,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         map.setZoom(map.getZoom());
     });
 
-    $scope.charts = $scope.$parent.SelectedFormMeta?$scope.$parent.SelectedFormMeta.charts:[];
+    $scope.charts = $scope.$parent.SelectedFormMeta ? $scope.$parent.SelectedFormMeta.charts : [];
 
     $scope.$on('FormItemSelected', function (event, data) {
         $scope.charts = data.charts;
@@ -145,7 +145,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                 latitude: 12.9375312,
                 longitude: 77.7006514
             },
-            zoom: 14,
+            zoom: 8,
             control: {}
         },
         init: function () {
@@ -337,13 +337,13 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         }
     };
 
-    $scope._selectedView="TABLE";
+    $scope._selectedView = "TABLE";
     $scope.switchView = function (view) {
         if ($scope.table) {
             $scope.table.destroy();
             $scope.table = null;
         }
-        $scope._selectedView=view;
+        $scope._selectedView = view;
         switch (view) {
             case "TABLE":
                 $scope.currentPage = $scope.TableViewConfig.page;
@@ -365,4 +365,41 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
     };
     $scope.switchView("TABLE");
     $scope.loaded = true;
+
+    $('#reservation').daterangepicker({
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        dateLimit: {
+            days: 60
+        },
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: false,
+        timePickerIncrement: 1,
+        timePicker12Hour: true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'left',
+        buttonClasses: ['btn btn-default'],
+        applyClass: 'btn-small btn-primary',
+        cancelClass: 'btn-small',
+        format: 'DD/MM/YYYY',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Apply',
+            cancelLabel: 'Clear',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    });
 });

@@ -20,12 +20,16 @@
                 <div class="x_content">
                     <div class="list-group">
                         <a href="javascript:void(0)"   ng-click="onSelectForm(frm)" class="list-group-item" ng-class="SelectedFormMeta == frm ? 'active' : ''" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}">
-                            <h4 class="list-group-item-heading text-uppercase">
-                                <i class="fa fa-file-o"></i>&nbsp;
-                                {{frm.form_name}}<small class="pull-right">{{frm.history.created.date|date}}</small></h4>
+                            <h3 class="list-group-item-heading text-uppercase">
+                                <span class="fa-stack" style="color:lightgray">
+                                    <i class="fa fa-file-o fa-stack-2x"></i>
+                                    <i class="fa fa-line-chart fa-stack-1x"></i>
+                                </span>&nbsp;
+                                {{frm.form_name}}<small class="pull-right" style="font-size: 50%">{{frm.history.created.date|date}}</small>
+                            </h3>
                             <div class="list-group-item-text">
-                                <div class="col-xs-6 text-warning">Admin</div>
-                                <div class="col-xs-6 text-right text-success">Active</div>
+                                <div class="col-xs-6 text-warning">&nbsp;</div>
+                                <div class="col-xs-6 text-right text-success">{{frm.history.created.user}}</div>
                             </div>
                             <div class="clearfix"></div>
                         </a>
@@ -78,18 +82,28 @@
                     </div>
                     <div style="text-align: center; margin-bottom: 17px">
                         <div class="btn-group" role="group">
-                            <button type="button" ng-click="SelectedFormView = 1" class="btn btn-default">Data</button>
-                            <button type="button" ng-click="SelectedFormView = 2" class="btn btn-default">Flow</button>
-                            <button type="button" ng-click="SelectedFormView = 3" class="btn btn-default">Design</button>
+                            <button title="Data View" type="button" ng-style="SelectedFormView == 1 ? {'border-bottom': '3px solid'} : {}" ng-click="SelectedFormView = 1" class="btn btn-default">
+                                <span class="fa-stack">
+                                    <i class="fa fa-file-o fa-stack-2x"></i>
+                                    <i class="fa fa-database fa-stack-1x"></i>
+                                </span>
+                            </button>
+                            <button title="Flow Design" type="button" ng-style="SelectedFormView == 2 ? {'border-bottom': '3px solid'} : {}" ng-click="SelectedFormView = 2" class="btn btn-default">
+                                <span class="fa-stack">
+                                    <i class="fa fa-file-o fa-stack-2x"></i>
+                                    <i class="fa fa-sitemap fa-rotate-270 fa-stack-1x"></i>
+                                </span>
+                            </button>
+                            <button title="Form Design" type="button" ng-style="SelectedFormView == 3 ? {'border-bottom': '3px solid'} : {}" ng-click="SelectedFormView = 3" class="btn btn-default">
+                                <span class="fa-stack">
+                                    <i class="fa fa-file-o fa-stack-2x"></i>
+                                    <i class="fa fa-object-ungroup fa-stack-1x"></i>
+                                </span>
+                            </button>
                         </div>
                     </div>
                     <h3 class="name_title">{{SelectedFormMeta.form_name}}</h3>
-                    <p>{{SelectedFormMeta.history.created.date|date}}</p>
-                    <div class="row">
-                        <div class="col-xs-6 text-warning">By:{{SelectedFormMeta.history.created.user}}</div>
-                        <div class="col-xs-6 text-right text-success">Active</div>
-                    </div>                    
-
+                    <p style="font-size: 75%" class="text-muted">Created by {{SelectedFormMeta.history.created.user}} on {{SelectedFormMeta.history.created.date|date}}</p>
                     <div class="divider"></div>
                     <div id="historyContainerId" style="padding: 5px">
                         <ul class="list-unstyled timeline">
@@ -112,10 +126,16 @@
             </div>
         </div>
         <!--Data View-->
-        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormView == 1">
+        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormMeta && SelectedFormView == 1">
             <div class="x_panel large_view">
                 <div class="x_title">
-                    <h2>Data View</h2>
+                    <h2>
+                        <span class="fa-stack">
+                            <i class="fa fa-file-o fa-stack-2x"></i>
+                            <i class="fa fa-database fa-stack-1x"></i>
+                        </span>
+                        Data View
+                    </h2>
                     <ul class="nav navbar-right panel_toolbox">                       
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
@@ -130,29 +150,41 @@
         </div>
 
         <!--Flow View-->
-        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormView == 2">
+        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormMeta && SelectedFormView == 2">
             <div class="x_panel large_view">
                 <div class="x_title">
-                    <h2>Flow View</h2>
+                    <h2>
+                        <span class="fa-stack">
+                            <i class="fa fa-file-o fa-stack-2x"></i>
+                            <i class="fa fa-sitemap fa-rotate-270 fa-stack-1x"></i>
+                        </span>
+                        Flow View
+                    </h2>
                     <ul class="nav navbar-right panel_toolbox">                       
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
                         <li><a class="close-link" ng-click="SelectedFormView = 0"><i class="fa fa-close"></i></a></li>
                     </ul>
-                    <button class="btn btn-success pull-right" ng-click="onUpdateForm('Form work flow changed.')">Save</button>
+                    <button id="flowSaveButton" class="btn btn-success pull-right" ng-click="onUpdateForm('Form work flow changed.')">Save</button>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content" style="overflow: hidden">
                     <div  ng-include="sPages.flow"></div>
-                </div>
-            </div>
+                </div>                
+            </div>            
         </div>
 
         <!--Design View-->
-        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormView == 3">
+        <div class="col-md-9 col-xs-12 widget_tally_box" ng-show="SelectedFormMeta && SelectedFormView == 3">
             <div class="x_panel large_view">
                 <div class="x_title">
-                    <h2>Design View</h2>
+                    <h2>
+                        <span class="fa-stack">
+                            <i class="fa fa-file-o fa-stack-2x"></i>
+                            <i class="fa fa-object-ungroup fa-stack-1x"></i>
+                        </span>
+                        Design View
+                    </h2>
                     <ul class="nav navbar-right panel_toolbox">                       
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
                         <li><a class="collapse-link" style="visibility: hidden"><i class="fa fa-chevron-right"></i></a></li>
