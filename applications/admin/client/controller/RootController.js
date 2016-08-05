@@ -48,9 +48,9 @@ core.createController('RootController', function ($scope, Session, Message) {
     $scope.checkPageSwitch = function () {
         return true;
     };
-    
-    $scope.toPagehash=function(hash){
-        window.location.hash=hash;
+
+    $scope.toPagehash = function (hash) {
+        window.location.hash = hash;
         $scope.PageConfig._checkHash();
     };
 
@@ -108,4 +108,9 @@ core.createController('RootController', function ($scope, Session, Message) {
     $scope.PageConfig._checkHash();
 
     jQuery("#GlobalAlertInit").show();
+
+    jQuery(function () {
+        $scope.loadedEverything = true;
+        $scope.$apply();
+    });
 });

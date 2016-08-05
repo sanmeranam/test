@@ -1,73 +1,89 @@
 <div class="row" ng-controller="FormDesignController">
-    <div class="col-sm-3"  style="padding: 0px;padding-right: 10px">
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a data-toggle="collapse" class="no_link" data-parent="#accordion" href="#collapse1">Common Fields</a>
+    <div class="col-sm-3">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Collapsable</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse in">
-                    <div class="panel-body accorContent" style="padding: 20px">
-                        <ul style="list-style-type: none;padding: 5px">                            
-                            <li ng-repeat="item in DesignerConfig.pallets.common"
-                                dnd-draggable="item"
-                                dnd-type="item._t"
-                                dnd-effect-allowed="copy"
-                                dnd-copied="generateId(event)"
-                                >
-                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                    <i class="ca" ng-class="item._i"></i>
-                                    {{DesignerConfig.formatText(item._n)}}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <!-- /.box-tools -->
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Display Fields</a>
-                </div>
-                <div id="collapse2" class="panel-collapse collapse">
-                    <div class="panel-body accorContent">
-                        <ul style="list-style-type: none;padding: 5px">                            
-                            <li ng-repeat="item in DesignerConfig.pallets.display"
-                                dnd-draggable="item"
-                                dnd-type="item._t"
-                                dnd-effect-allowed="copy"
-                                dnd-copied="generateId(event)"
-                                >
-                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                    <i class="ca" ng-class="item._i"></i>
-                                    {{DesignerConfig.formatText(item._n)}}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                The body of the box
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Advanced Fields</a>                        
-                </div>
-                <div id="collapse3" class="panel-collapse collapse">
-                    <div class="panel-body accorContent">
-                        <ul style="list-style-type: none;padding: 5px">                            
-                            <li ng-repeat="item in DesignerConfig.pallets.advanced"
-                                dnd-draggable="item"
-                                dnd-type="item._t"
-                                dnd-effect-allowed="copy"
-                                dnd-copied="generateId(event)"
-                                >
-                                <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                    <i class="ca" ng-class="item._i"></i>
-                                    {{DesignerConfig.formatText(item._n)}}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <!-- /.box-body -->
         </div>
+        <!--        <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" class="no_link" data-parent="#accordion" href="#collapse1">Common Fields</a>
+                        </div>
+                        <div id="collapse1" class="panel-collapse collapse in">
+                            <div class="panel-body accorContent" style="padding: 20px">
+                                <ul style="list-style-type: none;padding: 5px">                            
+                                    <li ng-repeat="item in DesignerConfig.pallets.common"
+                                        dnd-draggable="item"
+                                        dnd-type="item._t"
+                                        dnd-effect-allowed="copy"
+                                        dnd-copied="generateId(event)"
+                                        >
+                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                            <i class="ca" ng-class="item._i"></i>
+                                            {{DesignerConfig.formatText(item._n)}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Display Fields</a>
+                        </div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                            <div class="panel-body accorContent">
+                                <ul style="list-style-type: none;padding: 5px">                            
+                                    <li ng-repeat="item in DesignerConfig.pallets.display"
+                                        dnd-draggable="item"
+                                        dnd-type="item._t"
+                                        dnd-effect-allowed="copy"
+                                        dnd-copied="generateId(event)"
+                                        >
+                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                            <i class="ca" ng-class="item._i"></i>
+                                            {{DesignerConfig.formatText(item._n)}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Advanced Fields</a>                        
+                        </div>
+                        <div id="collapse3" class="panel-collapse collapse">
+                            <div class="panel-body accorContent">
+                                <ul style="list-style-type: none;padding: 5px">                            
+                                    <li ng-repeat="item in DesignerConfig.pallets.advanced"
+                                        dnd-draggable="item"
+                                        dnd-type="item._t"
+                                        dnd-effect-allowed="copy"
+                                        dnd-copied="generateId(event)"
+                                        >
+                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
+                                            <i class="ca" ng-class="item._i"></i>
+                                            {{DesignerConfig.formatText(item._n)}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
     </div>
     <div class="col-sm-6  no-padding">
         <div class="col-sm-12">
@@ -311,8 +327,8 @@
             </div>
         </div>
     </div>
-    <div class="overlay_disabled" ng-show="EditDisabled">
+<!--    <div class="overlay_disabled" ng-show="EditDisabled">
         <h3>Design mode locked</h3>
-        <button class="btn btn-sm btn-info" ng-click="EditDisabled=false"><i class="fa fa-unlock"></i> UNLOCK</button>
-    </div>
+        <button class="btn btn-sm btn-info" ng-click="EditDisabled = false"><i class="fa fa-unlock"></i> UNLOCK</button>
+    </div>-->
 </div>

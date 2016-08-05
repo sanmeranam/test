@@ -33,7 +33,7 @@ app.use(require('subdomain')({
 }));
 app._port = oConfig.server.port;
 
-var oDBConnect = new _cDBConnect(oConfig.db.url);
+var oDBConnect = new _cDBConnect(isWin?oConfig.db.url:oConfig.db.url_unix);
 
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
