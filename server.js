@@ -23,11 +23,15 @@ var oConfig = JSON.parse(require("fs").readFileSync('config.json', 'utf8'));
 app.set('views', path.join(__dirname, 'applications'));
 app.set('view engine', 'jade');
 
+var isWin = /^win/.test(process.platform);
+
+var domain = isWin ? oConfig.server.domain : oConfig.server.domain_unix;
+
 app.use(require('subdomain')({
-    base: oConfig.server.domain,
+    base: domain,
     prefix: 'wildcard'
 }));
-app._port=oConfig.server.port;
+app._port = oConfig.server.port;
 
 var oDBConnect = new _cDBConnect(oConfig.db.url);
 
@@ -66,14 +70,9 @@ app.use('/wildcard/admin', _mRouteAdmin);
 
 app.use('/wildcard/api', _mRouteApi);
 
-
-//app.use('/_self', express.static(path.join(__dirname, 'applications/admin/client')));
-//app.use('/_static', express.static(path.join(__dirname, 'public')));
 app.use('/_site', express.static(path.join(__dirname, 'applications/website/client')));
 
 app.use('/', _mRouteWebsite);
-//app.use('/', _mRouteAdmin);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -94,7 +93,7 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: err
+            error: {}
         });
     });
 }

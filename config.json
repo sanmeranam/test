@@ -1,12 +1,13 @@
 {
     "db": {
-        "url": "mongodb://127.0.0.1:27017/open",
+        "url": "mongodb://159.203.119.33:27017/cloud4form",
         "user": "",
         "password": ""
     },
     "server": {
-        "port": 8090,
-        "domain": "localhost"
+        "port": 8000,
+        "domain": "localhost",
+        "domain_unix":"cloud4form.com"
     },
     "email": {
         "service": "Gmail",
@@ -24,7 +25,8 @@
         "www", "secure", "api", "remoiot", "admin", "forms", "static", "http", "https", "ftp", "ssl", "ssh", "sftp", "remoiotdigital", "design","account","create"
     ],
     "files": {
-        "upload_path": "D:/test_files"
+        "upload_path": "D:/test_files",
+        "upload_path_unix": "/home/uploaded"
     },
     "http_auth": {
         "user": "user",

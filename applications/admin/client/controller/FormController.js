@@ -171,7 +171,7 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
             FormMeta.create(oNewForm, function () {
                 $scope.loadFormMeta();
             });
-        } else if ($scope.NewFormMeta && !jQuery.trim($scope.NewFormMeta.form_name)) {
+        } else if ($scope.NewFormMeta && jQuery.trim($scope.NewFormMeta.form_name)) {
             FormMeta.create(angular.copy($scope.NewFormMeta), function () {
                 $scope.NewFormMeta = null;
                 $scope.loadFormMeta();
