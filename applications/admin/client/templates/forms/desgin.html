@@ -122,7 +122,10 @@
                             <label>{{DesignerConfig.formatText(p)}}</label>
                         </td>
                         <td style="padding: 2px" ng-switch="DesignerConfig.selected._a[p].type">
-                            <input ng-switch-when="boolean" ng-model='DesignerConfig.selected._a[p].value' type="checkbox" class="js-switch"/>
+                            <label class="switch" ng-switch-when="boolean">
+                                <input type="checkbox" ng-model="DesignerConfig.selected._a[p].value">
+                                <div class="slider round"></div>
+                            </label>
 
                             <input ng-switch-when="string" type="text" ng-model='DesignerConfig.selected._a[p].value' class="form-control">
 

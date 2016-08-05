@@ -106,15 +106,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
         },
         evtModelChange: function () {
-            setTimeout(function () {
-                $('input.flat').iCheck({
-                    checkboxClass: 'icheckbox_flat-green',
-                    radioClass: 'iradio_flat-green'
-                });
-                $("#designerPane .js-switch").bootstrapSwitch({
-                    size: "small"
-                });
-            }, 100);
+            
         },
         visitModel: function (oBase, callback) {
             if (!oBase._c) {
