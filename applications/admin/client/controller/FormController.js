@@ -1,13 +1,13 @@
-core.createController('FormController', function ($scope, FormMeta) {
-    jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow", "auto");
+core.createController('FormController', function ($scope, FormMeta, Message) {
+    jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
-    jQuery("#historyContainerId").height(window.innerHeight * 0.3).css("overflow", "auto");
+    jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
 
-    $scope.sPages = {
-        data: "/_self/templates/forms/records.html",
-        design: "/_self/templates/forms/desgin.html",
-        flow: "/_self/templates/forms/flow_config.html"
-    };
+    $scope.sPages = [
+        "/_self/templates/forms/records.html",
+        "/_self/templates/forms/flow_config.html",
+        "/_self/templates/forms/desgin.html"
+    ];
 
     $scope.FormMetaList = [];
     $scope.SelectedFormMeta = null;
@@ -35,35 +35,13 @@ core.createController('FormController', function ($scope, FormMeta) {
     };
     $scope.hashManager.init();
 
-    $scope.inlineTrend = function () {
-        Chart.defaults.global.legend.display = false;
-        var ctx = document.getElementById("mybarChart");
-        var mybarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["10", "11", "12", "13", "14", "15", "16"],
-                datasets: [{
-                        label: '# Created',
-                        backgroundColor: "#03586A",
-                        data: [41, 56, 25, 48, 72, 34, 12]
-                    }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                }
-            }
-        });
-    };
-    $scope.inlineTrend();
-
-
+    $(".sparkline").each(function () {
+        var $this = $(this);
+        $this.sparkline('html', $this.data());
+    });
 
     $scope.loadFormMeta = function () {
+        $scope._loadingForms = true;
         FormMeta.getAll({}, function (data) {
             $scope.FormMetaList = data;
 
@@ -82,10 +60,10 @@ core.createController('FormController', function ($scope, FormMeta) {
                 }
 
             }
+            $scope._loadingForms = false;
         });
     };
     $scope.loadFormMeta();
-
 
     $scope.$watch("SelectedFormMeta", function () {
         if ($scope.SelectedFormMeta) {
@@ -105,6 +83,30 @@ core.createController('FormController', function ($scope, FormMeta) {
     $scope.onSelectForm = function (item) {
         $scope.SelectedFormMeta = item;
         $scope.$broadcast('FormItemSelected', item);
+    };
+    $scope.onCloneForm = function () {
+        if ($scope.SelectedFormMeta) {
+            var oCloned = angular.copy($scope.SelectedFormMeta);
+            delete(oCloned._id);
+            oCloned.form_name += "_copy";
+            oCloned.state = 0;
+            oCloned.history.modified.length = 0;
+            oCloned.history.created.user = core.Profile.user.first_name;
+            oCloned.history.created.date = Date.now();
+
+
+
+            $scope.onUpdateForm("Form clone creates and saved.", true);
+
+            Message.alert("Form cloned and saved.");
+        }
+    };
+    $scope.onDeleteForm = function () {
+        Message.confirm("Are you sure want to delete this form?", function (result) {
+            if (result) {
+
+            }
+        });
     };
     $scope.onCreateForm = function () {
         $scope.SelectedFormMeta = null;
@@ -164,17 +166,19 @@ core.createController('FormController', function ($scope, FormMeta) {
             "state": 0
         };
     };
-    $scope.onSaveNewForm = function () {
-        if (!jQuery.trim($scope.NewFormMeta.form_name)) {
-            return;
+    $scope.onSaveNewForm = function (oNewForm) {
+        if (oNewForm) {
+            FormMeta.create(oNewForm, function () {
+                $scope.loadFormMeta();
+            });
+        } else if ($scope.NewFormMeta && !jQuery.trim($scope.NewFormMeta.form_name)) {
+            FormMeta.create(angular.copy($scope.NewFormMeta), function () {
+                $scope.NewFormMeta = null;
+                $scope.loadFormMeta();
+            });
         }
-        FormMeta.create(angular.copy($scope.NewFormMeta), function () {
-            $scope.NewFormMeta = null;
-            $scope.loadFormMeta();
-        });
-
     };
-    $scope.onUpdateForm = function (changeTitle) {
+    $scope.onUpdateForm = function (changeTitle, bRefresh) {
         if (changeTitle) {
             $scope.SelectedFormMeta.history.modified.push({
                 date: Date.now(),
@@ -182,10 +186,11 @@ core.createController('FormController', function ($scope, FormMeta) {
                 action: changeTitle
             });
         }
-
-        FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function () {
-            $scope.loadFormMeta();
-        });
-
+        bRefresh = bRefresh || true;
+        if (bRefresh) {
+            FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function (result) {
+                $scope.loadFormMeta();
+            });
+        }
     };
 });

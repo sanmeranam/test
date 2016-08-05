@@ -1,6 +1,7 @@
 core.createController('UserGroupController', function ($scope, UserGroup, Message) {
-    jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow", "auto");
-    jQuery(".small_view2").height(window.innerHeight * 0.75).css("overflow", "auto");
+    jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow-y", "auto");
+    jQuery(".small_view2").height(window.innerHeight * 0.75).css("overflow-x", "hidden").css("overflow-y", "auto");
+    jQuery(".small_view3").height(window.innerHeight * 0.735).css("overflow-x", "hidden").css("overflow-y", "auto");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#profileScrillView").height(window.innerHeight * 0.67).css("overflow", "auto");
 
@@ -28,31 +29,35 @@ core.createController('UserGroupController', function ($scope, UserGroup, Messag
 
     $scope.UserGroup = [];
 
-    UserGroup.get({}, function (data) {
-        $scope.UserGroup = data;
-        $scope.hashManager.init();
-        if ($scope.hashManager.p0) {
-            var selUG = $scope.UserGroup.filter(function (v) {
-                return v.id == $scope.hashManager.p0;
-            });
-            if (selUG.length) {
-                $scope.CurrentUserGroup = selUG[0];
-                if ($scope.hashManager.p1) {
-                    var usr = selUG[0].users.filter(function (v) {
-                        return v.id == $scope.hashManager.p1;
-                    });
-                    if (usr.length) {
-                        $scope.CurrentUserProfile = usr[0];
-                    } else {
-                        $scope.hashManager.setParams($scope.hashManager.p0);
+    $scope.loadUserGroups = function () {
+        $scope._loadingGroups = true;
+        UserGroup.get({}, function (data) {
+            $scope.UserGroup = data;
+            $scope.hashManager.init();
+            if ($scope.hashManager.p0) {
+                var selUG = $scope.UserGroup.filter(function (v) {
+                    return v.id == $scope.hashManager.p0;
+                });
+                if (selUG.length) {
+                    $scope.CurrentUserGroup = selUG[0];
+                    if ($scope.hashManager.p1) {
+                        var usr = selUG[0].users.filter(function (v) {
+                            return v.id == $scope.hashManager.p1;
+                        });
+                        if (usr.length) {
+                            $scope.CurrentUserProfile = usr[0];
+                        } else {
+                            $scope.hashManager.setParams($scope.hashManager.p0);
+                        }
                     }
+                } else {
+                    $scope.hashManager.setParams();
                 }
-            } else {
-                $scope.hashManager.setParams();
             }
-        }
-    });
-
+            $scope._loadingGroups = false;
+        });
+    };
+    $scope.loadUserGroups();
     $scope.CurrentUserProfile = null;
     $scope.CurrentUserGroup = null;
     $scope.CurrentUserProfileTrack = {
@@ -68,6 +73,26 @@ core.createController('UserGroupController', function ($scope, UserGroup, Messag
         $scope.newGroup = null;
         $scope.CurrentUserGroup = userGroup;
     };
+
+    $scope.onEditUserGroup = function () {
+        if ($scope.CurrentUserGroup) {
+            $scope.CurrentUserGroup_back = angular.copy($scope.CurrentUserGroup);
+            $scope.CurrentUserGroup_Edit = $scope.CurrentUserGroup;
+        }
+    };
+
+    $scope.onEditGroupCancel = function () {
+
+        $scope.CurrentUserGroup.group_name = $scope.CurrentUserGroup_back.group_name;
+        $scope.CurrentUserGroup.access_admin = $scope.CurrentUserGroup_back.access_admin;
+        $scope.CurrentUserGroup.access_meta = $scope.CurrentUserGroup_back.access_meta;
+        $scope.CurrentUserGroup.access_setting = $scope.CurrentUserGroup_back.access_setting;
+        $scope.CurrentUserGroup.access_billing = $scope.CurrentUserGroup_back.access_billing;
+        $scope.CurrentUserGroup.access_user = $scope.CurrentUserGroup_back.access_user;
+        $scope.CurrentUserGroup_Edit = null;
+        $scope.CurrentUserGroup_back = null;
+    };
+
     $scope.onSelectUserProfile = function (user) {
         $scope.newUser = null;
         $scope.CurrentUserProfile = user;
@@ -106,11 +131,22 @@ core.createController('UserGroupController', function ($scope, UserGroup, Messag
             "users": []
         };
     };
-    $scope.onSaveGroup = function () {
-        if (jQuery.trim($scope.newGroup.group_name)) {
+    $scope.onSaveGroup = function (isOld) {
+        if ($scope.newGroup && jQuery.trim($scope.newGroup.group_name)) {
             $scope.UserGroup.push($scope.newGroup);
             $scope.newGroup = null;
-            UserGroup.save({}, $scope.UserGroup);
+            $scope._loadingGroups = true;
+            UserGroup.save({}, $scope.UserGroup, function () {
+                $scope._loadingGroups = false;
+            });
+        }
+        if (isOld && jQuery.trim($scope.CurrentUserGroup_Edit.group_name)) {
+            $scope._loadingGroups = true;
+            UserGroup.save({}, $scope.UserGroup, function () {
+                $scope._loadingGroups = false;
+            });
+            $scope.CurrentUserGroup_Edit = null;
+            $scope.CurrentUserGroup_back = null;
         }
     };
     $scope.onDeleteProfile = function () {
@@ -202,6 +238,10 @@ core.createController('UserGroupController', function ($scope, UserGroup, Messag
     $scope.$watch('CurrentUserProfile', function () {
         if ($scope.CurrentUserProfile && $scope.CurrentUserGroup) {
             $scope.hashManager.setParams($scope.CurrentUserGroup.id, $scope.CurrentUserProfile.id);
+        }else if($scope.CurrentUserGroup){
+            $scope.hashManager.setParams($scope.CurrentUserGroup.id);
+        }else{
+            $scope.hashManager.setParams();
         }
     });
 
@@ -260,4 +300,5 @@ core.createController('UserGroupController', function ($scope, UserGroup, Messag
     };
     $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
     $('#reportrange').daterangepicker(optionSet1, cb);
+
 });

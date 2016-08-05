@@ -51,4 +51,8 @@
             </div>
         </div>
     </div>
+    <div class="overlay_disabled" ng-show="EditDisabled" ng-init="EditDisabled=true">
+        <h3>Flow design locked</h3>
+        <button class="btn btn-sm btn-info" ng-click="EditDisabled=false"><i class="fa fa-unlock"></i> UNLOCK</button>
+    </div>
 </div>

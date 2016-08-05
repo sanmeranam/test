@@ -1,38 +1,22 @@
 <div class="row" id="chartViewContaintId">
-    <div class="col-md-4 col-xs-12 widget widget_tally_box" ng-repeat="data in charts">
-        <div class="x_panel">
-            <div class="x_title">
-                <h2 ng-bind="data.field + ' ' + (data.limit > 0 ? '(' + data.limit + ')' : '')"></h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li><a style="visibility: hidden" class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                    <li><a style="visibility: hidden" class="close-link"><i class="fa fa-close"></i></a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a ng-click="ChartViewConfig.removeField($index)">Remove</a></li>
-                            <li><a ng-click="data.edit=true">Edit</a></li>
-                            <li><a href="javascript:void(0)">Download</a></li>
-                        </ul>
-                    </li>
+    <div class="col-sm-4" ng-repeat="data in charts">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title" ng-bind="data.field + ' ' + (data.limit > 0 ? '(' + data.limit + ')' : '')"></h3>
 
-                </ul>
-                <div class="clearfix"></div>
+                <div class="box-tools pull-right">
+                    <a href="javascript:void(0);" class="btn btn-box-tool" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ng-click="ChartViewConfig.removeField($index)">Remove</a></li>
+                        <li><a ng-click="data.edit = true">Edit</a></li>
+                        <li><a href="javascript:void(0)">Download</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="x_content">
-                <div class="col-sm-12 no-margin" ng-hide="data.edit">
-                    <div style="text-align: center; overflow: hidden; margin: 10px 5px 0;">
-                        <canvas id="canvas_line_{{$index}}" height="200" ng-init="result = ChartViewConfig.drawCustomData(data, 'canvas_line_' + $index)"></canvas>
-                    </div>
-                    <div style="max-height: 150px;overflow-y: auto">
-                        <ul class="list-inline widget_tally">
-                            <li ng-repeat="d in result.header">
-                                <p>
-                                    <span class="month">{{d}}</span>
-                                    <span class="count">{{result.data[$index]}}</span>
-                                </p>
-                            </li>
-                        </ul>
-                    </div>    
+            <!-- /.box-header -->
+            <div class="box-body">                
+                <div class="col-sm-12"  ng-hide="data.edit">
+                    <canvas id="canvas_line_{{$index}}" ng-init="result = ChartViewConfig.drawCustomData(data, 'canvas_line_' + $index)" height="150"></canvas>
                 </div>
                 <div class="col-sm-12 no-margin" ng-show="data.edit">
                     <div class="form-group">
@@ -56,30 +40,40 @@
                         <label>Limit:</label>
                         <input type="number" min="-1" step="1" class="form-control" ng-model="data.limit">
                         <small class="text-muted">(-1 for all)</small>
-                    </div>
-
-                    <button class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
+                    </div>                    
                 </div>
-
             </div>
+            <!-- /.box-body -->
+            <div class="box-footer" ng-class="(data.edit?'text-right':'no-padding')" style="max-height: 150px;overflow-y: auto">
+                <ul class="nav nav-pills nav-stacked" ng-hide="data.edit">
+                    <li  ng-repeat="d in result.header"><a href="javascript:void(0)">{{d}} <span class="pull-right text-green">{{result.data[$index]}}</span></a></li>                    
+                </ul>
+                <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
+                <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit=false"><i class="fa fa-trash"></i> Cancel</button>
+            </div>
+            <!-- /.footer -->
         </div>
     </div>
-    <div class="col-md-4 col-xs-12 widget widget_tally_box">
-        <div class="x_panel">
-            <div class="x_title">
-                <h2>New Analytics</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li><a style="visibility: hidden" class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                    <li><a style="visibility: hidden" class="close-link"><i class="fa fa-close"></i></a></li>
-                    <li><a style="visibility: hidden" class="close-link"><i class="fa fa-close"></i></a></li>                    
-                </ul>
-                <div class="clearfix"></div>
+
+    <div class="col-sm-3">
+        <div class="small-box bg-blue" ng-hide="ChartViewConfig._newField" ng-click="ChartViewConfig.createNew()">
+            <div class="inner">
+                <h3>New</h3>
+                <p>Analytics</p>
             </div>
-            <div class="x_content">
-                <div class="col-sm-12" ng-hide="ChartViewConfig._newField">
-                    <button class="btn btn-success" ng-click="ChartViewConfig.createNew()"><i class="fa fa-plus"></i> Create</button>
-                </div>
-                <div class="col-sm-12" ng-show="ChartViewConfig._newField">
+            <div class="icon">
+                <i class="fa fa-bar-chart"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+                <i class="fa fa-plus"></i> Create
+            </a>
+        </div>
+        <div class="box box-info" ng-show="ChartViewConfig._newField">
+            <div class="box-header with-border">
+                <h3 class="box-title">New Analytics</h3>                
+            </div>
+            <div class="box-body">
+                <div class="col-sm-12">
                     <div class="form-group">
                         <label for="field">Field:</label>
                         <select class="form-control" ng-model="ChartViewConfig._newField.field">
@@ -101,11 +95,12 @@
                         <label>Limit:</label>
                         <input type="number" min="-1" step="1" class="form-control" ng-model="ChartViewConfig._newField.limit">
                         <small class="text-muted">(-1 for all)</small>
-                    </div>
-
-                    <button class="btn btn-success" ng-click="ChartViewConfig.saveField()"><i class="fa fa-floppy-o"></i> Save</button>
-                    <button class="btn btn-danger" ng-click="ChartViewConfig._newField = null"><i class="fa fa-trash"></i> Cancel</button>
+                    </div>                    
                 </div>
+            </div>
+            <div class="box-footer text-right">
+                <button class="btn btn-success" ng-click="ChartViewConfig.saveField()"><i class="fa fa-floppy-o"></i> Save</button>
+                <button class="btn btn-danger" ng-click="ChartViewConfig._newField = null"><i class="fa fa-trash"></i> Cancel</button>
             </div>
         </div>
     </div>

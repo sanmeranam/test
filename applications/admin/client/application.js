@@ -12,6 +12,18 @@ window.core = {
                     }]);
         this._initRestful();
         this._defineDirective();
+
+        window.paceOptions = {
+            document: true, // disabled
+            eventLag: true,
+            restartOnPushState: true,
+            restartOnRequestAfter: true,
+            ajax: {
+                trackMethods: ['POST', 'GET','PUT']
+            }
+
+        };
+        $(document).ajaxStart(function() { Pace.restart(); }); 
     },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");

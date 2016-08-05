@@ -16,9 +16,25 @@ router.get('/', function (req, res, next) {
     }
 });
 
+router.get('/index.html', function (req, res, next) {
+    var user = req.session.user;
+    if (user) {
+        util.getNgControllerFiles(function (aFiles) {
+            res.render('./admin/views/index', {title: 'Admin 1.0', ngCtl: aFiles});
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
 router.get('/login', function (req, res, next) {
     res.render('./admin/views/login', {title: 'Admin 1.0'});
 });
+
+router.get('/login.html', function (req, res, next) {
+    res.render('./admin/views/login', {title: 'Admin 1.0'});
+});
+
 
 router.post('/session/login', helper.doLogin);
 router.get('/session/logout', helper.doLogout);

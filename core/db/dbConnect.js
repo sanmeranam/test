@@ -16,8 +16,7 @@ module.exports.prototype.openConnection = function (document, callBack) {
     };
     mongo.connect(this.sDBURL, function (err, db) {
         if (err) {
-            console.error(err);
-            callBack(null, null,err);
+            callBack(null, null, err);
         } else {
             callBack(db, db.collection(document));
         }
@@ -34,7 +33,7 @@ module.exports.prototype.openConnection = function (document, callBack) {
 module.exports.prototype.insertToTable = function (sTable, oData, callback) {
     callback = callback || function () {
     };
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
             conn.insert(oData, function (err, data) {
                 if (data) {
@@ -60,23 +59,23 @@ module.exports.prototype.insertToTable = function (sTable, oData, callback) {
 module.exports.prototype.findById = function (sTable, sId, callback) {
     callback = callback || function () {
     };
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
             var oId = null;
             try {
                 oId = new mongoAPI.ObjectId(sId);
+                conn.findOne({"_id": oId}, function (err, data) {
+                    if (data && data._id) {
+                        callback(data);
+                    } else {
+                        callback(null);
+                    }
+                    db.close();
+                });
             } catch (e) {
                 callback(null);
+                return;
             }
-
-            conn.findOne({"_id": oId}, function (err, data) {
-                if (data && data._id) {
-                    callback(data);
-                } else {
-                    callback(null);
-                }
-                db.close();
-            });
         } else {
             callback([]);
         }
@@ -87,7 +86,7 @@ module.exports.prototype.findByIds = function (sTable, aId, callback) {
     callback = callback || function () {
     };
 
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
             var oIds = [];
             for (var i in aId)
@@ -127,7 +126,7 @@ module.exports.prototype.find = function (sTable, oFilter, callback) {
     callback = callback || function () {
     };
 
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
             conn.find(oFilter, function (err, cursor) {
                 if (err) {
@@ -158,10 +157,10 @@ module.exports.prototype.find = function (sTable, oFilter, callback) {
 module.exports.prototype.updateById = function (sTable, sId, oNewData, callback) {
     callback = callback || function () {
     };
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
-            oNewData._id=new mongoAPI.ObjectId(sId);
-            conn.update({"_id": new mongoAPI.ObjectId(sId)},oNewData, function (err, result) {
+            oNewData._id = new mongoAPI.ObjectId(sId);
+            conn.update({"_id": new mongoAPI.ObjectId(sId)}, oNewData, function (err, result) {
                 if (result) {
                     callback(result);
                 } else {
@@ -186,7 +185,7 @@ module.exports.prototype.updateById = function (sTable, sId, oNewData, callback)
 module.exports.prototype.removeById = function (sTable, sId, callback) {
     callback = callback || function () {
     };
-    this.openConnection(sTable, function (db, conn,err) {
+    this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
             conn.remove({"_id": new mongoAPI.ObjectId(sId)}, function (err, result) {
                 if (result) {

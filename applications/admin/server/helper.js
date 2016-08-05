@@ -6,7 +6,7 @@ module.exports = {
         var user = req.body.email;
         var password = req.body.secret;
 
-        req.db.find("accounts", {'user_group.users.email': user}, function (result) {
+        req.db.find("accounts", {"user_group.users.email": user}, function (result) {
             var oData = result.length ? result[0] : null;
             if (oData) {
                 var userGp = oData.user_group;

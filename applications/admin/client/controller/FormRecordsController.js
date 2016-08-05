@@ -15,7 +15,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         google.maps.event.trigger(map, 'resize');
         map.setZoom(map.getZoom());
     });
-
+    $scope._chartitems = {};
     $scope.charts = $scope.$parent.SelectedFormMeta ? $scope.$parent.SelectedFormMeta.charts : [];
 
     $scope.$on('FormItemSelected', function (event, data) {
@@ -95,39 +95,40 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
     $scope.TableViewConfig = {
         page: "/_self/templates/forms/records_table_view.html",
         init: function () {
-            setTimeout(this.renderTable, 500);
+            setTimeout(this.renderTable, 100);
         },
         renderTable: function () {
             if (!$scope.table) {
                 $scope.table = $("#datatable-buttons").DataTable({
                     dom: "Bfrtip",
+                    "paging": true,
                     fixedHeader: true,
                     key: true,
                     buttons: [
                         {
                             extend: "copy",
                             text: "<i class='fa fa-copy'></i>",
-                            className: "btn-sm btn-success"
+                            className: "btn-sm btn-info btn-flat"
                         },
                         {
                             extend: "csv",
                             text: "CSV",
-                            className: "btn-sm btn-success"
+                            className: "btn-sm btn-info btn-flat"
                         },
                         {
                             extend: "excel",
                             text: "<i class='fa fa-file-excel-o'></i>",
-                            className: "btn-sm btn-success"
+                            className: "btn-sm btn-info btn-flat"
                         },
                         {
                             extend: "pdfHtml5",
                             text: "<i class='fa fa-file-pdf-o'></i>",
-                            className: "btn-sm btn-success"
+                            className: "btn-sm btn-info btn-flat"
                         },
                         {
                             extend: "print",
                             text: "<i class='fa fa-print'></i>",
-                            className: "btn-sm btn-success"
+                            className: "btn-sm btn-info btn-flat"
                         }
                     ],
                     responsive: true
@@ -169,20 +170,20 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             return flterText;
         }
     };
-
+    
     $scope.ChartViewConfig = {
         page: "/_self/templates/forms/records_chart_view.html",
         init: function () {
-            Chart.defaults.global.legend.display = false;
+//            Chart.defaults.global.legend.display = false;
         },
         saveField: function (item) {
             if (item) {
                 delete(item.edit);
-                $scope.$parent.onUpdateForm();
+                $scope.$parent.onUpdateForm("Data analytics configuration changed.", false);
             } else {
                 $scope.charts.push(this._newField);
                 this._newField = null;
-                $scope.$parent.onUpdateForm();
+                $scope.$parent.onUpdateForm("Data analytics field addes.", false);
             }
         },
         removeField: function (index) {
@@ -202,7 +203,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         getFields: function () {
             return $scope.BaseData.headers;
         },
-        _filterData: function (oNode) {
+        _filterDataForChart: function (oNode) {
             var baseData = $scope.BaseData.elements;
             var map = {};
             for (var i = 0; i < baseData.length; i++) {
@@ -224,19 +225,31 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             return {header: headers, data: data, label: oNode.field};
         },
         _drawDelayNode: function () {
-            var context = this;
+            var oBase = this;
+            var chart;
 
-            if (document.getElementById(context.id)) {
-                var ele = document.getElementById(context.id);
-                var options = {};
-                switch (context.node.type) {
+            if (!chart && document.getElementById(oBase.id)) {
+                chart = new Chart(document.getElementById(oBase.id).getContext("2d"));
+            }
+
+            if (chart) {
+//                switch (oBase.node.type) {
+//                    case "BAR":
+//                        break;
+//                    case "PIE":
+//                        break;
+//                    case "RADAR":
+//                        break;
+//                    case "PIE_AREA":
+//                        break;
+//                }
+                switch (oBase.node.type) {
                     case "BAR":
                         options = {
-                            type: 'bar',
                             data: {
-                                labels: context.data.header,
+                                labels: oBase.data.header,
                                 datasets: [{
-                                        label: context.data.label,
+                                        label: oBase.data.label,
                                         backgroundColor: "#26B99A",
                                         data: [51, 30, 40, 28, 92, 50, 45]
                                     }]
@@ -251,15 +264,16 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                 }
                             }
                         };
+                        chart.Bar(options.data, options.options);
                         break;
                     case "PIE":
                         options = {
                             type: 'doughnut',
                             tooltipFillColor: "rgba(51, 51, 51, 0.55)",
                             data: {
-                                labels: context.data.header,
+                                labels: oBase.data.header,
                                 datasets: [{
-                                        data: context.data.data,
+                                        data: oBase.data.data,
                                         backgroundColor: [
                                             "#455C73",
                                             "#9B59B6",
@@ -278,30 +292,32 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                     }]
                             }
                         };
+                        chart.Doughnut(options.data);
                         break;
                     case "RADAR":
                         options = {
                             type: 'radar',
                             data: {
-                                labels: context.data.header,
+                                labels: oBase.data.header,
                                 datasets: [{
-                                        label: context.data.label,
+                                        label: oBase.data.label,
                                         backgroundColor: "rgba(38, 185, 154, 0.2)",
                                         borderColor: "rgba(38, 185, 154, 0.85)",
                                         pointColor: "rgba(38, 185, 154, 0.85)",
                                         pointStrokeColor: "#fff",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(151,187,205,1)",
-                                        data: context.data.data
+                                        data: oBase.data.data
                                     }]
-                            },
+                            }
                         };
+                        chart.Radar(options);
                         break;
                     case "PIE_AREA":
                         options = {
                             data: {
                                 datasets: [{
-                                        data: context.data.data,
+                                        data: oBase.data.data,
                                         backgroundColor: [
                                             "#455C73",
                                             "#9B59B6",
@@ -309,9 +325,9 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                             "#26B99A",
                                             "#3498DB"
                                         ],
-                                        label: context.data.label
+                                        label: oBase.data.label
                                     }],
-                                labels: context.data.header
+                                labels: oBase.data.header
                             },
                             type: 'polarArea',
                             options: {
@@ -322,18 +338,42 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                 }
                             }
                         };
+                        chart.PolarArea(options.data, options.options);
                         break;
                 }
-                new Chart(ele, options);
+//                debugger
+//                chart[options.type](options);
             }
+
+
+
+
+//            if (document.getElementById(oBase.id)) {
+//                var ele = document.getElementById(oBase.id).getContext("2d");
+//                var options = {};
+//
+//                new Chart(ele, options);
+//            }
         },
         drawCustomData: function (oNode, sId) {
-            jQuery("#chartViewContaintId").height(window.innerHeight * 0.6).css("overflow", "auto");
-            var result = this._filterData(oNode);
+            if (!$scope._chartitems[sId]) {
+                var oDom = $(sId).get(0);
+                var ChartCanvas = oDom ? new Chart(oDom.getContext("2d")) : null;
 
-            setTimeout(jQuery.proxy(this._drawDelayNode, {node: oNode, id: sId, data: result}), 500);
+                $scope._chartitems[sId] = {
+                    id: sId,
+                    node: oNode,
+                    chart: ChartCanvas,
+                    data: this._filterDataForChart(oNode)
+                };
+            }
 
-            return result;
+//            jQuery("#chartViewContaintId").height(window.innerHeight * 0.6).css("overflow", "auto");
+//            var result = this._filterDataForChart(oNode);
+
+            setTimeout(jQuery.proxy(this._drawDelayNode, $scope._chartitems[sId]), 500);
+
+            return $scope._chartitems[sId].data;
         }
     };
 
