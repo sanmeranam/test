@@ -17,7 +17,6 @@
         "sanmeranam@gmail.com"
     ],
     "common": {
-        "site_base": "remoiot.com",
         "activation_base": "http://localhost:8090/activate/",
         "password_rest_base": "http://localhost:8090/reset/"
     },
