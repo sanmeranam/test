@@ -14,7 +14,7 @@
             <div class="box-body small_view">
                 <div class="mailbox-controls">
                     <div class="btn-group">
-                        <button title="Delete Form" ng-click="onDeleteForm()" ng-disabled="!SelectedFormMeta" type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                        <button title="Delete Form" ng-click="onDeleteForm()" ng-disabled="!SelectedFormMeta || SelectedFormMeta.state == 3" type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                         <button title="Clone Form" ng-click="onCloneForm()" ng-disabled="!SelectedFormMeta" type="button" class="btn btn-default btn-sm"><i class="fa fa-copy"></i></button>
                         <button title="Create New Form" type="button" ng-click="onCreateForm()" class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
                     </div>
@@ -42,9 +42,10 @@
                             </span>  {{frm.form_name}}</strong>
                         <p class="text-muted"><i>Created on</i> <b>{{frm.history.created.date|date}}</b> <i>by</i> <b>{{frm.history.created.user}}</b></p>
                         <p class="text-right">
-                            <span class="label label-warning" ng-if="frm.state==0">New</span>
-                            <span class="label label-danger" ng-if="frm.state==2">Inactive</span>
-                            <span class="label label-success" ng-if="frm.state==1">Active</span>
+                            <span class="label label-warning" ng-if="frm.state == 0">New</span>
+                            <span class="label label-danger" ng-if="frm.state == 2">Inactive</span>
+                            <span class="label label-success" ng-if="frm.state == 1">Active</span>
+                            <span class="label label-info" ng-if="frm.state == 3">Suspended</span>
                         </p>
                     </a>
                 </div>
@@ -95,7 +96,6 @@
                     <div class="sparkline" data-type="bar" data-width="97%" data-height="100px" data-bar-Width="14" data-bar-Spacing="7" data-bar-Color="#f39c12">
                         6,4,8, 9, 10, 5, 13, 18, 21, 7, 9
                     </div>
-                    <!--<canvas id="mybarChart" class="profile-user-img"></canvas>-->
 
                     <h3 class="profile-username text-center">{{SelectedFormMeta.form_name}}</h3>
 
@@ -112,8 +112,16 @@
                             <b>In Progress</b> <a class="pull-right">13,287</a>
                         </li>
                     </ul>
-
-                    <a ng-click="SelectedFormView = 1" class="btn btn-primary btn-block"><b>Details</b></a>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a ng-show="SelectedFormMeta.state == 0 || SelectedFormMeta.state == 2" ng-click="onInlineAction(1)" class="btn btn-success btn-block"><b>Activate</b></a>
+                            <a ng-show="SelectedFormMeta.state == 1"  ng-click="onInlineAction(2)" class="btn btn-danger btn-block"><b>Deactivate</b></a>
+                            <a ng-show="SelectedFormMeta.state == 3"  ng-click="onInlineAction(-1)" class="btn btn-danger btn-block"><b>Delete</b></a>
+                        </div>
+                        <div class="col-xs-6">
+                            <a ng-click="SelectedFormView = 1" class="btn btn-primary btn-block"><b>Details</b></a>
+                        </div>
+                    </div>
                 </div>
                 <p class="text-muted text-center">Action History</p>
                 <div id="historyContainerId" style="padding: 5px">                    
@@ -145,9 +153,10 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li ng-class="(SelectedFormView == 1 ? 'active' : '')"><a ng-click="SelectedFormView = 1" data-toggle="tab">Data</a></li>
-                <li ng-class="(SelectedFormView == 2 ? 'active' : '')"><a  ng-click="SelectedFormView = 2" data-toggle="tab">Flow</a></li>
-                <li ng-class="(SelectedFormView == 3 ? 'active' : '')"><a  ng-click="SelectedFormView = 3" data-toggle="tab">Design</a></li>           
+                <li ng-hide="SelectedFormMeta.state == 3" ng-class="(SelectedFormView == 2 ? 'active' : '')"><a  ng-click="SelectedFormView = 2" data-toggle="tab">Flow</a></li>
+                <li ng-hide="SelectedFormMeta.state == 3"  ng-class="(SelectedFormView == 3 ? 'active' : '')"><a  ng-click="SelectedFormView = 3" data-toggle="tab">Design</a></li>           
                 <li class="pull-right"><a href="javascript:void(0)" ng-click="SelectedFormView = null" class="text-muted"><i class="fa fa-remove"></i></a></li>
+                <li ng-hide="SelectedFormMeta.state==1 || SelectedFormView==1" class="pull-right"><a href="javascript:void(0)" title='Save Changes' ng-click="onUpdateForm()" class="btn btn-success"><i class="fa fa-floppy-o"></i></a></li>
             </ul>
             <div class="tab-content small_view">
                 <div class="tab-pane active" id="tab_1">

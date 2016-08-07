@@ -21,18 +21,47 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             return Math.round(Math.random() * num);
         },
         addPage: function () {
-            var keys = Object.keys(this.model);
+            var keys = this.getPageIndies();
             var newKey = 1;
             if (keys.length)
                 newKey = parseInt(keys[keys.length - 1]) + 1;
 
             this.model[newKey] = {_l: false, _c: []};
         },
+        getPageIndies: function () {
+            return Object.keys(this.model);
+        },
         removePage: function (index) {
             delete(this.model[index]);
+            var keys = this.getPageIndies();
+            this.CurrentPage = this.model[keys[0]];
         },
         showPageManager: function () {
             jQuery("#modalPageManager").modal("show");
+        },
+        getSectionClass: function (base) {
+            switch (base.theme.value) {
+                case "GRAY":
+                    return "box-default";
+                case "GRAY-SOLID":
+                    return "box-default box-solid";
+                case "GREEN":
+                    return "box-success";
+                case "GREEN-SOLID":
+                    return "box-solid box-success";
+                case "BLUE":
+                    return "box-info";
+                case "BLUE-SOLID":
+                    return "box-solid box-info";
+                case "ORANGE":
+                    return "box-warning";
+                case "ORANGE-SOLID":
+                    return "box-solid box-warning";
+                case "RED":
+                    return "box-danger";
+                case "RED-SOLID":
+                    return "box-solid box-danger";
+            }
         },
         getRateCal: function (max, val) {
             var m = [];
@@ -74,10 +103,11 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
             oClone._d = oClone._d + this._getRandomNumber(9);
 
-            this.visitModel(oClone, function (item, parent, index) {
-                item._d = item._d + $scope.DesignerConfig._getRandomNumber(9);
-                return true;
-            });
+            if (oClone._n === "section")
+                this.visitModel(oClone, function (item, parent, index) {
+                    item._d = item._d + $scope.DesignerConfig._getRandomNumber(9);
+                    return true;
+                });
 
             oParent._c.splice(iIndex + 1, 0, oClone);
         },
@@ -101,16 +131,21 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
                 return true;
             });
             oParent._c.splice(iIndex, 1);
+            this.selected = null;
         },
         evtSelectionChange: function () {
 
         },
         evtModelChange: function () {
-            
+
         },
         visitModel: function (oBase, callback) {
-            if (!oBase._c) {
-                callback(oBase, null, -1);
+            if (oBase && !oBase._c) {
+                var aKeys = Object.keys(oBase);
+                for (var i = 0; i < aKeys.length; i++) {
+                    var v = aKeys[i];
+                    this.visitModel(oBase[v], callback);
+                }
                 return;
             }
             var len = oBase._c.length;
@@ -250,8 +285,8 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             });
 
             $('[data-role=magic-overlay]').each(function () {
-                var overlay = $(this),
-                        target = $(overlay.data('target'));
+                var overlay = $(this);
+                var target = $(overlay.data('target'));
                 overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
             });
 
@@ -281,5 +316,4 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         }
 
     };
-
 });

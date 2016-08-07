@@ -44,6 +44,7 @@ router.get('/service/formmeta/:id', helper.getFormMeta);
 router.get('/service/formmeta', helper.getFormMetaAll);
 router.post('/service/formmeta/:id', helper.updateFormMeta);
 router.put('/service/formmeta', helper.saveFormMeta);
+router.delete('/service/formmeta/:id', helper.deleteFormMeta);
 
 router.get('/service/formdata/:id', helper.getFormData);
 router.get('/service/formdata', helper.getFormDataAll);

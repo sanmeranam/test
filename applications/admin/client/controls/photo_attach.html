@@ -2,12 +2,12 @@
     <div class="col-sm-12" style="margin-bottom: 0px">
         <label for="{{field._d}}">{{field._a.label.value}}</label>
     </div>
-    <div class="well well-white col-sm-10 col-sm-offset-1">
-        <span class="fa-stack fa-2x" ng-if="field._a.multi_photo.value">
-            <i class="fa fa-picture-o fa-stack-1x"></i>
-            <i class="fa fa-picture-o fa-stack-1x" style="margin-left: 30px;margin-top: 15px;"></i>
+    <div class="well well-white col-sm-10 col-sm-offset-1" style="padding: 7px">Photo: 
+        <span class="fa-stack" ng-if="field._a.multi_photo.value">
+            <i class="ca fa ca-add-photo fa-stack-1x"></i>
+            <i class="ca fa ca-add-photo fa-stack-1x" style="margin-left: 15px;margin-top: 7px;"></i>
         </span>
-        <i class="fa fa-picture-o fa-4x" ng-if="!field._a.multi_photo.value"></i>        
+        <i class="ca fa ca-add-photo" ng-if="!field._a.multi_photo.value"></i>        
         <small>{{field._a.hints.value}}</small>
     </div>
 </div>

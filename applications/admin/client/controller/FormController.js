@@ -42,6 +42,8 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
 
     $scope.loadFormMeta = function () {
         $scope._loadingForms = true;
+        $scope.hashManager.init();
+        
         FormMeta.getAll({}, function (data) {
             $scope.FormMetaList = data;
 
@@ -51,12 +53,14 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
                     return v._id === $scope.hashManager.p0;
                 });
                 if (oExist && oExist.length) {
+                    $scope.onSelectForm(oExist[0]);
+                    
                     if ($scope.hashManager.p1) {
                         $scope.SelectedFormView = $scope.hashManager.p1;
                     }
 
-                    $scope.onSelectForm(oExist[0]);
-                    $scope.hashManager.setParams();
+                    
+//                    $scope.hashManager.setParams();
                 }
 
             }
@@ -93,21 +97,43 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
             oCloned.history.modified.length = 0;
             oCloned.history.created.user = core.Profile.user.first_name;
             oCloned.history.created.date = Date.now();
-
-
-
-            $scope.onUpdateForm("Form clone creates and saved.", true);
-
+            
+            FormMeta.create(oCloned, function () {
+                $scope.loadFormMeta();
+            });
+            
             Message.alert("Form cloned and saved.");
         }
     };
     $scope.onDeleteForm = function () {
-        Message.confirm("Are you sure want to delete this form?", function (result) {
+        Message.confirm("By deleting this form, data will not be deleted, only the form will suspend. Later you can delete permanently. Are you sure want to suspend this form?", function (result) {
             if (result) {
-
+                $scope.SelectedFormMeta.state = 3;
+                $scope.onUpdateForm("Form suspended permanently.", true);
             }
         });
     };
+
+    $scope.onInlineAction = function (type) {
+        if ($scope.SelectedFormMeta) {
+            if (type === -1) {
+                $scope._loadingForms = true;
+                FormMeta.delete({id: $scope.SelectedFormMeta._id}, function () {
+                    $scope.SelectedFormMeta = null;
+                    $scope.loadFormMeta();
+                });
+            } else {
+                Message.confirm("Are you sure want to change?", function (v) {
+                    if (v) {
+                        $scope.SelectedFormMeta.state = type;
+                        $scope.onUpdateForm("Form activation mode changed.", false);
+                    }
+                });
+            }
+        }
+    };
+
+
     $scope.onCreateForm = function () {
         $scope.SelectedFormMeta = null;
         $scope.SelectedFormView = 0;

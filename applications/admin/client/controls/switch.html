@@ -1,8 +1,11 @@
-<div class="row" id="{{field._d}}">
-    <div class="col-sm-6">
+<div class="row" id="{{field._d}}" style="margin: 15px 0px">
+    <div class="col-sm-8 col-xs-12">
         <label for="{{field._d}}">{{field._a.label.value}}</label>
     </div>
-    <div class="col-sm-6">
-        <input ng-model='field._a.value.value' type="checkbox" class="js-switch"/>
+    <div class="col-sm-4 col-xs-12 text-right">
+        <label class="switch">
+            <input type="checkbox" ng-model="field._a.value.value">
+            <div class="slider round"></div>
+        </label>
     </div>
 </div>

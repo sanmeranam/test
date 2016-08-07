@@ -5,29 +5,32 @@
         </div>
     </div>
     <div class="col-sm-4" >
-        <div class="card" ng-show="SelectedNode">
-            <div class="card-header">
-                <div class="card-title">
-                    <div class="title">{{SelectedNode.model.name}}</div>
+        <div class="box" ng-show="SelectedNode">
+            <div class="box-header">
+                <div class="box-title">
+                    <div class="title">Flow Action: ({{SelectedNode.model.name}})</div>
                 </div>
-
-                <div class="dropdown  pull-right no-padding">
-                    <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            </div>
+            <div class="box-body">
+                <div ng-hide="$parent.SelectedFormMeta.state == 1" class="btn-group" role="group" >
+                    <button ng-hide="SelectedNode.type === 'create'" ng-click="deleteFlowAction()" title="Delete selected flow action." type="button" class="btn btn-link" ng-class=""><i class="fa fa-trash"></i></button>
+                    <button ng-hide="SelectedNode.edit" ng-click="SelectedNode.edit = true" title="Edit selected flow action details." type="button" class="btn btn-link" ng-class=""><i class="fa fa-pencil"></i></button>                
+                    <button ng-show="SelectedNode.edit" ng-click="SelectedNode.edit = false" title="Save changes" type="button" class="btn btn-link" ng-class=""><i class="fa fa-floppy-o"></i></button>
+                    <button ng-click="" type="button" class="btn btn-link dropdown-toggle" ng-class="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <i class="fa fa-plus"></i><i class="fa fa-sitemap"></i>
                         <span class="caret"></span>
-                    </button>
+                    </button>                
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li ng-repeat="(f,m) in FlowFactory"><a class="text-uppercase" ng-click="AddNextAction(m)">{{formatText(f)}}</a></li>
+                        <li ng-repeat="(f, m) in FlowFactory"><a class="text-uppercase" ng-click="AddNextAction(m)">{{formatText(f)}}</a></li>
                     </ul>
                 </div>
-                <button ng-hide="SelectedNode.type === 'create'" ng-click="deleteFlowAction()" title="Remove" class="btn btn-sm btn-default pull-right"><i class="fa fa-trash"></i></button>
-                <button ng-hide="SelectedNode.edit" title="Edit" ng-click="SelectedNode.edit = true" class="btn btn-sm btn-default pull-right"><i class="fa fa-pencil"></i></button>
-                <button ng-show="SelectedNode.edit" title="Save" ng-click="SelectedNode.edit = false" class="btn btn-sm btn-default pull-right"><i class="fa fa-floppy-o"></i></button>
-            </div>
-            <div class="card-body" style="min-height: 400px" id="flowDetailsHolder">
-                <div class="row">
-                    <div class="col-sm-12 no-margin-bottom" ng-repeat="(f,m) in SelectedNode.model.fields" ng-show="checkVisibleProp(m)">
-                        <div class="sub-title no-margin-bottom">{{formatText(f)}}:</div>
+                <div  ng-show="$parent.SelectedFormMeta.state == 1" class="alert alert-warning alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    Form flow actions can't be change, as form is in active mode.
+                </div>
+                <div style="min-height: 400px" id="flowDetailsHolder">
+                    <div class="col-sm-12" style="margin-bottom: 10px" ng-repeat="(f, m) in SelectedNode.model.fields" ng-show="checkVisibleProp(m)">
+                        <label>{{formatText(f)}}:</label>
                         <div>
                             <input ng-disabled="!SelectedNode.edit" type="text" ng-if="m.type == 'string'" ng-model="SelectedNode.model.fields[f].value" class="form-control" placeholder=""> 
 
@@ -48,11 +51,12 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-    <div class="overlay_disabled" ng-show="EditDisabled" ng-init="EditDisabled=true">
-        <h3>Flow design locked</h3>
-        <button class="btn btn-sm btn-info" ng-click="EditDisabled=false"><i class="fa fa-unlock"></i> UNLOCK</button>
-    </div>
+    <!--    <div class="overlay_disabled" ng-show="EditDisabled" ng-init="EditDisabled=true">
+            <h3>Flow design locked</h3>
+            <button class="btn btn-sm btn-info" ng-click="EditDisabled=false"><i class="fa fa-unlock"></i> UNLOCK</button>
+        </div>-->
 </div>

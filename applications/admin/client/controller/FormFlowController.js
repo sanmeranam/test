@@ -42,6 +42,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
             }
         });
     };
+    $scope._loadFlowFactory();
 
     $scope.loadGlobalVar = function (sVar) {
         if (!$scope._gv[sVar]) {
@@ -120,5 +121,5 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     };
 
     jQuery("#grapContainer").height(window.innerHeight * 0.65);
-    jQuery("#flowDetailsHolder").height(window.innerHeight * 0.55).css("overflow", "auto");
+    jQuery("#flowDetailsHolder").height(window.innerHeight * 0.63).css("overflow-y", "auto");
 });

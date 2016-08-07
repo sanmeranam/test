@@ -1,98 +1,67 @@
 <div class="row" ng-controller="FormDesignController">
     <div class="col-sm-3">
-        <div class="box box-success">
+        <!--Common Fields-->
+        <div class="box box-default  box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Collapsable</h3>
-
+                <h3 class="box-title text-uppercase" style="font-size: 90%">Common Fields</h3>
                 <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    <button type="button" xname="1" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
-                The body of the box
+                <a class="btn btn-app" style="min-width: 45%" ng-repeat="item in DesignerConfig.pallets.common"
+                   dnd-draggable="item"
+                   dnd-type="item._t"
+                   dnd-effect-allowed="copy"
+                   dnd-copied="generateId(event)"
+                   >
+                    <i class="ca fa" ng-class="item._i"></i> {{DesignerConfig.formatText(item._n)}}
+                </a>
             </div>
-            <!-- /.box-body -->
         </div>
-        <!--        <div class="panel-group" id="accordion">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <a data-toggle="collapse" class="no_link" data-parent="#accordion" href="#collapse1">Common Fields</a>
-                        </div>
-                        <div id="collapse1" class="panel-collapse collapse in">
-                            <div class="panel-body accorContent" style="padding: 20px">
-                                <ul style="list-style-type: none;padding: 5px">                            
-                                    <li ng-repeat="item in DesignerConfig.pallets.common"
-                                        dnd-draggable="item"
-                                        dnd-type="item._t"
-                                        dnd-effect-allowed="copy"
-                                        dnd-copied="generateId(event)"
-                                        >
-                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                            <i class="ca" ng-class="item._i"></i>
-                                            {{DesignerConfig.formatText(item._n)}}
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Display Fields</a>
-                        </div>
-                        <div id="collapse2" class="panel-collapse collapse">
-                            <div class="panel-body accorContent">
-                                <ul style="list-style-type: none;padding: 5px">                            
-                                    <li ng-repeat="item in DesignerConfig.pallets.display"
-                                        dnd-draggable="item"
-                                        dnd-type="item._t"
-                                        dnd-effect-allowed="copy"
-                                        dnd-copied="generateId(event)"
-                                        >
-                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                            <i class="ca" ng-class="item._i"></i>
-                                            {{DesignerConfig.formatText(item._n)}}
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Advanced Fields</a>                        
-                        </div>
-                        <div id="collapse3" class="panel-collapse collapse">
-                            <div class="panel-body accorContent">
-                                <ul style="list-style-type: none;padding: 5px">                            
-                                    <li ng-repeat="item in DesignerConfig.pallets.advanced"
-                                        dnd-draggable="item"
-                                        dnd-type="item._t"
-                                        dnd-effect-allowed="copy"
-                                        dnd-copied="generateId(event)"
-                                        >
-                                        <span class="btn btn-default btn-md" style="width: 100%;text-align: left">
-                                            <i class="ca" ng-class="item._i"></i>
-                                            {{DesignerConfig.formatText(item._n)}}
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
+        <!--Display Fields-->
+        <div class="box box-default collapsed-box  box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title text-uppercase" style="font-size: 90%">Display Fields</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" xname="2" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <a class="btn btn-app" style="min-width: 45%" ng-repeat="item in DesignerConfig.pallets.display"
+                   dnd-draggable="item"
+                   dnd-type="item._t"
+                   dnd-effect-allowed="copy"
+                   dnd-copied="generateId(event)"
+                   >
+                    <i class="ca fa" ng-class="item._i"></i> {{DesignerConfig.formatText(item._n)}}
+                </a>
+            </div>
+        </div>
+        <!--Advanced Fields-->
+        <div class="box box-default collapsed-box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title text-uppercase" style="font-size: 90%">Advanced Fields</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" xname="3" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <a class="btn btn-app" style="min-width: 45%" ng-repeat="item in DesignerConfig.pallets.advanced"
+                   dnd-draggable="item"
+                   dnd-type="item._t"
+                   dnd-effect-allowed="copy"
+                   dnd-copied="generateId(event)"
+                   >
+                    <i class="ca fa" ng-class="item._i"></i> {{DesignerConfig.formatText(item._n)}}
+                </a>
+            </div>
+        </div>
     </div>
     <div class="col-sm-6  no-padding">
-        <div class="col-sm-12">
-            <div style="max-width: 80%;overflow: auto;display: inline-flex">
-                <button class="btn btn-sm" ng-class="(DesignerConfig.CurrentPage == meta ? 'btn-info' : 'btn-default')" ng-repeat="(page,meta) in DesignerConfig.model" ng-click="DesignerConfig.CurrentPage = meta"><i class="fa fa-file-o"></i> Page #{{page}}</button>
-            </div>
-            <button class="btn btn-sm btn-default" ng-click="DesignerConfig.addPage()"><i class="fa fa-plus"></i> Page</button>
-            <button class="btn btn-sm btn-default pull-right" ng-click="DesignerConfig.showPageManager()"><i class="fa fa-navicon"></i></button>
-        </div>
         <div style="border: 1px dashed gray; padding: 5px" id="designerPane">
             <div class="col-sm-12">
                 <div class="row"  style="list-style-type: none;padding-left: 0px;min-height: 200px" 
@@ -117,17 +86,16 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-3"  style="padding: 0px;padding-left: 10px">
-        <div class="panel panel-default">
-            <div class="panel-heading text-uppercase">
-                Properties <strong class="text-lowercase">{{' #' + DesignerConfig.selected._d}}</strong>
-            </div>
-            <div class="panel-body accorContent2 no-padding">
-                <div ng-show="DesignerConfig.selected" class="btn-group" role="group" aria-label="...">
-                    <button type="button" ng-click="DesignerConfig.evtRemove()" class="btn btn-default btn-sm" title="Remove"><i class="fa fa-trash"></i></button>
-                    <button type="button" ng-click="DesignerConfig.evtClone()" class="btn btn-default btn-sm" title="Clone"><i class="fa fa-copy"></i></button>
-                    <button type="button" ng-click="DesignerConfig.evtLock()" class="btn btn-default btn-sm" title="{{DesignerConfig.selected._l?'Unlock Layout':'Lock Layout'}}"><i class="fa" ng-class="DesignerConfig.selected._l ? 'fa-unlock' : 'fa-lock'"></i></button>
+    <div class="col-sm-3">
+        <div class="box box-default  box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title text-uppercase" style="font-size: 90%">Properties <strong class="text-lowercase">{{' #' + DesignerConfig.selected._d}}</strong></h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
                 </div>
+            </div>
+            <div class="box-body">
                 <p ng-hide="DesignerConfig.selected" class="text-center">
                     <strong>No field is selected.</strong>
                 </p>
@@ -168,7 +136,45 @@
                     </tr>
                 </table>
             </div>
+            <div class="box-footer">
+                <div ng-show="DesignerConfig.selected" class="btn-group" role="group" aria-label="...">
+                    <button type="button" ng-click="DesignerConfig.evtRemove()" class="btn btn-link btn-sm" title="Remove"><i class="fa fa-trash"></i></button>
+                    <button type="button" ng-click="DesignerConfig.evtClone()" class="btn btn-link btn-sm" title="Clone"><i class="fa fa-copy"></i></button>
+                    <button type="button" ng-click="DesignerConfig.evtLock()" class="btn btn-link btn-sm" title="{{DesignerConfig.selected._l?'Unlock Layout':'Lock Layout'}}"><i class="fa" ng-class="DesignerConfig.selected._l ? 'fa-unlock' : 'fa-lock'"></i></button>
+                </div>
+            </div>
         </div>
+        <div class="box box-default box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Pages</h3>
+
+                <div class="box-tools">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body no-padding">
+                <ul class="nav nav-pills nav-stacked">
+                    <li ng-class="DesignerConfig.CurrentPage==meta?'active':''" ng-repeat="(page,meta) in DesignerConfig.model">
+                        <a ng-hide="_pageDelete[$index]" href="javascript:void(0)" ng-click="DesignerConfig.CurrentPage=meta"><i class="fa fa-file-o"></i> {{'Page #'+page}}
+                            <button ng-hide="DesignerConfig.getPageIndies().length<=1" ng-click="_pageDelete[$index]=true" title="Delete this page" class="btn btn-sm btn-link pull-right" ><i style="color: red" class="fa fa-trash"></i></button>
+                        </a>
+                        
+                        <a ng-show="_pageDelete[$index]" style="color: red" href="javascript:void(0)" >
+                            <b>Are you sure ?</b>
+                            <button ng-click="_pageDelete[$index]=false" title="No" class="btn btn-sm btn-link pull-right" ><i style="color: green" class="fa fa-remove"></i></button>
+                            <button title="Yes" class="btn btn-sm btn-link pull-right" ng-click="DesignerConfig.removePage(page)"><i style="color: red" class="fa fa-check"></i></button>
+                            
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <div class="box-footer no-padding">
+                <button class="btn btn-link" ng-click="DesignerConfig.addPage()" title="Add new page"><i class="fa fa-plus-circle"></i> Add Page</button>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        
     </div>        
 
     <div class="modal fade" tabindex="-1" role="dialog" id="modalHTMLContentEditor" aria-hidden="true" data-backdrop="static"  data-keyboard="false">
@@ -177,8 +183,9 @@
                 <div class="modal-header">        
                     <h4 class="modal-title">HTML Editor</h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="background-color: #f6f6f6">
                     <div class="row">
+                        <div class="col-sm-12" id='alerts'></div>
                         <div class="col-md-12 no-margin">
                             <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor">
                                 <div class="btn-group">
@@ -241,8 +248,8 @@
                                     <a class="btn btn-sm" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
                                 </div>
                             </div>
-                            <div id="editor" class="editor-wrapper"></div>
-                            <!--<textarea name="descr" ng-model="_HTMLEditorData.newd" id="descr" style="height: 0px;width: 0px;opacity: 0"></textarea>-->
+                            <div id="editor"></div>
+                            <!--<textarea name="descr" id="editor" ng-model="_HTMLEditorData.newd" style="min-height: 200px;background-color: #fff" class="editor-wrapper"></textarea>-->
                         </div>
                     </div>
                 </div>
@@ -289,46 +296,10 @@
         </div>
     </div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="modalPageManager" aria-hidden="true" data-backdrop="static"  data-keyboard="false">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">   
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Page Manager</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 no-margin" style="max-height: 400px;overflow: auto">
-                            <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="(page,meta) in DesignerConfig.model">
-                                    <div class="input-group">
-                                        <div class="input-group-btn">                                            
-                                            <button type="button" class="btn btn-default dropdown-toggle no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Scope <span class="caret"></span></button>
-                                            <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="#">None</a></li>
-                                                <li role="separator" class="divider"></li>
-                                                <li><a href="#">Admin</a></li>
-                                                <li><a href="#">User</a></li>
-                                            </ul>
-                                        </div>
-                                        <input readonly ng-value="'Page #'+page" type="text" class="form-control" style="margin-top: 5px">
-                                        <div class="input-group-btn">
-                                            <button type="button" ng-click="DesignerConfig.removePage(page)" class="btn btn-danger no-margin"><i class="fa fa-trash"></i></button>                                           
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<!--    <div class="overlay_disabled" ng-show="EditDisabled">
+    
+    <div class="overlay_disabled" ng-show="$parent.SelectedFormMeta.state==1">
         <h3>Design mode locked</h3>
-        <button class="btn btn-sm btn-info" ng-click="EditDisabled = false"><i class="fa fa-unlock"></i> UNLOCK</button>
-    </div>-->
+        <p>As this form is already active, design changes can't be possible.</p>
+        <button class="btn btn-sm btn-info" ng-click="EditDisabled = false"><i class="fa fa-eye"></i> Preview</button>
+    </div>
 </div>

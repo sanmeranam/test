@@ -170,11 +170,11 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             return flterText;
         }
     };
-    
+
     $scope.ChartViewConfig = {
         page: "/_self/templates/forms/records_chart_view.html",
         init: function () {
-//            Chart.defaults.global.legend.display = false;
+            Chart.defaults.global.legend.display = false;
         },
         saveField: function (item) {
             if (item) {
@@ -225,31 +225,19 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             return {header: headers, data: data, label: oNode.field};
         },
         _drawDelayNode: function () {
-            var oBase = this;
-            var chart;
+            var context = this;
 
-            if (!chart && document.getElementById(oBase.id)) {
-                chart = new Chart(document.getElementById(oBase.id).getContext("2d"));
-            }
-
-            if (chart) {
-//                switch (oBase.node.type) {
-//                    case "BAR":
-//                        break;
-//                    case "PIE":
-//                        break;
-//                    case "RADAR":
-//                        break;
-//                    case "PIE_AREA":
-//                        break;
-//                }
-                switch (oBase.node.type) {
+            if (document.getElementById(context.id)) {
+                var ele = document.getElementById(context.id);
+                var options = {};
+                switch (context.node.type) {
                     case "BAR":
                         options = {
+                            type: 'bar',
                             data: {
-                                labels: oBase.data.header,
+                                labels: context.data.header,
                                 datasets: [{
-                                        label: oBase.data.label,
+                                        label: context.data.label,
                                         backgroundColor: "#26B99A",
                                         data: [51, 30, 40, 28, 92, 50, 45]
                                     }]
@@ -264,60 +252,95 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                 }
                             }
                         };
-                        chart.Bar(options.data, options.options);
                         break;
                     case "PIE":
                         options = {
                             type: 'doughnut',
                             tooltipFillColor: "rgba(51, 51, 51, 0.55)",
                             data: {
-                                labels: oBase.data.header,
+                                labels: context.data.header,
                                 datasets: [{
-                                        data: oBase.data.data,
+                                        data: context.data.data,
                                         backgroundColor: [
-                                            "#455C73",
-                                            "#9B59B6",
-                                            "#BDC3C7",
-                                            "#26B99A",
-                                            "#3498DB"
+                                            "aqua",
+                                            "black",
+                                            "blue",
+                                            "brown",
+                                            "crimson",
+                                            "fuchsia",
+                                            "fuschia",
+                                            "gray",
+                                            "green",
+                                            "lemon",
+                                            "lime",
+                                            "magenta",
+                                            "olive",
+                                            "orange",
+                                            "peach",
+                                            "pink",
+                                            "purple",
+                                            "red",
+                                            "salmon",
+                                            "tan",
+                                            "teal",
+                                            "violet",
+                                            "white",
+                                            "yellow"
                                         ],
                                         hoverBackgroundColor: [
-                                            "#34495E",
-                                            "#B370CF",
-                                            "#CFD4D8",
-                                            "#36CAAB",
-                                            "#49A9EA"
+                                            "aqua",
+                                            "black",
+                                            "blue",
+                                            "brown",
+                                            "crimson",
+                                            "fuchsia",
+                                            "fuschia",
+                                            "gray",
+                                            "green",
+                                            "lemon",
+                                            "lime",
+                                            "magenta",
+                                            "olive",
+                                            "orange",
+                                            "peach",
+                                            "pink",
+                                            "purple",
+                                            "red",
+                                            "salmon",
+                                            "tan",
+                                            "teal",
+                                            "violet",
+                                            "white",
+                                            "yellow"
                                         ]
 
                                     }]
                             }
                         };
-                        chart.Doughnut(options.data);
                         break;
                     case "RADAR":
                         options = {
                             type: 'radar',
                             data: {
-                                labels: oBase.data.header,
+                                labels: context.data.header,
                                 datasets: [{
-                                        label: oBase.data.label,
+                                        label: context.data.label,
                                         backgroundColor: "rgba(38, 185, 154, 0.2)",
                                         borderColor: "rgba(38, 185, 154, 0.85)",
                                         pointColor: "rgba(38, 185, 154, 0.85)",
                                         pointStrokeColor: "#fff",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(151,187,205,1)",
-                                        data: oBase.data.data
+                                        data: context.data.data
                                     }]
-                            }
+                            },
                         };
-                        chart.Radar(options);
                         break;
                     case "PIE_AREA":
                         options = {
                             data: {
                                 datasets: [{
-                                        data: oBase.data.data,
+                                        data: context.data.data,
                                         backgroundColor: [
                                             "#455C73",
                                             "#9B59B6",
@@ -325,9 +348,9 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                             "#26B99A",
                                             "#3498DB"
                                         ],
-                                        label: oBase.data.label
+                                        label: context.data.label
                                     }],
-                                labels: oBase.data.header
+                                labels: context.data.header
                             },
                             type: 'polarArea',
                             options: {
@@ -338,42 +361,18 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                 }
                             }
                         };
-                        chart.PolarArea(options.data, options.options);
                         break;
                 }
-//                debugger
-//                chart[options.type](options);
+                new Chart(ele, options);
             }
-
-
-
-
-//            if (document.getElementById(oBase.id)) {
-//                var ele = document.getElementById(oBase.id).getContext("2d");
-//                var options = {};
-//
-//                new Chart(ele, options);
-//            }
         },
         drawCustomData: function (oNode, sId) {
-            if (!$scope._chartitems[sId]) {
-                var oDom = $(sId).get(0);
-                var ChartCanvas = oDom ? new Chart(oDom.getContext("2d")) : null;
+            jQuery("#chartViewContaintId").height(window.innerHeight * 0.6).css("overflow", "auto");
+            var result = this._filterDataForChart(oNode);
 
-                $scope._chartitems[sId] = {
-                    id: sId,
-                    node: oNode,
-                    chart: ChartCanvas,
-                    data: this._filterDataForChart(oNode)
-                };
-            }
+            setTimeout(jQuery.proxy(this._drawDelayNode, {node: oNode, id: sId, data: result}), 500);
 
-//            jQuery("#chartViewContaintId").height(window.innerHeight * 0.6).css("overflow", "auto");
-//            var result = this._filterDataForChart(oNode);
-
-            setTimeout(jQuery.proxy(this._drawDelayNode, $scope._chartitems[sId]), 500);
-
-            return $scope._chartitems[sId].data;
+            return result;
         }
     };
 

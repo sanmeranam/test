@@ -98,7 +98,7 @@ ul[dnd-list], ul[dnd-list] > li {
     top: 43px;
     position: absolute;
     background-color: rgba(202, 202, 202, 0.55);
-    z-index: 9999;
+    z-index: 999;
     right: 15px;
     left: 15px;
     bottom: 0px;
@@ -177,3 +177,5 @@ input:checked + .slider:before {
 .selected_user>span{
     color: #fff
 }
+
+#editor {overflow:scroll; max-height:300px; min-height: 200px;background-color: #fff}

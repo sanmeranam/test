@@ -75,6 +75,12 @@ module.exports = {
             res.json(data);
         });
     },
+    deleteFormMeta: function (req, res, next) {
+        var id = req.params.id;
+        req.db.removeById('form_meta', id, function (data) {
+            res.json(data);
+        });
+    },
     saveFormMeta: function (req, res, next) {
         req.db.insertToTable('form_meta', req.body, function (data) {
             res.json(data);
@@ -158,7 +164,7 @@ module.exports = {
                             delete(v.secret);
                             delete(v.inbox);
                             v.name = v.first_name + " " + v.last_name;
-                            v.value = v.email;
+                            v.value = v.id;
                             return v;
                         });
                         res.json(users);
@@ -170,7 +176,7 @@ module.exports = {
                         aUserGrp = aUserGrp.map(function (v) {
                             delete(v.users);
                             v.name = v.group_name;
-                            v.value = v.group_name;
+                            v.value = v.id;
                             return v;
                         });
                         res.json(aUserGrp);

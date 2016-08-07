@@ -13,8 +13,8 @@
                 },
                 "theme": {
                     "type": "options",
-                    "value": "",
-                    "list": []
+                    "value": "GRAY",
+                    "list": ["GRAY","GRAY-SOLID","GREEN","GREEN-SOLID","BLUE","BLUE-SOLID","ORANGE","ORANGE-SOLID","RED","RED-SOLID"]
                 },
                 "collapsible": {
                     "type": "boolean",
@@ -142,6 +142,11 @@
                 "value": {
                     "type": "boolean",
                     "value": false
+                },
+                "space": {
+                    "type": "options",
+                    "value": "Relative",
+                    "list": ["Full", "Relative"]
                 }
             }
         }, {
@@ -323,14 +328,14 @@
                     "type": "string",
                     "value": "Heading"
                 },
-                "subtitle": {
+                "sub_title": {
                     "type": "string",
                     "value": "same text here"
                 },
                 "type": {
                     "type": "options",
-                    "value": "heading1",
-                    "list": ["heading1", "heading2", "heading3"]
+                    "value": "Style 1",
+                    "list": ["Style 1", "Style 2", "Style 3","Style 4"]
                 },
                 "space": {
                     "type": "options",
@@ -499,7 +504,7 @@
                     "type": "number",
                     "value": 10,
                     "min": 0,
-                    "max": 60
+                    "max": 59
                 },
                 "hints": {
                     "type": "string",
@@ -529,7 +534,7 @@
                     "type": "number",
                     "value": 10,
                     "min": 0,
-                    "max": 60
+                    "max": 59
                 },
                 "hints": {
                     "type": "string",

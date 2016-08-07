@@ -1,12 +1,17 @@
-<div class="panel panel-default"  id="{{item._d}}" style="margin-bottom: 0px">
-    <div class="panel-heading" ng-if="item._a.title.value">{{item._a.title.value}}</div>
-    <div class="panel-body" style="padding: 10px">
+<div class="box"  id="{{item._d}}" ng-class="DesignerConfig.getSectionClass(item._a)">
+    <div class="box-header with-border" ng-if="item._a.title.value">
+        <h4 class="box-title">{{item._a.title.value}}</h4>
+        <div class="box-tools pull-right" ng-if="item._a.collapsible.value">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="padding: 10px">
         <div class="row" style="list-style-type: none;padding-left: 0px;min-height: 100px;" 
              dnd-list="item._c"
              dnd-disable-if="item._l==true"
              dnd-drop="DesignerConfig.evtDropCallback(event, index, item, external, type)"
              dnd-allowed-types="['f','v']">
-            <div class="{{DesignerConfig.clsSectionLayout(item,field)}}" 
+            <div class="{{DesignerConfig.clsSectionLayout(item, field)}}" 
                  ng-repeat="field in item._c"        
                  dnd-draggable="field"     
                  dnd-type="field._t"

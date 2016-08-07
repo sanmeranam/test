@@ -84,6 +84,7 @@ window.core = {
             var data = $resource('/service/formmeta/:id', {id: '@id'}, {
                 'get': {method: 'GET', id: '@id'},
                 'save': {method: 'POST', id: '@id'},
+                'delete': {method: 'DELETE', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},
                 'create': {method: 'PUT'}
             });
