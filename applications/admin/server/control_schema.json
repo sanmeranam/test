@@ -13,8 +13,8 @@
                 },
                 "theme": {
                     "type": "options",
-                    "value": "GRAY",
-                    "list": ["GRAY","GRAY-SOLID","GREEN","GREEN-SOLID","BLUE","BLUE-SOLID","ORANGE","ORANGE-SOLID","RED","RED-SOLID"]
+                    "value": "NONE",
+                    "list": ["NONE","GRAY","GRAY-SOLID","GREEN","GREEN-SOLID","BLUE","BLUE-SOLID","ORANGE","ORANGE-SOLID","RED","RED-SOLID"]
                 },
                 "collapsible": {
                     "type": "boolean",

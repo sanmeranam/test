@@ -61,6 +61,8 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
                     return "box-danger";
                 case "RED-SOLID":
                     return "box-solid box-danger";
+                default:
+                    return "";
             }
         },
         getRateCal: function (max, val) {

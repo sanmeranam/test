@@ -1,7 +1,7 @@
 <div class="" ng-controller="UserGroupController">
     <div class="row">
         <!--User Group-->
-        <div class="col-md-3 col-xs-12" ng-hide="CurrentUserProfile || newUser">
+        <div class="col-md-3 col-xs-12" ng-hide="newUser">
             <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">User Groups</h3>
@@ -241,7 +241,7 @@
                         </div>
                     </div>
                     <ul class="users-list clearfix">
-                        <li ng-class="user==CurrentUserProfile?'selected_user':''" ng-repeat="user in CurrentUserGroup.users|filter:userFilterText" style="cursor: pointer" ng-click="onSelectUserProfile(user)">
+                        <li ng-class="user == CurrentUserProfile ? 'selected_user' : ''" ng-repeat="user in CurrentUserGroup.users|filter:userFilterText" style="cursor: pointer" ng-click="onSelectUserProfile(user)">
                             <img src="/_static/images/avatar_2x.png" alt="User Image">
                             <a class="users-list-name" href="javascript:void(0)" ng-bind="user.first_name"></a>
                             <span class="users-list-date" ng-bind="user.last_name"></span>
@@ -292,7 +292,7 @@
             </div>
         </div>
         <!--Profile-->
-        <div class="col-md-9 col-xs-12"  ng-show="CurrentUserProfile">
+        <div class="col-md-6 col-xs-12"  ng-show="CurrentUserProfile">
             <div class="box box-danger">
                 <div class="box-header with-border">
                     <h3 class="box-title">User Profile</h3>   
@@ -301,6 +301,10 @@
                     </div>
                 </div>
                 <div class="box-body small_view">
+                    <div class="row">
+                        
+                    </div>
+                    
                     <div class="col-md-4 col-sm-4 col-xs-12 profile_left">
 
                         <div class="profile_img">
@@ -363,55 +367,55 @@
                     </div>
                     <div class="col-md-8 col-sm-8 col-xs-12">
 
-                        <div class="profile_title">
-                            <div class="col-md-6">
-                                <h2>User Activity Report</h2>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="reportrange" class="pull-right" style="margin-top: 5px; background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #E6E9ED">
-                                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                    <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="profile_title">
+                                    <div class="col-md-6">
+                                        <h2>User Activity Report</h2>
+                                    </div>
                                 </div>
+                                <!-- start of user-activity-graph -->
+                                <div id="graph_bar" style="width:100%; height:280px;"></div>
+                                <!-- end of user-activity-graph -->
                             </div>
                         </div>
-                        <!-- start of user-activity-graph -->
-                        <div id="graph_bar" style="width:100%; height:280px;"></div>
-                        <!-- end of user-activity-graph -->
 
-                        <div class="" role="tabpanel" data-example-id="togglable-tabs" ng-init="selTab = 1">
-                            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                <li role="presentation" class="active"><a ng-click="selTab = 1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Recent Activity</a></li>
-                                <li role="presentation" class=""><a ng-click="selTab = 2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Track</a></li>
+                        <div class="row" role="tabpanel" data-example-id="togglable-tabs" ng-init="selTab = 1">
+                            <div class="col-sm-12">
+                                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                    <li role="presentation" class="active"><a ng-click="selTab = 1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Recent Activity</a></li>
+                                    <li role="presentation" class=""><a ng-click="selTab = 2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Track</a></li>
 
-                            </ul>
-                            <div id="myTabContent" class="tab-content">
-                                <div role="tabpanel" class="tab-pane fade active in"  ng-show="selTab == 1" aria-labelledby="home-tab">
+                                </ul>
+                                <div id="myTabContent" class="tab-content">
+                                    <div role="tabpanel" class="tab-pane fade active in"  ng-show="selTab == 1" aria-labelledby="home-tab">
 
-                                    <!-- start recent activity -->
-                                    <ul class="messages">
-                                        <li>
-                                            <div class="message_date">
-                                                <h3 class="date text-info">24</h3>
-                                                <p class="month">May</p>
-                                            </div>
-                                            <div class="message_wrapper">
-                                                <h4 class="heading">Desmond Davison</h4>
-                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
-                                                <br />
-                                                <p class="url">
-                                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                                    <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
-                                                </p>
-                                            </div>
-                                        </li>                                       
+                                        <!-- start recent activity -->
+                                        <ul class="messages">
+                                            <li>
+                                                <div class="message_date">
+                                                    <h3 class="date text-info">24</h3>
+                                                    <p class="month">May</p>
+                                                </div>
+                                                <div class="message_wrapper">
+                                                    <h4 class="heading">Desmond Davison</h4>
+                                                    <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                    <br />
+                                                    <p class="url">
+                                                        <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                                        <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                                    </p>
+                                                </div>
+                                            </li>                                       
 
-                                    </ul>
-                                    <!-- end recent activity -->
+                                        </ul>
+                                        <!-- end recent activity -->
 
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" ng-show="selTab == 2" aria-labelledby="profile-tab">
+                                        <ui-gmap-google-map center="CurrentUserProfileTrack.center" zoom="CurrentUserProfileTrack.zoom" refresh="true"></ui-gmap-google-map>
+                                    </div>                               
                                 </div>
-                                <div role="tabpanel" class="tab-pane fade" ng-show="selTab == 2" aria-labelledby="profile-tab">
-                                    <ui-gmap-google-map center="CurrentUserProfileTrack.center" zoom="CurrentUserProfileTrack.zoom" refresh="true"></ui-gmap-google-map>
-                                </div>                               
                             </div>
                         </div>
                     </div>
