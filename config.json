@@ -1,6 +1,6 @@
 {
     "db": {
-        "url": "mongodb://127.0.0.1:27017/open",
+        "url": "mongodb://127.0.0.1:27017/:dbname",
         "url_unix": "mongodb://159.203.119.33:27017/cloud4form",
         "user": "",
         "password": ""

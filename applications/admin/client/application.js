@@ -19,11 +19,13 @@ window.core = {
             restartOnPushState: true,
             restartOnRequestAfter: true,
             ajax: {
-                trackMethods: ['POST', 'GET','PUT']
+                trackMethods: ['POST', 'GET', 'PUT']
             }
 
         };
-        $(document).ajaxStart(function() { Pace.restart(); }); 
+        $(document).ajaxStart(function () {
+            Pace.restart();
+        });
     },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
@@ -81,7 +83,7 @@ window.core = {
         });
 
         this.ngApp.factory('FormMeta', function ($resource) {
-            var data = $resource('/service/formmeta/:id', {id: '@id'}, {
+            var data = $resource('/rest/FormMeta/:id', {id: '@id'}, {
                 'get': {method: 'GET', id: '@id'},
                 'save': {method: 'POST', id: '@id'},
                 'delete': {method: 'DELETE', id: '@id'},
@@ -91,7 +93,7 @@ window.core = {
             return data;
         });
         this.ngApp.factory('FormData', function ($resource) {
-            var data = $resource('/service/formdata/:id', {id: '@id'}, {
+            var data = $resource('/rest/FormData/:id', {id: '@id'}, {
                 'get': {method: 'GET', id: '@id'},
                 'save': {method: 'POST', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},
@@ -100,10 +102,46 @@ window.core = {
             return data;
         });
 
+        this.ngApp.factory('DataFactory', function ($resource) {
+            var data = $resource('/rest/DataFactory/:id/:field/:val', {id: '@id'}, {
+                'get': {method: 'GET', id: '@id'},
+                'getField': {method: 'GET', field: '@field',val:'@val',isArray: true},
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'}
+            });
+            return data;
+        });
+
+        this.ngApp.factory('DataFactoryMeta', function ($resource) {
+            var data = $resource('/rest/DataFactoryMeta/:id', {}, {
+                'get': {method: 'GET', id: '@id',isArray: true},                
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'},
+                'delete': {method: 'DELETE', id: '@id'},
+            });
+            return data;
+        });
+
+        this.ngApp.factory('Users', function ($resource) {
+            var data = $resource('/rest/Accounts', {}, {
+                'get': {method: 'GET', id: '@id'},
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'},
+                'delete': {method: 'DELETE', id: '@id'},
+            });
+            return data;
+        });
+
         this.ngApp.factory('UserGroup', function ($resource) {
-            var data = $resource('/service/usergroup', {}, {
-                'get': {method: 'GET', isArray: true},
-                'save': {method: 'POST'}
+            var data = $resource('/rest/UserGroups', {}, {
+                'get': {method: 'GET', id: '@id'},
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'},
+                'delete': {method: 'DELETE', id: '@id'},
             });
             return data;
         });

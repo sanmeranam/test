@@ -16,7 +16,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             var sId = req.params.id;
             req.db.findById(sTable, sId, function (result) {
                 res.json(result);
@@ -29,7 +29,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             var sKey = req.params.key;
             var sValue = req.params.value;
             var oFilter = {};
@@ -42,7 +42,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             req.db.find(sTable, {}, function (result) {
                 res.json(result);
             });
@@ -51,7 +51,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             var oData = req.body;
             req.db.insertToTable(sTable, oData, function (result) {
                 res.json(result);
@@ -61,7 +61,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             var sId = req.params.id;
             var oData = req.body;
             req.db.updateById(sTable, sId, oData, function (result) {
@@ -72,7 +72,7 @@ var helper = {
             if (!helper.rest._checkTable(req, res))
                 return;
 
-            var sTable = req.params.table;
+            var sTable = req.tenant.dbname + "." + req.params.table;
             var sId = req.params.id;
             req.db.removeById(sTable, sId, function (result) {
                 res.json(result);

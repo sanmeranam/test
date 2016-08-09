@@ -7,17 +7,9 @@ router.use(function (req, res, next) {
     var authToken = req.get("auth-token");
     var authUser = req.get("auth-user");
     if (authToken) {
-        req.db.findById("auth_token", authToken, function (result) {
-            if (result) {
+        req.db.findById(req.tenant.dbname + ".global_config", authToken, function (result) {
+            if (result && result.key === "auth_token") {
                 next();
-                result.history.push({
-                    date: Date.now(),
-                    path: req.path,
-                    mothod: req.method,
-                    ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-                    user: authUser || ""
-                });
-                req.db.updateById("auth_token", result._id, result);
             } else {
                 res.json(401, {error: 1, message: "Invalid token."});
                 return;

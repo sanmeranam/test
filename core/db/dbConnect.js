@@ -14,7 +14,16 @@ module.exports = function (sURL) {
 module.exports.prototype.openConnection = function (document, callBack) {
     callBack = callBack || function () {
     };
-    mongo.connect(this.sDBURL, function (err, db) {
+    var split,url;
+    if (document.indexOf(".") > -1) {
+        split = document.split(".");
+        url = this.sDBURL.replace(":dbname", split[0]);
+        document = split[1];
+    } else {
+        url = this.sDBURL.replace(":dbname", "c4f_master");
+    }
+
+    mongo.connect(url, function (err, db) {
         if (err) {
             callBack(null, null, err);
         } else {

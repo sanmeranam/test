@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var busboy = require('connect-busboy');
 var bodyParser = require('body-parser');
+var compression = require('compression');
 var session = require('express-session');
 
 var _mRouteAdmin = require('./applications/admin/server/route');
@@ -33,11 +34,13 @@ app.use(require('subdomain')({
 }));
 app._port = oConfig.server.port;
 
-var oDBConnect = new _cDBConnect(isWin?oConfig.db.url:oConfig.db.url_unix);
+var oDBConnect = new _cDBConnect(isWin ? oConfig.db.url : oConfig.db.url_unix);
 
-
+app.use(compression());
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+app.use(cookieParser());
+
 app.use(session({
     store: GLOBAL.sessionStore,
     secret: 'sssssssssssshhhh',
@@ -46,7 +49,7 @@ app.use(session({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
+
 app.use(busboy());//File uploader
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -64,14 +67,46 @@ app.use(function (req, res, next) {
 });
 
 
-app.use('/wildcard/admin/_self', express.static(path.join(__dirname, 'applications/admin/client')));
-app.use('/wildcard/admin/_static', express.static(path.join(__dirname, 'public')));
-app.use('/wildcard/admin', _mRouteAdmin);
+app.use('/wildcard/*/_self', express.static(path.join(__dirname, 'applications/admin/client')));
+app.use('/wildcard/*/_static', express.static(path.join(__dirname, 'public')));
 
-app.use('/wildcard/api', _mRouteApi);
+var apiSubCheck = function (callback) {
+    return function (req, res, next) {
+        req.tenant = {
+            domain: req.params.domain,
+            dbname: 'c4f_' + req.params.domain
+        };
+        callback(req, res, next);
+    };
+};
+
+app.use('/wildcard/api/:domain', apiSubCheck(_mRouteApi));
+
+var check = function (callback) {
+    return function (req, res, next) {
+        req.tenant = {
+            domain: req.params.domain,
+            dbname: 'c4f_' + req.params.domain
+        };
+        if (req.path.indexOf("no-domain") > -1) {
+            callback(req, res, next);
+            return;
+        }
+
+        req.db.find('c4f_master.tenant_master', {domain: req.tenant.domain}, function (data) {
+            if (data && data.length) {
+                callback(req, res, next);
+            } else {
+                res.redirect("/no-domain");
+            }
+        });
+        return;
+    };
+};
+
+app.use('/wildcard/:domain', check(_mRouteAdmin));
 
 app.use('/_site', express.static(path.join(__dirname, 'applications/website/client')));
-
 app.use('/', _mRouteWebsite);
 
 // catch 404 and forward to error handler

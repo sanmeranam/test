@@ -1,4 +1,4 @@
-core.createController('UserGroupController', function ($scope, UserGroup, Message) {
+core.createController('UserGroupController', function ($scope,Users,UserGroup, Message) {
     jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow-y", "auto");
     jQuery(".small_view2").height(window.innerHeight * 0.75).css("overflow-x", "hidden").css("overflow-y", "auto");
     jQuery(".small_view3").height(window.innerHeight * 0.735).css("overflow-x", "hidden").css("overflow-y", "auto");
