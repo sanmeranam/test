@@ -168,7 +168,7 @@ input:checked + .slider:before {
 
 .selected_user{
     background-color: darkgrey;
-    
+
 }
 .selected_user>a{
     color: #fff
@@ -179,3 +179,13 @@ input:checked + .slider:before {
 }
 
 #editor {overflow:scroll; max-height:300px; min-height: 200px;background-color: #fff}
+
+
+.blur{
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+}
+
+.pointer{
+    cursor: pointer;
+}

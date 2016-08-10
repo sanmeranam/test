@@ -1,425 +1,291 @@
 <div class="" ng-controller="UserGroupController">
     <div class="row">
         <!--User Group-->
-        <div class="col-md-3 col-xs-12" ng-hide="newUser">
+        <div class="col-md-12 col-xs-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">User Groups</h3>
+                    <h3 class="box-title">Users</h3>
                 </div>
-                <div class="box-body small_view">
+                <div class="box-body small_view" ng-class="(SelectedUser || NewGroup || NewUser) ? 'blur' : ''">
                     <div class="row no-margin">
-                        <div class="col-xs-6">
+                        <div class="col-xs-8">
+                            <button type="button" class="btn btn-info dropdown-toggle text-uppercase" data-toggle="dropdown">{{SelectedGroup?SelectedGroup.value:'All'}}<span class="fa fa-caret-down"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">All</a></li>
+                                <li class="divider"></li>
+                                <li ng-repeat="gp in UserGroup"><a href="javascript:void(0)" ng-click="onSelectGroup(gp)" class="text-uppercase">{{gp.value}}</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:void(0)" ng-click="onCreateGroup()" class="text-uppercase">New Group</a></li>
+                            </ul>
                             <div class="btn-group">
-                                <button title="Delete Group" ng-disabled="!CurrentUserGroup || UserGroup.restrict" ng-click="onDeleteGroup()" type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                                <button title="Edit Group" ng-disabled="!CurrentUserGroup" ng-click="onEditUserGroup()" type="button" class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
-                                <button title="Create New Group" ng-disabled="CurrentUserGroup_Edit" type="button" ng-click="onCreateGroup()()" class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
+                                <button title="Add User"  type="button" ng-click="onCreateUser()" class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
                             </div>
-                            <button title="Refresh List" type="button" ng-click="loadUserGroups()" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                            <button title="Refresh List" type="button" ng-click="loadUserGroups();loadUsers();" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+
                         </div>
                         <div class="col-xs-1 no-padding">
                             <div  class="number_view_sm">
                                 <label>Count</label>
-                                <label class="text-info" ng-bind="UserGroup.length || 0"></label>
+                                <label class="text-info" ng-bind="Users.length || 0"></label>
                             </div>
                         </div>
-                        <div class="col-xs-5">
+                        <div class="col-xs-3">
                             <div class="has-feedback">
                                 <input type="text" ng-model="userGrpFilterText" class="form-control input-sm" placeholder="Filter...">
                                 <span class="glyphicon glyphicon-filter form-control-feedback"></span>
                             </div>
                         </div>
                     </div>
-                    <h4 ng-show="!UserGroup.length" class="text-center">-Empty-</h4>
-                    <div class="list-group">
-                        <a href="javascript:void(0)"   ng-click="onSelectUserGroup(userGrp);" class="list-group-item" ng-class="CurrentUserGroup == userGrp ? 'active' : ''" ng-repeat="userGrp in UserGroup|filter:{group_name:userGrpFilterText}">
-                            <strong class="text-uppercase"><i class="fa fa-users"></i>  {{userGrp.group_name}}</strong>
-                            <p class="text-muted"><i>Created on</i> <b>{{userGrp.history.created.date|date}}</b></p>
-                            <p class="text-right">
-                                <span ng-if="userGrp.access_admin" class="label label-danger"><i class="fa fa-user-secret"></i> Supper</span>
-                                <span ng-if="userGrp.access_setting" class="label label-warning"><i class="fa fa-cog"></i> Settings</span>
-                                <span ng-if="userGrp.access_billing" class="label label-success"><i class="fa fa-dollar"></i> Billing</span>
-                                <span ng-if="userGrp.access_user" class="label label-info"><i class="fa fa-user"></i> Users</span>
-                            </p>
-                        </a>
-                    </div>
-                </div>
-                <div ng-show="_loadingGroups" class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
-            </div>
-        </div>
-        <!--New Group-->
-        <div class="col-md-3 col-xs-12 widget widget_tally_box" ng-show="newGroup">
-            <div class="box box-success">
-                <div class="box-header with-border">
-                    <h3 class="box-title">New User Group</h3>         
-                    <div class="box-tools pull-right">
-                        <button type="button" ng-click="newGroup = null" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>            
-                    </div>
-                </div>                
-                <div class="box-body small_view3">
-                    <div class="row">
-                        <div class="col-md-5 col-md-offset-1">
-                            <label>Group Name</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" ng-model="newGroup.group_name" />
-                        </div>
-                    </div>
-                    <div class="clearfix" style="height: 10px"></div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Admin Privilege</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="newGroup.access_admin">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access User Profiles</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="newGroup.access_user">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access To Change Form</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="newGroup.access_meta">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access Settings</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="newGroup.access_setting">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access Billing</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="newGroup.access_billing">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-sm btn-info" ng-click="onSaveGroup()">Create</button>
-                    <button class="btn btn-sm btn-danger" ng-click="newGroup = null">Cancel</button>
-                </div>
-            </div>
-        </div>
-        <!--Edit Group-->
-        <div class="col-md-3 col-xs-12" ng-show="CurrentUserGroup_Edit">
-            <div class="box box-warning">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Edit Group [{{CurrentUserGroup_Edit.group_name}}]</h3>         
-                    <div class="box-tools pull-right">
-                        <button type="button" ng-click="onEditGroupCancel()" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>            
-                    </div>
-                </div>
-                <div class="box-body small_view3">
-                    <div class="row">
-                        <div class="col-md-5 col-md-offset-1">
-                            <label>Group Name</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" ng-model="CurrentUserGroup_Edit.group_name" />
-                        </div>
-                    </div>
-                    <div class="clearfix" style="height: 10px"></div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Admin Privilege</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="CurrentUserGroup_Edit.access_admin">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access User Profiles</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="CurrentUserGroup_Edit.access_user">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access To Change Form</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="CurrentUserGroup_Edit.access_meta">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access Settings</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="CurrentUserGroup_Edit.access_setting">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                            <label>Access Billing</label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="switch">
-                                <input type="checkbox" ng-model="CurrentUserGroup_Edit.access_billing">
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-sm btn-info" ng-click="onSaveGroup(true)">Save</button>
-                    <button class="btn btn-sm btn-danger" ng-click="onEditGroupCancel()">Cancel</button>
-                </div>
-            </div>
-        </div>
-        <!--Users-->
-        <div class="col-md-3 col-xs-12" ng-show="CurrentUserGroup && !CurrentUserGroup_Edit">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{CurrentUserGroup.group_name}}'s users</h3>             
-                    <div class="box-tools pull-right">
-                        <button type="button" ng-hide="CurrentUserProfile" ng-click="CurrentUserGroup = null" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
-                    </div>
-                </div>
-                <div class="box-body small_view">
-                    <div class="row no-margin">
-                        <div class="col-xs-5">
-                            <div class="btn-group">
-                                <button title="Create New Profile" ng-disabled="CurrentUserProfile || newUser" type="button" ng-click="onCreateProfile()" class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
+                    <h4 ng-show="!Users.length" class="text-center">-Empty-</h4>
+                    <div class="col-sm-3" ng-repeat="user in Users| filter:filterUser(userGrpFilterText)">
+                        <div class="box box-widget widget-user">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div ng-click="onSelectUser(user)" class="widget-user-header bg-aqua-active pointer">
+                                <h3 class="widget-user-username">{{user.first_name + " " + user.last_name}}</h3>
+                                <h5 class="widget-user-desc"><a style="color: #fff" href="mailto:{{user.email}}">{{user.email}}</a></h5>
                             </div>
-                            <button title="Refresh List" type="button" ng-click="loadUserGroups()" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                        </div>
-                        <div class="col-xs-1 no-padding">
-                            <div  class="number_view_sm">
-                                <label>Count</label>
-                                <label class="text-info" ng-bind="CurrentUserGroup.users.length || 0"></label>
+                            <div ng-click="onSelectUser(user)" class="widget-user-image pointer">
+                                <img class="img-circle" ng-src="{{user.profile}}" alt="User Avatar">
                             </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="has-feedback">
-                                <input type="text" ng-model="userFilterText" class="form-control input-sm" placeholder="Filter...">
-                                <span class="glyphicon glyphicon-filter form-control-feedback"></span>
+                            <div class="box-footer">
+                                <div class="row">
+                                    <div class="col-sm-4 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">ROLE</h5>
+                                            <span class="description-text"><span ng-if="user.admin" class="badge bg-red">ADMIN</span><span ng-if="!user.admin" class="badge bg-green" >USER</span></span>
+                                        </div>
+                                        <!-- /.description-block -->
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-sm-4 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">GROUP</h5>
+                                            <span class="description-text">
+                                                <span class="badge bg-orange" >{{UserGroup[user.group].value}}</span>
+                                            </span>
+                                        </div>
+                                        <!-- /.description-block -->
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-sm-4">
+                                        <div class="description-block">
+                                            <h5 class="description-header">35</h5>
+                                            <span class="description-text">PRODUCTS</span>
+                                        </div>
+                                        <!-- /.description-block -->
+                                    </div>
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
                             </div>
                         </div>
                     </div>
-                    <ul class="users-list clearfix">
-                        <li ng-class="user == CurrentUserProfile ? 'selected_user' : ''" ng-repeat="user in CurrentUserGroup.users|filter:userFilterText" style="cursor: pointer" ng-click="onSelectUserProfile(user)">
-                            <img src="/_static/images/avatar_2x.png" alt="User Image">
-                            <a class="users-list-name" href="javascript:void(0)" ng-bind="user.first_name"></a>
-                            <span class="users-list-date" ng-bind="user.last_name"></span>
-                        </li>                       
-                    </ul>
                 </div>
-            </div>
-        </div>
-        <!--New User-->
-        <div class="col-md-3 col-xs-12 widget widget_tally_box" ng-show="newUser">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">New Profile</h3>         
-                    <div class="box-tools pull-right">
-                        <button type="button" ng-click="newUser = null" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
-                    </div>
-                </div>
-                <div class="box-body small_view3">
-                    <div class="text-danger" ng-show="newUser.error" ng-bind="newUser.error"></div>
-                    <div class="form-group">
-                        <label >First Name:</label>
-                        <input type="text" class="form-control" ng-model="newUser.first_name" />
-                    </div>
-                    <div class="form-group">
-                        <label >Last Name:</label>
-                        <input type="text" class="form-control" ng-model="newUser.last_name" />
-                    </div>
-                    <div class="form-group">
-                        <label >Email:</label>
-                        <input type="email" class="form-control" ng-model="newUser.email" />
-                    </div>
-                    <div class="form-group">
-                        <label >Contact:</label>
-                        <input type="tel" class="form-control" ng-model="newUser.contact" />
-                    </div>
-                    <div class="form-group">
-                        <label >Password:</label>
-                        <input type="password" class="form-control" ng-model="newUser.secret" />
-                    </div>
-                    <div class="form-group">
-                        <label >Re-Password:</label>
-                        <input type="password" class="form-control" ng-model="newUser.secret2" />
-                    </div>                    
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-success" ng-click="onSaveProfile()">Create</button>
-                </div>
-            </div>
-        </div>
-        <!--Profile-->
-        <div class="col-md-6 col-xs-12"  ng-show="CurrentUserProfile">
-            <div class="box box-danger">
-                <div class="box-header with-border">
-                    <h3 class="box-title">User Profile</h3>   
-                    <div class="box-tools pull-right">
-                        <button type="button" ng-click="CurrentUserProfile = null" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>                                  
-                    </div>
-                </div>
-                <div class="box-body small_view">
-                    <div class="row">
-                        
-                    </div>
-                    
-                    <div class="col-md-4 col-sm-4 col-xs-12 profile_left">
-
-                        <div class="profile_img">
-
-                            <!-- end of image cropping -->
-                            <div id="crop-avatar">
-                                <!-- Current avatar -->
-                                <img class="img-responsive avatar-view" src="/_static/images/default-user.png" alt="Avatar" title="Change the avatar">
-
+                <div class="overlay" style="padding-top: 100px" ng-show="SelectedUser || NewGroup || NewUser">
+                    <div class="col-sm-5 col-sm-offset-3" ng-show="SelectedUser">
+                        <div class="box box-danger box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Profile [{{SelectedUser.first_name + " " + SelectedUser.last_name}}]</h3>
+                                <div class="box-tools pull-right">
+                                    <div class="box-tools pull-right">
+                                        <button type="button" ng-click="onCancelSelectUser()" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                                    </div>                  
+                                </div>
                             </div>
-                            <!-- end of image cropping -->
+                            <div class="box-body">
+                                <div class="box box-widget widget-user-2">
+                                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                                    <div class="widget-user-header bg-yellow">
+                                        <div class="widget-user-image">
+                                            <img class="img-circle" ng-src="{{SelectedUser.profile}}" alt="User Avatar">
+                                        </div>
+                                        <!-- /.widget-user-image -->
+                                        <h3 class="widget-user-username">{{SelectedUser.first_name + " " + SelectedUser.last_name}}</h3>
+                                        <h5 class="widget-user-desc">{{SelectedUser.email}}</h5>
+                                        <button title="Edit Details" class="btn btn-success btn-sm pull-right" ng-show="!SelectedUser.edit && !SelectedUser.delete" ng-click="SelectedUser.edit = true"><i class="fa fa-pencil"></i></button>
+                                        <button title="Save" class="btn btn-success btn-sm pull-right" ng-show="SelectedUser.edit && !SelectedUser.delete" ng-click="onUpdateUserDetails()"><i class="fa fa-floppy-o"></i></button>
+                                        <button title="Delete" ng-hide="SelectedUser.delete" class="btn btn-danger btn-sm pull-right" ng-click="SelectedUser.delete = true"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                    <div class="box-footer no-padding" ng-show="SelectedUser.delete">
+                                        <div class="callout callout-info" >
+                                            <h4>Delete User</h4>
+                                            <p>Are you sure want to delete?</p>
+                                            <button ng-click="onDeleteUser()" class="btn btn-sm btn-danger pull-right">YES</button>
+                                            <button ng-click="SelectedUser.delete = false" class="btn btn-sm btn-success pull-right">NO</button>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer no-padding" ng-show="SelectedUser.edit">                                        
 
-                        </div>
-                        <h3 ng-bind="CurrentUserProfile.first_name + ' ' + CurrentUserProfile.last_name">Samuel Doe</h3>
-
-                        <ul class="list-unstyled user_data">
-                            <li><i class="fa fa-map-marker user-profile-icon"></i> {{CurrentUserProfile.address}}_address</li>
-
-                            <li>
-                                <i class="fa fa-envelope user-profile-icon"></i> {{CurrentUserProfile.email}}
-                            </li>
-
-                            <li class="m-top-xs">
-                                <i class="fa fa-phone user-profile-icon"></i> {{CurrentUserProfile.contact}}
-                            </li>
-                        </ul>
-
-                        <a class="btn btn-success"><i class="fa fa-key m-right-xs"></i> Reset Password</a>
-                        <a class="btn btn-danger" ng-click="onDeleteProfile()"><i class="fa fa-trash m-right-xs"></i> Delete User</a>
-                        <br />
-
-                        <!-- start skills -->
-                        <h4>Form Usage</h4>
-                        <ul class="list-unstyled user_data">
-                            <li>
-                                <p>Web Applications</p>
-                                <div class="progress progress_sm">
-                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <p>Website Design</p>
-                                <div class="progress progress_sm">
-                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="70"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <p>Automation & Testing</p>
-                                <div class="progress progress_sm">
-                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="30"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <p>UI / UX</p>
-                                <div class="progress progress_sm">
-                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-8 col-sm-8 col-xs-12">
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="profile_title">
-                                    <div class="col-md-6">
-                                        <h2>User Activity Report</h2>
+                                        <h4 ng-show="SelectedUser.error" class="text-danger text-center">{{SelectedUser.error}}</h4>
+                                        <div class="col-sm-2">
+                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="{{SelectedUser.profile}}" alt="User Avatar">
+                                            <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                        <div class="col-sm-10">                                            
+                                            <div class="form-group">
+                                                <label>Profile Image</label>
+                                                <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChange(this)" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" ng-model="SelectedUser.email" placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" ng-model="SelectedUser.first_name" placeholder="First Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" ng-model="SelectedUser.last_name" placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input type="password" class="form-control" ng-model="SelectedUser.secret" placeholder="Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Re-Password</label>
+                                                <input type="password" class="form-control" ng-model="SelectedUser.secret2" placeholder="Re-Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>User Group</label>
+                                                <select class="form-control" ng-model="SelectedUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Role</label>
+                                                <input type="checkbox" class="checkbox" ng-model="SelectedUser.admin">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- start of user-activity-graph -->
-                                <div id="graph_bar" style="width:100%; height:280px;"></div>
-                                <!-- end of user-activity-graph -->
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row" role="tabpanel" data-example-id="togglable-tabs" ng-init="selTab = 1">
-                            <div class="col-sm-12">
-                                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                    <li role="presentation" class="active"><a ng-click="selTab = 1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Recent Activity</a></li>
-                                    <li role="presentation" class=""><a ng-click="selTab = 2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Track</a></li>
+                    <div class="col-sm-4 col-sm-offset-4" ng-show="NewGroup">
+                        <div class="box box-success box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">New User Group</h3>
+                                <div class="box-tools pull-right">
+                                    <div class="box-tools pull-right">
+                                        <button type="button" ng-click="NewGroup = null" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                                    </div>                  
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label>Group Name</label>
+                                    <input type="text" class="form-control" ng-model="NewGroup.value">
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button class="btn btn-sm btn-info" ng-click="onSaveNewGroup()">Create</button>
+                            </div>
+                        </div>
+                    </div>
 
-                                </ul>
-                                <div id="myTabContent" class="tab-content">
-                                    <div role="tabpanel" class="tab-pane fade active in"  ng-show="selTab == 1" aria-labelledby="home-tab">
-
-                                        <!-- start recent activity -->
-                                        <ul class="messages">
-                                            <li>
-                                                <div class="message_date">
-                                                    <h3 class="date text-info">24</h3>
-                                                    <p class="month">May</p>
-                                                </div>
-                                                <div class="message_wrapper">
-                                                    <h4 class="heading">Desmond Davison</h4>
-                                                    <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
-                                                    <br />
-                                                    <p class="url">
-                                                        <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                                        <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
-                                                    </p>
-                                                </div>
-                                            </li>                                       
-
-                                        </ul>
-                                        <!-- end recent activity -->
-
+                    <div class="col-sm-5 col-sm-offset-3" ng-show="NewUser">
+                        <div class="box box-danger box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Profile [{{NewUser.first_name + " " + NewUser.last_name}}]</h3>
+                                <div class="box-tools pull-right">
+                                    <div class="box-tools pull-right">
+                                        <button type="button" ng-click="NewUser = null" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                                    </div>                  
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="box box-widget widget-user-2">
+                                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                                    <div class="widget-user-header bg-yellow">
+                                        <div class="widget-user-image">
+                                            <img class="img-circle" ng-src="{{NewUser.profile}}" alt="User Avatar">
+                                        </div>
+                                        <!-- /.widget-user-image -->
+                                        <h3 class="widget-user-username">{{NewUser.first_name + " " + NewUser.last_name}}</h3>
+                                        <h5 class="widget-user-desc">{{NewUser.email}}</h5>                                        
+                                        <button title="Save" class="btn btn-success btn-sm pull-right" ng-click="onSaveUser()"><i class="fa fa-floppy-o"></i></button>
                                     </div>
-                                    <div role="tabpanel" class="tab-pane fade" ng-show="selTab == 2" aria-labelledby="profile-tab">
-                                        <ui-gmap-google-map center="CurrentUserProfileTrack.center" zoom="CurrentUserProfileTrack.zoom" refresh="true"></ui-gmap-google-map>
-                                    </div>                               
+                                    <div class="box-footer no-padding">
+                                        <h4 ng-show="NewUser.error" class="text-danger text-center">{{NewUser.error}}</h4>
+                                        <div class="col-sm-2">
+                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="{{NewUser.profile}}" alt="User Avatar">
+                                            <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                        <div class="col-sm-10">                                            
+                                            <div class="form-group">
+                                                <label>Profile Image</label>
+                                                <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChangeNew(this)" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" ng-model="NewUser.email" placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" ng-model="NewUser.first_name" placeholder="First Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" ng-model="NewUser.last_name" placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input type="password" class="form-control" ng-model="NewUser.secret" placeholder="Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Re-Password</label>
+                                                <input type="password" class="form-control" ng-model="NewUser.secret2" placeholder="Re-Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>User Group</label>
+                                                <select class="form-control" ng-model="NewUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Role</label>
+                                                <input type="checkbox" class="checkbox" ng-model="NewUser.admin">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
+                
+                <div ng-show="_loadingUsers" class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
             </div>
         </div>
     </div>

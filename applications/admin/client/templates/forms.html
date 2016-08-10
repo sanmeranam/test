@@ -40,6 +40,7 @@
                                 <i class="fa fa-file-o fa-stack-2x"></i>
                                 <i class="fa fa-line-chart fa-stack-1x"></i>
                             </span>  {{frm.form_name}}</strong>
+                        <p class="text-muted"><i>Version: </i> <b>{{frm.version}}</b></b></p>
                         <p class="text-muted"><i>Created on</i> <b>{{frm.history.created.date|date}}</b> <i>by</i> <b>{{frm.history.created.user}}</b></p>
                         <p class="text-right">
                             <span class="label label-warning" ng-if="frm.state == 0">New</span>
