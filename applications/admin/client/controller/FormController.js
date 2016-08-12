@@ -1,4 +1,4 @@
-core.createController('FormController', function ($scope, FormMeta, Message) {
+core.createController('FormController', function ($scope, FormMeta, Message,GlobalConfig) {
     jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
@@ -39,6 +39,10 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
         var $this = $(this);
         $this.sparkline('html', $this.data());
     });
+    
+    GlobalConfig.load({context:'db_new_form'},function(data){
+        $scope._newFormMetaStruct=data[0].value;
+    });
 
     $scope.loadFormMeta = function () {
         $scope._loadingForms = true;
@@ -58,9 +62,6 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
                     if ($scope.hashManager.p1) {
                         $scope.SelectedFormView = $scope.hashManager.p1;
                     }
-
-                    
-//                    $scope.hashManager.setParams();
                 }
 
             }
@@ -138,59 +139,14 @@ core.createController('FormController', function ($scope, FormMeta, Message) {
         $scope.SelectedFormMeta = null;
         $scope.SelectedFormView = 0;
 
-        var intiFlow = {
-            "type": "create",
-            "id": Math.floor(Math.random() * 9999999),
-            "next": [],
-            "model": {
-                "name": "Create Form",
-                "fields": {
-                    "by": {
-                        "type": "options",
-                        "value": "Any",
-                        "list": ["Any", "User", "Group"]
-                    },
-                    "user": {
-                        "visible": "by.value=='User'",
-                        "type": "options",
-                        "value": "",
-                        "list": "$users"
-                    },
-                    "user_group": {
-                        "visible": "by.value=='Group'",
-                        "type": "options",
-                        "value": "",
-                        "list": "$user_group"
-                    }
-                }
-            }
-        };
-
-
-        $scope.NewFormMeta = {
-            "form_name": "",
-            "account_id": core.Profile.account,
-            "flow": intiFlow,
-            "model_view": {
-                "1": {
-                    "_l": false,
-                    "_c": []
-                }
-            },
-            "table_view": {},
-            "charts": [],
-            "config": {
-                "logo": ""
-            },
-            "history": {
-                "created": {
-                    "date": Date.now(),
-                    "user": core.Profile.user.first_name
-                },
-                "modified": []
-            },
-            "state": 0
-        };
+        var newForm=JSON.stringify($scope._newFormMetaStruct);
+        
+        newForm=newForm.replace("{{flow_id}}",Math.floor(Math.random() * 9999999));
+        newForm=newForm.replace("{{date}}",Date.now());
+        newForm=newForm.replace("{{u_id}}",core.Profile._id);
+        newForm=newForm.replace("{{u_name}}",core.Profile.first_name+" "+core.Profile.last_name);
+        
+        $scope.NewFormMeta=JSON.parse(newForm);
     };
     $scope.onSaveNewForm = function (oNewForm) {
         if (oNewForm) {
