@@ -1,12 +1,12 @@
 {
     "db": {
         "url": "mongodb://127.0.0.1:27017/:dbname",
-        "url_unix": "mongodb://159.203.119.33:27017/cloud4form",
+        "url_unix": "mongodb://127.0.0.1:27017/:dbname",
         "user": "",
         "password": ""
     },
     "server": {
-        "port": 8000,
+        "port": 80,
         "domain": "localhost",
         "domain_unix":"cloud4form.com"
     },
