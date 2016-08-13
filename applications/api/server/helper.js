@@ -120,6 +120,9 @@ var helper = {
             
             req.db.findById("c4f_master.tenant_master",SCAN_ID,function(result){
                 if(result){
+                    req.db.insertToTable(result.database+".device_access",reqBody,function(){
+                        
+                    });                     
                     res.json(result);
                 }else{
                     res.json({error:1});
