@@ -22,6 +22,12 @@ var helper = require('./helper');
 //    }
 //});
 
+router.post("/service/config/sync", helper.services.syncAccount);
+router.post("/service/config/singin", helper.services.signinAccount);
+
+router.post("/service/form/create", helper.services.createForm);
+router.post("/service/form/update", helper.services.updateForm);
+
 router.get("/rest/:table", helper.rest.findAll);
 router.get("/rest/:table/:id", helper.rest.findById);
 router.get("/rest/:table/:key/:value", helper.rest.findByField);
@@ -30,11 +36,7 @@ router.post("/rest/:table/:id", helper.rest.update);
 router.delete("/rest/:table/:id", helper.rest.remove);
 
 
-router.post("/service/config/sync", helper.services.syncAccount);
-router.post("/service/config/singin", helper.services.signinAccount);
 
-router.post("/service/form/create", helper.services.createForm);
-router.post("/service/form/update", helper.services.updateForm);
 
 
 

@@ -115,11 +115,15 @@ var helper = {
 
         },
         syncAccount: function (req, res) {
+            console.log(req.body);
             var reqBody=req.body;
             var SCAN_ID=reqBody.SCAN_ID;
             
             req.db.findById("c4f_master.tenant_master",SCAN_ID,function(result){
                 if(result){
+                    reqBody.IN_DATE=Date.now();
+                    reqBody.IN_USER={};
+                    
                     req.db.insertToTable(result.database+".device_access",reqBody,function(){
                         
                     });                     
@@ -128,14 +132,6 @@ var helper = {
                     res.json({error:1});
                 }
             });
-            //--Expect
-            /**
-             * Device id
-             * scan id
-             * secure id
-             */
-
-
             //--to responce
             /**
              * tenant details
