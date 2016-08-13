@@ -77,45 +77,37 @@ module.exports = {
     },
     getGlobalVariables: function (req, res, next) {
         var type = req.params.context;
-        var account = req.params.account;
+        switch (type) {
+            case '$users':
+                var sTable = req.tenant.dbname + ".accounts";
 
-        req.db.find(req.tenant.dbname + ".accounts", {'account_id': account}, function (result) {
-            var oData = result.length ? result[0] : null;
-            if (oData) {
-                switch (type) {
-                    case '$users':
-                        var aUserGrp = oData.user_group;
-                        var users = [];
-                        for (var i = 0; i < aUserGrp.length; i++) {
-                            users = users.concat(aUserGrp[i].users);
-                        }
-                        users = users.map(function (v) {
-                            delete(v.secret);
-                            delete(v.inbox);
-                            v.name = v.first_name + " " + v.last_name;
-                            v.value = v.id;
-                            return v;
-                        });
-                        res.json(users);
-                        break;
-                    case '$products':
-                        break;
-                    case '$user_group':
-                        var aUserGrp = oData.user_group;
-                        aUserGrp = aUserGrp.map(function (v) {
-                            delete(v.users);
-                            v.name = v.group_name;
-                            v.value = v.id;
-                            return v;
-                        });
-                        res.json(aUserGrp);
-                        break;
-                    default:
+                req.db.find(sTable, {}, function (users) {
+                    users = users.map(function (v) {
+                        delete(v.secret);
+                        delete(v.inbox);
+                        delete(v.profile);
+                        v.name = v.first_name + " " + v.last_name;
+                        v.value = v.id;
+                        return v;
+                    });
+                    res.json(users);
+                });
+                break;
+            case '$products':
+                break;
+            case '$user_group':
+                req.db.find(req.tenant.dbname + '.global_config', {"key": 'user_group'}, function (ug) {
+                    ug = ug.map(function (v) {
+                        v.name = v._id;
+                        return v;
+                    });
+                    res.json(ug);
+                });
+                break;
+            default:
 
 
-                }
-            }
-        });
+        }
     },
     restGet: function (req, res, next) {
         var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
@@ -125,12 +117,12 @@ module.exports = {
         });
     },
     restGetField: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." +tableNameFormat(req.params.table);
+        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         var sKey = req.params.field;
         var sValue = req.params.val;
 
         if (sKey === "_id" || sKey === "_ref") {
-             sValue = new mongoAPI.ObjectId(sValue);
+            sValue = new mongoAPI.ObjectId(sValue);
         }
         var oFilter = {};
         oFilter[sKey] = sValue;

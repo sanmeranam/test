@@ -41,9 +41,9 @@ html(ng-app='ngAdmin')
         script(src='/_static/libs/angular-google-maps/dist/angular-google-maps.min.js')
         script(src='/_static/libs/angular-simple-logger/dist/angular-simple-logger.min.js')
         script(src='/_self/application.js')
-        
         each valtl in ngCtl
             script(src='#{valtl}')
+        
     body(ng-controller='RootController',class="hold-transition skin-blue sidebar-collapse sidebar-mini fixed")
         include ../client/index.html
         script(src='/_static/plugins/jQuery/jquery-2.2.3.min.js', type='text/javascript')
@@ -89,3 +89,4 @@ html(ng-app='ngAdmin')
         script(src='/_static/plugins/base/js/app.min.js', type='text/javascript')
         script(src='/_static/js/draw_chart_helper.js')
         script(src='/_static/js/custom.js')
+        

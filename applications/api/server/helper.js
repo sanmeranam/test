@@ -1,6 +1,20 @@
 var fs = require('fs');
+//var oFormFactory = require('./service/FormFactory');
 
 var helper = {
+    _local: {
+        getAllUser: function (req, callback) {
+            var sTable = req.tenant.dbname + ".accounts";
+            req.db.find(sTable, {}, function (result) {
+                callback(result);
+            });
+        },
+        getAllGroup: function (req, callback) {
+            req.db.find(req.tenant.dbname + '.global_config', {"key": 'user_group'}, function (ug) {
+                callback(ug);
+            });
+        }
+    },
     rest: {
         _checkTable: function (req, res) {
             var restBlackListTables = ["auth_token", "session", "accounts"];
@@ -80,6 +94,63 @@ var helper = {
         }
     },
     services: {
+        createForm: function (req, res, next) {
+            var tenant = req.tenant.domain;
+            var body = req.body;
+            var user = body.session;
+            var formId = body.formId;
+            var sTable = req.tenant.dbname + ".form_meta";
+            req.db.findById(sTable, formId, function (resultForm) {
+                if (resultForm && resultForm.state === 1) {
+                    helper._local.getAllGroup(req, function (ug) {
+                        var resJSON = oFormFactory.createForm(req.db, tenant, user, ug, resultForm);
+                        res.json(resJSON);
+                    });
+                } else {
+
+                }
+            });
+        },
+        updateForm: function (req, res, next) {
+
+        },
+        syncAccount: function (req, res) {
+            var reqBody=req.body;
+            var deviceId=reqBody.deviceId;
+            
+            //--Expect
+            /**
+             * Device id
+             * scan id
+             * secure id
+             */
+
+
+            //--to responce
+            /**
+             * tenant details
+             * sync url
+             * Authable
+             * branding details
+             * preferences
+             *        tracking
+             *        offiline
+             *        
+             */
+
+        },
+        signinAccount: function (req, res) {
+
+
+            //--send
+            /**
+             * Create Access Forms
+             * Review Access Forms
+             * Token
+             * 
+             * 
+             */
+        }
         //account details sync
         //token details with exp sync
         //file upload

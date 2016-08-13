@@ -55,7 +55,7 @@ router.get('/service/control_schema', helper.getControlSchema);
 
 router.get('/service/data_factory/list', helper.getGlobalConfig);
 router.get('/service/global/:context', helper.getGlobalConfig);
-router.get('/service/var/:account/:context', helper.getGlobalVariables);
+router.get('/service/var/:context', helper.getGlobalVariables);
 
 
 
