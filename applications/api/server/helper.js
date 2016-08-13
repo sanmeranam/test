@@ -101,14 +101,14 @@ var helper = {
             var formId = body.formId;
             var sTable = req.tenant.dbname + ".form_meta";
             req.db.findById(sTable, formId, function (resultForm) {
-                if (resultForm && resultForm.state === 1) {
-                    helper._local.getAllGroup(req, function (ug) {
-                        var resJSON = oFormFactory.createForm(req.db, tenant, user, ug, resultForm);
-                        res.json(resJSON);
-                    });
-                } else {
-
-                }
+//                if (resultForm && resultForm.state === 1) {
+//                    helper._local.getAllGroup(req, function (ug) {
+//                        var resJSON = oFormFactory.createForm(req.db, tenant, user, ug, resultForm);
+//                        res.json(resJSON);
+//                    });
+//                } else {
+//
+//                }
             });
         },
         updateForm: function (req, res, next) {
@@ -116,8 +116,15 @@ var helper = {
         },
         syncAccount: function (req, res) {
             var reqBody=req.body;
-            var deviceId=reqBody.deviceId;
+            var SCAN_ID=reqBody.SCAN_ID;
             
+            req.db.findById("c4f_master.tenant_master",SCAN_ID,function(result){
+                if(result){
+                    res.json(result);
+                }else{
+                    res.json({error:1});
+                }
+            });
             //--Expect
             /**
              * Device id

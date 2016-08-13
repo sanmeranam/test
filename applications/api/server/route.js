@@ -34,7 +34,7 @@ router.post("/service/config/sync", helper.services.syncAccount);
 router.post("/service/config/singin", helper.services.signinAccount);
 
 router.post("/service/form/create", helper.services.createForm);
-router.post("/service/form/create", helper.services.updateForm);
+router.post("/service/form/update", helper.services.updateForm);
 
 
 
