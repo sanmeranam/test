@@ -129,7 +129,7 @@ var helper = {
                     });                     
                     res.json(result);
                 }else{
-                    res.json({error:1});
+                    res.json({error:1,data:reqBody});
                 }
             });
             //--to responce
