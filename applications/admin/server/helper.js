@@ -15,7 +15,6 @@ module.exports = {
         var password = req.body.secret;
         req.db.find(req.tenant.dbname + ".accounts", {"email": user}, function (result) {
             var oData = result.length ? result[0] : null;
-            console.log(oData);
             if (oData && oData.secret === password) {
                 req.session.user = oData;
                 res.redirect("/");
@@ -87,7 +86,7 @@ module.exports = {
                         delete(v.inbox);
                         delete(v.profile);
                         v.name = v.first_name + " " + v.last_name;
-                        v.value = v.id;
+                        v.value = v._id;
                         return v;
                     });
                     res.json(users);
@@ -98,7 +97,9 @@ module.exports = {
             case '$user_group':
                 req.db.find(req.tenant.dbname + '.global_config', {"key": 'user_group'}, function (ug) {
                     ug = ug.map(function (v) {
-                        v.name = v._id;
+                        v.name=v.value;
+                        v.value=v._id;
+                        
                         return v;
                     });
                     res.json(ug);

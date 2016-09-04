@@ -1,5 +1,5 @@
 var fs = require('fs');
-//var oFormFactory = require('./service/FormFactory');
+var oFormFactory = require('../../../core/service/FormFactory');
 
 var helper = {
     _local: {
@@ -115,21 +115,23 @@ var helper = {
 
         },
         syncAccount: function (req, res) {
-            console.log(req.body);
-            var reqBody=req.body;
-            var SCAN_ID=reqBody.SCAN_ID;
-            
-            req.db.findById("c4f_master.tenant_master",SCAN_ID,function(result){
-                if(result){
-                    reqBody.IN_DATE=Date.now();
-                    reqBody.IN_USER={};
-                    
-                    req.db.insertToTable(result.database+".device_access",reqBody,function(){
-                        
-                    });                     
-                    res.json(result);
-                }else{
-                    res.json({error:1,data:reqBody});
+
+            var reqBody = req.body;
+            var SCAN_ID = reqBody.SCAN_ID;
+
+            req.db.findById("c4f_master.tenant_master", SCAN_ID, function (result) {
+                if (result) {
+                    reqBody.IN_DATE = Date.now();
+                    reqBody.IN_USER = {};
+
+                    req.db.insertToTable(result.database + ".device_access", reqBody, function (dRes) {
+                        if (dRes && dRes.result.ok) {
+                            result.entryId = dRes.insertedIds[0];
+                        }
+                        res.json(result);
+                    });
+                } else {
+                    res.json({error: 1, data: reqBody});
                 }
             });
             //--to responce
@@ -146,7 +148,47 @@ var helper = {
 
         },
         signinAccount: function (req, res) {
+            var oBody = req.body;
+            var entryId = oBody.ENTRY_ID;
+            var tenant = req.tenant;
+            var user = oBody.USER;
+            var password = oBody.PASSWORD;
 
+            req.db.find(tenant.dbname + ".accounts", {"email": user}, function (result) {
+                var oData = result.length ? result[0] : null;
+
+                if (oData && oData.secret == password) {
+
+                    req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
+                        if (r) {
+
+                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id, oData.group, function (formsMeta) {
+                                formsMeta = formsMeta.map(function (v) {
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
+                                });
+                                res.json(formsMeta);
+                            });
+
+
+                            r.IN_USER = oData._id;
+                            req.db.updateById(tenant.dbname + ".device_access", entryId, r, function () {});
+                        } else {
+                            res.json({error: 1, data: oBody});
+                        }
+
+                    });
+
+                } else {
+                    res.json({error: 1, data: oBody});
+                }
+            });
+            //Get
+            /**
+             * Entry Id
+             * email
+             * password
+             * 
+             */
 
             //--send
             /**

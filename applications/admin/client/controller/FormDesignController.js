@@ -26,7 +26,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             if (keys.length)
                 newKey = parseInt(keys[keys.length - 1]) + 1;
 
-            this.model[newKey] = {_l: false, _c: []};
+            this.model[newKey] = {_l: false, _c: [],_s:0};
         },
         getPageIndies: function () {
             return Object.keys(this.model);

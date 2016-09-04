@@ -41,8 +41,9 @@
                             <input ng-disabled="!SelectedNode.edit"  type="checkbox" ng-if="m.type == 'boolean'" ng-model="SelectedNode.model.fields[f].value" style="float: right;margin-top: -20px;"> 
 
 
-
-                            <select ng-disabled="!SelectedNode.edit"  class="form-control" ng-model="SelectedNode.model.fields[f].value" ng-options="item.value as item.name for item in _gv[m.list]" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
+                            <select ng-disabled="!SelectedNode.edit"  class="form-control" ng-model="SelectedNode.model.fields[f].value" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
+                                <option ng-repeat="item in _gv[m.list]" ng-value="item.value">{{item.name}}</option>
+                            
                             </select>
 
                             <select  ng-disabled="!SelectedNode.edit"  class="form-control" ng-model="SelectedNode.model.fields[f].value" ng-if="m.type == 'options' && isArray(m.list)">
