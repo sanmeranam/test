@@ -147,6 +147,30 @@ var helper = {
              */
 
         },
+        syncForms:function(req, res){
+            var oBody = req.body;
+            var tenant = req.tenant;
+            var entryId = oBody.ENTRY_ID;
+            req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
+                console.log(r);
+                if (r && r.IN_USER) {
+                    req.db.findById(tenant.dbname + ".accounts", r.IN_USER, function (oData) {
+                        if(oData){
+                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id, oData.group, function (formsMeta) {
+                                formsMeta = formsMeta.map(function (v) {
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
+                                });
+                                res.json(formsMeta);
+                            });
+                        }else{
+                            res.json({error: 1, data: oBody});
+                        }
+                    });
+                }else{
+                    res.json({error: 1, data: oBody});
+                }
+            });
+        },
         signinAccount: function (req, res) {
             var oBody = req.body;
             var entryId = oBody.ENTRY_ID;

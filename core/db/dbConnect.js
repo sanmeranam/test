@@ -14,7 +14,7 @@ module.exports = function (sURL) {
 module.exports.prototype.openConnection = function (document, callBack) {
     callBack = callBack || function () {
     };
-    var split,url;
+    var split, url;
     if (document.indexOf(".") > -1) {
         split = document.split(".");
         url = this.sDBURL.replace(":dbname", split[0]);
@@ -72,7 +72,11 @@ module.exports.prototype.findById = function (sTable, sId, callback) {
         if (db && conn) {
             var oId = null;
             try {
-                oId = new mongoAPI.ObjectId(sId);
+                if (sId instanceof mongoAPI.ObjectId) {
+                    oId = sId;
+                } else {
+                    oId = new mongoAPI.ObjectId(sId);
+                }
                 conn.findOne({"_id": oId}, function (err, data) {
                     if (data && data._id) {
                         callback(data);

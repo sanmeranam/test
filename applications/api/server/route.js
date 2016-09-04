@@ -24,6 +24,7 @@ var helper = require('./helper');
 
 router.post("/service/config/sync", helper.services.syncAccount);
 router.post("/service/config/singin", helper.services.signinAccount);
+router.post("/service/config/forms", helper.services.syncForms);
 
 router.post("/service/form/create", helper.services.createForm);
 router.post("/service/form/update", helper.services.updateForm);
