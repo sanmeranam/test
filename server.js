@@ -11,6 +11,7 @@ var session = require('express-session');
 var _mRouteAdmin = require('./applications/admin/server/route');
 var _mRouteWebsite = require('./applications/website/server/route');
 var _mRouteApi = require('./applications/api/server/route');
+var _mRouteApp = require('./applications/app/server/route');
 
 var _cDBConnect = require('./core/db/dbConnect');
 var GLOBAL = require('./core/GLOBAL');
@@ -81,6 +82,7 @@ var apiSubCheck = function (callback) {
 };
 
 app.use('/wildcard/api/:domain', apiSubCheck(_mRouteApi));
+app.use('/wildcard/app/:domain', apiSubCheck(_mRouteApp));
 
 var check = function (callback) {
     return function (req, res, next) {
