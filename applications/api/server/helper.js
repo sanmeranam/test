@@ -174,6 +174,7 @@ var helper = {
         signinAccount: function (req, res) {
             var oBody = req.body;
             var entryId = oBody.ENTRY_ID;
+            var gcmToken = oBody.GCM_TOKEN;
             var tenant = req.tenant;
             var user = oBody.USER;
             var password = oBody.PASSWORD;
@@ -182,6 +183,9 @@ var helper = {
                 var oData = result.length ? result[0] : null;
 
                 if (oData && oData.secret == password) {
+                    
+                    oData.cgm_token=gcmToken;
+                    req.db.updateById(tenant.dbname + ".accounts", oData._id,oData, function () {});
 
                     req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
                         if (r) {
