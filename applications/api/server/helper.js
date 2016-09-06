@@ -194,7 +194,12 @@ var helper = {
                                 formsMeta = formsMeta.map(function (v) {
                                     return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
                                 });
-                                res.json(formsMeta);
+                                
+                                delete(oData.profile);
+                                res.json({
+                                    user:oData,
+                                    forms:formsMeta
+                                });
                             });
 
 
