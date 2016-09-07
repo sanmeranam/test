@@ -94,6 +94,24 @@ var helper = {
         }
     },
     services: {
+        _createErrorPacket: function (msg) {
+            return {
+                error: 1,
+                success: 0,
+                array: 0,
+                data: {
+                    message: msg
+                }
+            };
+        },
+        _createSuccessPacket: function (data, bIsArray) {
+            return {
+                error: 0,
+                success: 1,
+                array: bIsArray ? 1 : 0,
+                data: data
+            };
+        },
         createForm: function (req, res, next) {
             var tenant = req.tenant.domain;
             var body = req.body;
@@ -128,10 +146,10 @@ var helper = {
                         if (dRes && dRes.result.ok) {
                             result.entryId = dRes.insertedIds[0];
                         }
-                        res.json(result);
+                        res.json(helper.services._createSuccessPacket(result, false));
                     });
                 } else {
-                    res.json({error: 1, data: reqBody});
+                    res.json(helper.services._createErrorPacket(reqBody));
                 }
             });
             //--to responce
@@ -147,27 +165,26 @@ var helper = {
              */
 
         },
-        syncForms:function(req, res){
+        syncForms: function (req, res) {
             var oBody = req.body;
             var tenant = req.tenant;
             var entryId = oBody.ENTRY_ID;
             req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
-                console.log(r);
                 if (r && r.IN_USER) {
                     req.db.findById(tenant.dbname + ".accounts", r.IN_USER, function (oData) {
-                        if(oData){
+                        if (oData) {
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id, oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
                                     return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
                                 });
-                                res.json(formsMeta);
+                                res.json(helper.services._createSuccessPacket(formsMeta, true));
                             });
-                        }else{
-                            res.json({error: 1, data: oBody});
+                        } else {
+                            res.json(helper.services._createErrorPacket("Invalid token!"));
                         }
                     });
-                }else{
-                    res.json({error: 1, data: oBody});
+                } else {
+                    res.json(helper.services._createErrorPacket("Device entity not available."));
                 }
             });
         },
@@ -182,10 +199,10 @@ var helper = {
             req.db.find(tenant.dbname + ".accounts", {"email": user}, function (result) {
                 var oData = result.length ? result[0] : null;
 
-                if (oData && oData.secret == password) {
-                    
-                    oData.cgm_token=gcmToken;
-                    req.db.updateById(tenant.dbname + ".accounts", oData._id,oData, function () {});
+                if (oData && oData.secret === password) {
+
+                    oData.cgm_token = gcmToken;
+                    req.db.updateById(tenant.dbname + ".accounts", oData._id, oData, function () {});
 
                     req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
                         if (r) {
@@ -194,57 +211,99 @@ var helper = {
                                 formsMeta = formsMeta.map(function (v) {
                                     return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
                                 });
-                                
+
                                 delete(oData.profile);
-                                res.json({
-                                    user:oData,
-                                    forms:formsMeta
-                                });
+                                res.json(helper.services._createSuccessPacket({
+                                    TOKEN: entryId,
+                                    PROFILE: oData,
+                                    FORM_META: formsMeta
+                                }, false));
                             });
 
 
                             r.IN_USER = oData._id;
                             req.db.updateById(tenant.dbname + ".device_access", entryId, r, function () {});
                         } else {
-                            res.json({error: 1, data: oBody});
+                            res.json(helper.services._createErrorPacket("Token not found!"));
                         }
 
                     });
 
                 } else {
-                    res.json({error: 1, data: oBody});
+                    res.json(helper.services._createErrorPacket("Invalid credentials !"));
                 }
             });
-            //Get
-            /**
-             * Entry Id
-             * email
-             * password
-             * 
-             */
+        },
+        updateGCMToken: function (req, res) {
+            var oBody = req.body;
+            var CGM_TOKEN = oBody.GCM_TOKEN;
+            var USER_ID = oBody.USER_ID;
+            var tenant = req.tenant;
 
-            //--send
-            /**
-             * Create Access Forms
-             * Review Access Forms
-             * Token
-             * 
-             * 
-             */
+            req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
+                if (result) {
+                    result.cgm_token = CGM_TOKEN;
+                    req.db.updateById(tenant.dbname + ".accounts", result._id, result, function (rer) {
+                        res.json(helper.services._createSuccessPacket(rer));
+                    });
+                } else {
+                    res.json(helper.services._createErrorPacket("user not found"));
+                }
+            });
+        },
+        getProfileImage: function (req, res) {
+            var oBody = req.body;
+            var USER_ID = oBody.USER_ID;
+            var tenant = req.tenant;
+            req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
+                if (result) {
+                    res.json(helper.services._createSuccessPacket({
+                        _id: USER_ID,
+                        image: result.prfile
+                    }));
+                } else {
+                    res.json(helper.services._createErrorPacket("user not found"));
+                }
+            });
+        },
+        updateProfileImage: function (req, res) {
+            var oBody = req.body;
+            var IMAGE = oBody.IMAGE;
+            var USER_ID = oBody.USER_ID;
+            var tenant = req.tenant;
+
+            req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
+                if (result) {
+                    result.profile = IMAGE;
+                    req.db.updateById(tenant.dbname + ".accounts", result._id, result, function (rer) {
+                        res.json(helper.services._createSuccessPacket(rer));
+                    });
+                } else {
+                    res.json(helper.services._createErrorPacket("user not found"));
+                }
+            });
+        },
+        getAllUsers: function (req, res) {
+            helper._local.getAllGroup(req, function (aGrp) {
+                helper._local.getAllUser(req,function(aUser){
+                    res.json(helper.services._createSuccessPacket({
+                        USERS:aUser,
+                        GROUPS:aGrp
+                    }));
+                });
+            });
         }
-        //account details sync
-        //token details with exp sync
-        //file upload
-        //Online form creation
-        //form details pick
-        //Perform forward actions
     },
     offline: {
-        //Model sync based on flow privilage
-        //Form view access
-        //Switch online data sync
-        //File upload
-        //Next flow trigger
+        syncAppFiles: function () {
+            //Send all html,js,css file zip
+        },
+        syncFormMeta: function () {
+            //check all create auth forms , send meta array
+        },
+        syncFormData: function () {
+            //Collect offline created forms and make entry of them
+        }
     }
 };
 

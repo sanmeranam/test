@@ -25,6 +25,10 @@ var helper = require('./helper');
 router.post("/service/config/sync", helper.services.syncAccount);
 router.post("/service/config/singin", helper.services.signinAccount);
 router.post("/service/config/forms", helper.services.syncForms);
+router.post("/service/config/cgm_token", helper.services.updateGCMToken);
+router.post("/service/config/getprofile", helper.services.getProfileImage);
+router.post("/service/config/setprofile", helper.services.updateProfileImage);
+router.post("/service/config/getallusers", helper.services.getAllUsers);
 
 router.post("/service/form/create", helper.services.createForm);
 router.post("/service/form/update", helper.services.updateForm);
