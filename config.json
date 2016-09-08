@@ -32,5 +32,12 @@
     "http_auth": {
         "user": "user",
         "pass": "pass"
+    },
+    "gcm":{
+        "system_id":"24779186807",
+        "system_key":"AIzaSyBUovLGqRTWPqeemTFUQby6Xd2QBByPoRQ",
+        "jid":"24779186807@gcm.googleapis.com",
+        "host":"gcm-preprod.googleapis.com",
+        "port":5236
     }
 }

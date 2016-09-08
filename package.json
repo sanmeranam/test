@@ -25,6 +25,8 @@
         "mime-types": "^2.1.0",
         "express-stormpath": "^3.1.2",
         "sse": "^0.0.6",
-        "jstransformer-marked":"^1.0.1"
+        "jstransformer-marked":"^1.0.1",
+        "node-gcm":"0.14.4",
+        "node-xmpp-client":"^3.0.0"
     }
 }

@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 var session = require('express-session');
 
+var oLiveEvents=require('./core/event/LiveEvents');
+
 var _mRouteAdmin = require('./applications/admin/server/route');
 var _mRouteWebsite = require('./applications/website/server/route');
 var _mRouteApi = require('./applications/api/server/route');
@@ -145,5 +147,6 @@ app.use(function (err, req, res, next) {
     });
 });
 
+GLOBAL.LiveEvent=new oLiveEvents(oConfig.gcm);
 
 module.exports = app;
