@@ -5,15 +5,16 @@ var MessageProcess = {
         var sType = oPack.TYPE;
         switch (sType) {
             case "SINGLE_MESSAGE":
-                this.singleForward(oPack.TO,oPack.MESSAGE);
+                this.singleForward(oPack.TO,oPack.FROM,oPack.MESSAGE);
                 break;
             case "FEED_MESSAGE":
                 break;
         }
     },
-    singleForward: function (to, msg) {
+    singleForward: function (to,from,msg) {
         var message = new gcm.Message({
-            data: msg
+            data: msg,
+            from:from
         });
 
         var sender = new gcm.Sender(this.client.system_key);
