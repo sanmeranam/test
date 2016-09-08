@@ -83,6 +83,7 @@ var apiSubCheck = function (callback) {
     };
 };
 
+app.use('/wildcard/app/_self', express.static(path.join(__dirname, 'applications/app/client')));
 app.use('/wildcard/api/:domain', apiSubCheck(_mRouteApi));
 app.use('/wildcard/app/:domain', apiSubCheck(_mRouteApp));
 

@@ -286,6 +286,13 @@ var helper = {
         getAllUsers: function (req, res) {
             helper._local.getAllGroup(req, function (aGrp) {
                 helper._local.getAllUser(req,function(aUser){
+                    if(aUser && aUser.length){
+                        aUser=aUser.map(function(v){
+                            v.profile="";
+                            return v;
+                        });
+                    }
+                    
                     res.json(helper.services._createSuccessPacket({
                         USERS:aUser,
                         GROUPS:aGrp
