@@ -140,14 +140,22 @@ var helper = {
 
             req.db.findById("c4f_master.tenant_master", SCAN_ID, function (result) {
                 if (result) {
-                    reqBody.IN_DATE = Date.now();
-                    reqBody.IN_USER = {};
+                    req.db.find(result.database + ".device_access", {DEVICE_ID: reqBody.DEVICE_ID}, function (r) {
 
-                    req.db.insertToTable(result.database + ".device_access", reqBody, function (dRes) {
-                        if (dRes && dRes.result.ok) {
-                            result.entryId = dRes.insertedIds[0];
+                        if (r & r.length) {
+                            req.db.updateById(result.database + ".device_access", r[0]._id.toString(), r[0], function () {
+                                res.json(helper.services._createSuccessPacket(result, false));
+                            });
+                        } else {
+                            reqBody.IN_DATE = Date.now();
+                            reqBody.IN_USER = {};
+                            req.db.insertToTable(result.database + ".device_access", reqBody, function (dRes) {
+                                if (dRes && dRes.result.ok) {
+                                    result.entryId = dRes.insertedIds[0];
+                                }
+                                res.json(helper.services._createSuccessPacket(result, false));
+                            });
                         }
-                        res.json(helper.services._createSuccessPacket(result, false));
                     });
                 } else {
                     res.json(helper.services._createErrorPacket(reqBody));
@@ -286,32 +294,34 @@ var helper = {
         },
         getAllUsers: function (req, res) {
             helper._local.getAllGroup(req, function (aGrp) {
-                helper._local.getAllUser(req,function(aUser){
-                    if(aUser && aUser.length){
-                        aUser=aUser.map(function(v){
-                            v.profile="";
+                helper._local.getAllUser(req, function (aUser) {
+                    if (aUser && aUser.length) {
+                        aUser = aUser.map(function (v) {
+                            v.profile = "";
                             return v;
                         });
                     }
-                    
+
                     res.json(helper.services._createSuccessPacket({
-                        USERS:aUser,
-                        GROUPS:aGrp
+                        USERS: aUser,
+                        GROUPS: aGrp
                     }));
                 });
             });
         },
-        onmessage:function(req,res){
-            var system_key=req.GLOBAL.Config.gcm.system_key;
-            oMessager.setSystemKey(system_key);
+        onmessage: function (req, res) {
+            var system_key = req.GLOBAL.Config.gcm.system_key;
+            var tenant = req.tenant;
             
-            oMessager.onMessage(req.body,function(err, response){
-                if(err){
+            oMessager.setSystemKey(system_key,req.db,tenant.dbname);
+
+            oMessager.onMessage(req.body, function (err, response) {
+                if (err) {
                     res.json(helper.services._createErrorPacket(err));
-                }else{
+                } else {
                     res.json(helper.services._createSuccessPacket(response));
                 }
-            });            
+            });
         }
     },
     offline: {
