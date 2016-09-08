@@ -1,5 +1,6 @@
 var fs = require('fs');
 var oFormFactory = require('../../../core/service/FormFactory');
+var oMessager = require('../../../core/service/MessageProcess');
 
 var helper = {
     _local: {
@@ -299,6 +300,9 @@ var helper = {
                     }));
                 });
             });
+        },
+        onmessage:function(req,res){
+            oMessager.onMessage(req.body);
         }
     },
     offline: {
