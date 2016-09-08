@@ -302,7 +302,14 @@ var helper = {
             });
         },
         onmessage:function(req,res){
-            oMessager.onMessage(req.body);
+            oMessager.onMessage(req.body,function(err, response){
+                if(err){
+                    res.json(helper.services._createErrorPacket(err));
+                }else{
+                    res.json(helper.services._createSuccessPacket(response));
+                }
+            });
+            
         }
     },
     offline: {
