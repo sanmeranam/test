@@ -10,7 +10,7 @@ var MessageProcess = {
         var sType = oPack.TYPE;
         switch (sType) {
             case "SINGLE_MESSAGE":
-                this.singleForward(oPack.TO, oPack.TOKEN, oPack.MESSAGE, callback);
+                this.singleForward(oPack.TO, oPack.FROM, oPack.MESSAGE, callback);
                 break;
             case "FEED_MESSAGE":
                 break;
