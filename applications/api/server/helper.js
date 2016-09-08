@@ -171,9 +171,9 @@ var helper = {
             var entryId = oBody.ENTRY_ID;
             req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
                 if (r && r.IN_USER) {
-                    req.db.findById(tenant.dbname + ".accounts", r.IN_USER, function (oData) {
+                    req.db.findById(tenant.dbname + ".accounts", r.IN_USER.toString(), function (oData) {
                         if (oData) {
-                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id, oData.group, function (formsMeta) {
+                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
                                     return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
                                 });
@@ -202,12 +202,12 @@ var helper = {
                 if (oData && oData.secret === password) {
 
                     oData.cgm_token = gcmToken;
-                    req.db.updateById(tenant.dbname + ".accounts", oData._id, oData, function () {});
+                    req.db.updateById(tenant.dbname + ".accounts", oData._id.toString(), oData, function () {});
 
                     req.db.findById(tenant.dbname + ".device_access", entryId, function (r) {
                         if (r) {
 
-                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id, oData.group, function (formsMeta) {
+                            oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
                                     return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version};
                                 });
@@ -243,7 +243,7 @@ var helper = {
             req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
                 if (result) {
                     result.cgm_token = CGM_TOKEN;
-                    req.db.updateById(tenant.dbname + ".accounts", result._id, result, function (rer) {
+                    req.db.updateById(tenant.dbname + ".accounts", result._id.toString(), result, function (rer) {
                         res.json(helper.services._createSuccessPacket(rer));
                     });
                 } else {
