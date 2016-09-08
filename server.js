@@ -69,6 +69,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+GLOBAL.Config=oConfig;
 
 app.use('/wildcard/*/_self', express.static(path.join(__dirname, 'applications/admin/client')));
 app.use('/wildcard/*/_static', express.static(path.join(__dirname, 'public')));

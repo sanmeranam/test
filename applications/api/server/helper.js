@@ -302,14 +302,16 @@ var helper = {
             });
         },
         onmessage:function(req,res){
+            var system_key=req.GLOBAL.Config.gcm.system_key;
+            oMessager.setSystemKey(system_key);
+            
             oMessager.onMessage(req.body,function(err, response){
                 if(err){
                     res.json(helper.services._createErrorPacket(err));
                 }else{
                     res.json(helper.services._createSuccessPacket(response));
                 }
-            });
-            
+            });            
         }
     },
     offline: {
