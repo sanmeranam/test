@@ -1,6 +1,6 @@
 
 var FormFactory = {
-    createForm: function (db, tenant, user, group, FormMeta) {
+    createForm: function (db, dbname, oUser, FormMetaId,callback) {
         //TODO
         /**
          * Check flow
@@ -10,6 +10,10 @@ var FormFactory = {
          * Make db entry
          * response entry
          */
+        
+        db.findById(dbname + ".form_meta",FormMetaId,function(res){
+           callback({meta:res,data:{}}); 
+        });        
 
         return {};
     },

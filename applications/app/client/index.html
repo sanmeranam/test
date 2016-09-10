@@ -1,5 +1,275 @@
-<div>Form List</div>
-Test page
-<script type="text/javascript">
-    document.write(location.href);
-</script>
+<!DOCTYPE html>
+<html lang="en" ng-app="FormApp"  ng-controller="RootController">
+    <head>
+        <meta charset="UTF-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <title ng-bind="form_meta.display_title + '|Cloud4From.com'"></title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="/_self_app/libs/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/_self_app/material/css/base.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/_self_app/material/css/project.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/_self_app/application/css/form_engine.css" rel="stylesheet" type="text/css"/>
+        <link href="/_self_app/libs/css/starrr.css" rel="stylesheet" type="text/css"/>
+        <link href="/_self_app/libs/css/dropzone.css" rel="stylesheet" type="text/css"/>
+
+        <style>
+            html {
+                touch-action: manipulation;
+            }
+        </style>
+
+        <!--<script src="/_self_app/libs/js/signature_pad.min.js" type="text/javascript"></script>-->
+        <script src="/_self_app/libs/js/angular.min.js" type="text/javascript"></script>
+        <script src="/_self_app/libs/js/angular-touch.js" type="text/javascript"></script>
+        <script src="/_self_app/libs/js/angular-sanitize.min.js" type="text/javascript"></script>
+        <script src="/_self_app/application/js/form_engine.js" type="text/javascript"></script>
+
+        <script type="text/ng-template" id="photo_attach.html">
+            <form action="/file-upload" class="dropzone">
+            <div class="fallback">
+            <input name="file" type="file" multiple />
+            </div>
+            </form>
+        </script>
+
+        <script type="text/ng-template" id="ranking.html">
+            <div class="form-group">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            <ul class="nav">
+            <li ng-repeat="it in field._a.items.value">                    
+            <a class="tile waves-attach waves-effect" href="javascript:void(0)"><span class="icon">more_vert</span> {{it}}</a>
+            </li>
+            </ul>
+            </div>
+        </script>
+        <script type="text/ng-template" id="rating.html">
+            <div class="row" id="{{field._d}}">
+            <div class="col-sm-12" style="margin-bottom: 0px">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            </div>
+            <div class="col-sm-12" style="margin-bottom: 15px">
+            <div class='starrr' stars='{{field._a.stars.value}}' val='{{field._a.value.value}}'></div>
+            </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="sign_input.html">
+            <div class="card">
+            <div class="card-main">
+            <div class="card-header">
+            <div class="card-inner">
+            <span class="card-heading" ng-bind="field._a.labal.value"></span>
+            </div>
+            </div>
+            <div class="card-img">
+            <img alt="No Signature" ng-src="{{field._a.value.value }}" style="width: 100%;">
+            </div>
+            <div class="card-inner">
+            <p>{{field._a.name_value.value}}</p>
+            </div>
+            <div class="card-action">
+            <div class="card-action-btn pull-left">
+            <a class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)" ng-click="DesignerConfig.clearInlineSign(field._a)"><span class="icon">delete</span></a>
+            <a class="btn btn-flat waves-attach waves-effect" data-toggle="modal" ng-click="SignInputConfig.show(field._a)"><span class="icon">gesture</span></a>
+            </div>
+            </div>
+            </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="text.html">
+            <div id="{{field._d}}" ng-if="field && field._n==='text'" ng-bind-html="field._a.content.value"></div>
+            <div id="{{item._d}}" ng-if="item && item._n==='text'" ng-bind-html="item._a.content.value"></div>
+        </script>
+        <script type="text/ng-template" id="file_attach.html">
+            <form action="/file-upload" class="dropzone" id="dropzone">
+            <div class="fallback">
+            <input name="file" type="file" multiple />
+            </div>
+            </form>
+        </script>
+
+        <script type="text/ng-template" id="link.html">
+            <div class="row" id="{{field._d}}">
+            <div class="col-sm-12" style="margin-bottom: 0px">
+            <a ng-href="{{field._a.link.value}}" target="_blank">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            </a>
+            </div>
+            </div>
+        </script>
+
+
+        <script type="text/ng-template" id="barcode_scan.html">
+            <div class="form-group form-group-label">
+            <label class="floating-label" for="{{field._d}}">{{field._a.label.value}}</label>
+            <input class="form-control width90" id="{{field._d}}" type="text">
+            <a class="btn waves-attach"><i class="fa fa-qrcode"></i></a>
+            </div>
+        </script>
+
+        <script type="text/ng-template" id="compass.html">
+            <div class="form-group form-group-label">
+            <label class="floating-label" for="{{field._d}}">{{field._a.label.value}}</label>
+            <input class="form-control width90" id="{{field._d}}" type="text">
+            <a class="btn waves-attach"><i class="fa fa-compass"></i></a>
+            </div>
+        </script>
+
+        <script type="text/ng-template" id="text_input.html">
+            <div class="form-group form-group-label">
+            <label class="floating-label" for="{{field._d}}">{{field._a.label.value}}</label>
+            <input class="form-control" id="{{field._d}}" ng-if="!field._a.multi_line.value" type="text">
+            <textarea class="form-control textarea-autosize" ng-if="field._a.multi_line.value" id="{{field._d}}" rows="1"></textarea>
+            </div>
+        </script>
+        <script type="text/ng-template" id="date_picker.html">
+            <div class="form-group form-group-label">
+            <label class="floating-label" for="{{field._d}}">{{field._a.label.value}}</label>
+            <input class="form-control datepicker" id="{{field._d}}" type="text">                
+            </div>
+        </script>
+        <script type="text/ng-template" id="time_picker.html">
+            <div class="form-group form-group-label">
+            <label class="floating-label" for="{{field._d}}">{{field._a.label.value}}</label>
+            <input class="form-control timepicker" id="{{field._d}}" type="text">                
+            </div>
+        </script>
+        <script type="text/ng-template" id="section.html">
+            <div class="card" ng-init="item=field" id="{{item._d}}">
+            <div class="card-main" id="test_id">
+            <div class="card-inner">
+            <p ng-if="item._a.title.value" class="card-heading" ng-bind="item._a.title.value"></p>
+            <div class="row">
+            <div class="{{DesignerConfig.clsSectionLayout(item, field)}}" ng-repeat="field in item._c" ng-include="field._n + '.html'"></div>
+            </div>
+            </div>
+            </div>
+            </div>
+        </script>
+
+        <script type="text/ng-template" id="switch.html">
+            <div class="form-group">
+            <div class="checkbox switch">
+            <label for="{{field._d}}">
+            <input checked="" class="access-hide" id="{{field._d}}" name="{{field._d}}" type="checkbox"><span class="switch-toggle"></span>{{field._a.label.value}}
+            </label>
+            </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="multi_options.html">
+            <div class="form-group" id="{{field._d}}">
+            <div class="col-sm-12" style="margin-bottom: 0px">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            </div>
+            <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in field._a.options.value">
+
+            <div class="checkbox   checkbox-adv checkbox-inline">
+            <label for="{{field._d+'_option'+$index}}">
+            <input class="access-hide" name="{{field._d+'_option'}}" value="{{op}}" id="{{field._d+'_option'+$index}}" type="checkbox">{{op}}
+            <span class="checkbox-circle"></span><span class="checkbox-circle-check"></span><span class="checkbox-circle-icon icon">done</span>
+            </label>
+            </div>
+            </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="single_option.html">
+            <div class="form-group" id="{{field._d}}">
+            <div class="col-sm-12" style="margin-bottom: 0px">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            </div>
+            <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in field._a.options.value">
+
+            <div class="radiobtn  radiobtn-adv radiobtn-inline">
+            <label for="{{field._d+'_option'+$index}}">
+            <input class="access-hide" name="{{field._d+'_option'}}" value="{{op}}" id="{{field._d+'_option'+$index}}" type="radio">{{op}}
+            <span class="radiobtn-circle"></span><span class="radiobtn-circle-check"></span>
+            </label>
+            </div>
+            </div>
+            </div>
+        </script>
+
+        <script type="text/ng-template" id="heading.html">
+            <h1 class="content-sub-heading" id="{{field._d}}" ng-if="field._a.type.value=='Style 1'" style="text-align:{{field._a.align.value}}">{{field._a.title.value}} <small>{{field._a.sub_title.value}}</small></h1>
+            <h2 class="content-sub-heading" id="{{field._d}}" ng-if="field._a.type.value=='Style 2'" style="text-align:{{field._a.align.value}}">{{field._a.title.value}} <small>{{field._a.sub_title.value}}</small></h2>
+            <h3 class="content-sub-heading" id="{{field._d}}" ng-if="field._a.type.value=='Style 3'" style="text-align:{{field._a.align.value}}">{{field._a.title.value}} <small>{{field._a.sub_title.value}}</small></h3>
+            <h4 class="content-sub-heading" id="{{field._d}}" ng-if="field._a.type.value=='Style 4'" style="text-align:{{field._a.align.value}}">{{field._a.title.value}} <small>{{field._a.sub_title.value}}</small></h4>
+        </script>
+        <script type="text/ng-template" id="matrix_selection.html">
+            <label for="{{field._d}}">{{field._a.label.value}}</label>
+            <table class="table">
+            <thead>
+            <tr>
+            <th></th>
+            <th ng-repeat="col in field._a.columns.value" class="text-center">{{col}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in field._a.rows.value" >
+            <td style="vertical-align: middle">{{row}}</td>
+            <td ng-repeat="col in field._a.columns.value" style="vertical-align: middle;text-align: center" ng-switch="field._a.type.value">
+            <div class="radiobtn  radiobtn-adv radiobtn-inline" ng-switch-when="Single Option">
+            <label for="{{row + '_option'+$index}}">
+            <input class="access-hide" name="{{row + '_option'}}" id="{{row + '_option'+$index}}" type="radio">
+            <span class="radiobtn-circle"></span><span class="radiobtn-circle-check"></span>
+            </label>
+            </div>
+
+            <div class="checkbox checkbox-adv checkbox-inline" ng-switch-when="Mutli Options">
+            <label for="{{row + '_option'+$index}}">
+            <input class="access-hide" name="{{row + '_option'}}" id="{{row + '_option'+$index}}" type="checkbox">
+            <span class="checkbox-circle"></span><span class="checkbox-circle-check"></span><span class="checkbox-circle-icon icon">done</span>
+            </label>
+            </div>
+
+            <div class="text no-padding no-margin" ng-switch-when="Text">
+            <input type="text" value="{{op}}" class="form-control" name="{{row + '_option'}}">
+            </div>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </script>
+    </head>
+    <body class="page-brand">
+        <main class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-lg-push-3 col-sm-10 col-sm-push-1">
+                        <section class="content-inner margin-top-no">                            
+                            <div ng-repeat="field in getPageModel()" ng-include="field._n + '.html'"></div>
+                            <div class="row" id="{{field._d}}">
+                                <div class="col-sm-12" style="margin-bottom: 0px">
+                                    <label for="{{field._d}}">{{field._a.label.value}}</label>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div aria-hidden="true" class="modal modal-va-middle fade" id="ui_dialog_confirm" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-xs">
+                <div class="modal-content">
+                    <div class="modal-inner">
+                        <p class="h5 margin-top-sm text-black-hint">Are you sure?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="text-right">
+                            <a class="btn btn-flat btn-brand-accent waves-attach waves-effect" data-dismiss="modal" ng-click="Confirm.no()">NO</a>
+                            <a class="btn btn-flat btn-brand-accent waves-attach waves-effect" data-dismiss="modal" ng-click="Confirm.yes()">YES</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/_self_app/material/js/jquery.min.js" type="text/javascript"></script>
+        <script src="/_self_app/libs/js/jquery.inputmask.js" type="text/javascript"></script>
+        <script src="/_self_app/libs/js/jquery.inputmask.extensions.js" type="text/javascript"></script>
+        <script src="/_self_app/libs/js/starrr.js" type="text/javascript"></script>
+        <script src="/_self_app/material/js/base.min.js" type="text/javascript"></script>
+        <script src="/_self_app/material/js/project.min.js" type="text/javascript"></script>
+    </body>
+</html>

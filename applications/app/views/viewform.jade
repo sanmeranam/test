@@ -5,7 +5,6 @@ html(lang='en', ng-app='FormApp', ng-controller='RootController')
     meta(content='IE=edge', http-equiv='X-UA-Compatible')
     meta(name='viewport', content='width=device-width, user-scalable=no')
     title(ng-bind="form_meta.display_title + '|Cloud4From.com'")
-    script var FormMeta = !{JSON.stringify(form_meta)}
     link(href='https://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
     link(href='/_self_app/libs/css/font-awesome.min.css', rel='stylesheet', type='text/css')
     link(href='/_self_app/material/css/base.min.css', rel='stylesheet', type='text/css')
@@ -17,6 +16,7 @@ html(lang='en', ng-app='FormApp', ng-controller='RootController')
       html {
       touch-action: manipulation;
       }
+    // <script src="/_self_app/libs/js/signature_pad.min.js" type="text/javascript"></script>
     script(src='/_self_app/libs/js/angular.min.js', type='text/javascript')
     script(src='/_self_app/libs/js/angular-touch.js', type='text/javascript')
     script(src='/_self_app/libs/js/angular-sanitize.min.js', type='text/javascript')

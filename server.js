@@ -71,6 +71,7 @@ app.use(function (req, res, next) {
 
 GLOBAL.Config=oConfig;
 
+app.use('/wildcard/app/_self_app', express.static(path.join(__dirname, 'applications/app/client')));
 app.use('/wildcard/*/_self', express.static(path.join(__dirname, 'applications/admin/client')));
 app.use('/wildcard/*/_static', express.static(path.join(__dirname, 'public')));
 
@@ -84,7 +85,7 @@ var apiSubCheck = function (callback) {
     };
 };
 
-app.use('/wildcard/app/_self', express.static(path.join(__dirname, 'applications/app/client')));
+
 app.use('/wildcard/api/:domain', apiSubCheck(_mRouteApi));
 app.use('/wildcard/app/:domain', apiSubCheck(_mRouteApp));
 
