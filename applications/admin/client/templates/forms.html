@@ -1,5 +1,5 @@
 <div class="row" ng-controller="FormController">
-    <div class="col-sm-3" ng-hide="SelectedFormMeta && SelectedFormView > 0">
+    <div class="col-sm-3">
         <div class="box box-warning">
             <div class="box-header with-border">
                 <h3 class="box-title">Forms</h3>
@@ -33,21 +33,38 @@
                     </div>
                     <!-- /.pull-right -->
                 </div>
+                <div class="small-box" ng-class="frm.state == 1 ? 'bg-aqua' : 'bg-gray'"  ng-repeat="frm in FormMetaList | filter:{form_name:formFilterText}">
 
-                <div class="list-group">
-                    <a href="javascript:void(0)"   ng-click="onSelectForm(frm)" class="list-group-item" ng-class="SelectedFormMeta == frm ? 'active' : ''" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}">
-                        <strong class="text-uppercase"><span class="fa-stack" style="font-size: 65%">
-                                <i class="fa fa-file-o fa-stack-2x"></i>
-                                <i class="fa fa-line-chart fa-stack-1x"></i>
-                            </span>  {{frm.form_name}}</strong>
-                        <p class="text-muted"><i>Version: </i> <b>{{frm.version}}</b></b></p>
-                        <p class="text-muted"><i>Created on</i> <b>{{frm.history.created.date|date}}</b> <i>by</i> <b>{{frm.history.created.user}}</b></p>
-                        <p class="text-right">
-                            <span class="label label-warning" ng-if="frm.state == 0">New</span>
+                    <div class="dropdown pull-left">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a href="javascript:void(0)" ng-click="stageChange('');onSelectForm(frm);stageChange('EDIT')">Edit</a></li>
+                            <li><a href="javascript:void(0)" ng-click="onSelectForm(frm);stageChange('HIST')">History</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li ng-if="frm.state == 1"><a href="#">Deactivate</a></li>
+                            <li ng-if="frm.state != 1"><a href="#">Activate</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="inner">
+                        <h3>{{frm.form_name}} <small>{{"v" + frm.version}}</small></h3>
+                        <p>{{frm.history.created.date|date}}</p>
+                        <p><span class="label label-warning" ng-if="frm.state == 0">New</span>
                             <span class="label label-danger" ng-if="frm.state == 2">Inactive</span>
                             <span class="label label-success" ng-if="frm.state == 1">Active</span>
-                            <span class="label label-info" ng-if="frm.state == 3">Suspended</span>
-                        </p>
+                            <span class="label label-info" ng-if="frm.state == 3">Suspended</span></p>
+                    </div>
+
+                    <div class="icon">
+                        <span class="fa-stack" style="font-size: 65%">
+                            <i class="fa fa-file-o fa-stack-2x"></i>
+                            <i class="fa fa-line-chart fa-stack-1x"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" ng-click="onSelectForm(frm);stageChange('DATA')" class="small-box-footer">
+                        Records <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
             </div><!-- /.box-body -->
@@ -58,7 +75,7 @@
     </div>
 
 
-    <div class="col-sm-3"  ng-show="NewFormMeta">
+    <div class="col-sm-3"   ng-show="sCurrentStage=='NEW'">
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">New Form</h3>
@@ -73,7 +90,7 @@
                     <label for="usr">Form Name:</label>
                     <input type="text" ng-model="NewFormMeta.form_name" class="form-control" id="usr">
                 </div>
-                <button class="btn btn-success col-sm-12" ng-click="onSaveNewForm()">Create</button>
+                <button class="btn btn-success col-sm-12" ng-click="onSaveNewForm()">Save & Design</button>
             </div><!-- /.box-body -->
             <div ng-show="_creatingForms" class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -82,65 +99,49 @@
     </div>
 
 
-    <div class="col-sm-3"  ng-show="SelectedFormMeta">
+    <div class="col-sm-9"   ng-show="sCurrentStage=='DATA'">
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title">{{SelectedFormMeta.form_name}}</h3>
+                <h3 class="box-title text-uppercase">
+                    <span class="fa-stack" style="font-size: 45%">
+                        <i class="fa fa-file-o fa-stack-2x"></i>
+                        <i class="fa fa-line-chart fa-stack-1x"></i>
+                    </span> {{SelectedFormMeta.form_name}}</h3>
                 <div class="box-tools pull-right">
                     <div class="box-tools pull-right">
-                        <button type="button"  ng-hide="SelectedFormView > 0" ng-click="SelectedFormMeta = null" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                        <button type="button"  ng-click="SelectedFormMeta = null;stageChange('')" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
                     </div>                  
                 </div><!-- /.box-tools -->
             </div><!-- /.box-header -->
             <div class="box-body small_view">
-                <div class="box-body box-profile">
-                    <div class="sparkline" data-type="bar" data-width="97%" data-height="100px" data-bar-Width="14" data-bar-Spacing="7" data-bar-Color="#f39c12">
-                        6,4,8, 9, 10, 5, 13, 18, 21, 7, 9
-                    </div>
+                <div class="row" ng-controller="FormRecordsController">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" role="toolbar" >
+                            <div class="btn-group" role="group" >
+                                <button ng-click="switchView('TABLE')" type="button" class="btn" ng-class="_selectedView == 'TABLE' ? 'btn-info' : 'btn-default'"><i class="fa fa-table"></i></button>
+                                <button ng-click="switchView('MAP')" type="button" class="btn" ng-class="_selectedView == 'MAP' ? 'btn-info' : 'btn-default'"><i class="fa fa-map-marker"></i></button>                
+                                <button ng-click="switchView('TIME')" type="button" class="btn" ng-class="_selectedView == 'TIME' ? 'btn-info' : 'btn-default'"><i class="fa fa-clock-o"></i></button>
+                                <button ng-click="switchView('CHART')" type="button" class="btn" ng-class="_selectedView == 'CHART' ? 'btn-info' : 'btn-default'"><i class="fa fa-pie-chart"></i></button>                
+                            </div>
 
-                    <h3 class="profile-username text-center">{{SelectedFormMeta.form_name}}</h3>
+                            <div  class="btn-group number_view_sm" role="group">
+                                <label>Count</label>
+                                <label class="text-info" ng-bind="BaseData.elements.length"></label>
+                            </div>
 
-                    <p class="text-muted text-center">Created by {{SelectedFormMeta.history.created.user}} on {{SelectedFormMeta.history.created.date|date}}</p>
-
-                    <ul class="list-group list-group-unbordered">
-                        <li class="list-group-item">
-                            <b>Created</b> <a class="pull-right">1,322</a>
-                        </li>
-                        <li class="list-group-item">
-                            <b>Completes</b> <a class="pull-right">543</a>
-                        </li>
-                        <li class="list-group-item">
-                            <b>In Progress</b> <a class="pull-right">13,287</a>
-                        </li>
-                    </ul>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <a ng-show="SelectedFormMeta.state == 0 || SelectedFormMeta.state == 2" ng-click="onInlineAction(1)" class="btn btn-success btn-block"><b>Activate</b></a>
-                            <a ng-show="SelectedFormMeta.state == 1"  ng-click="onInlineAction(2)" class="btn btn-danger btn-block"><b>Deactivate</b></a>
-                            <a ng-show="SelectedFormMeta.state == 3"  ng-click="onInlineAction(-1)" class="btn btn-danger btn-block"><b>Delete</b></a>
-                        </div>
-                        <div class="col-xs-6">
-                            <a ng-click="SelectedFormView = 1" class="btn btn-primary btn-block"><b>Details</b></a>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-muted text-center">Action History</p>
-                <div id="historyContainerId" style="padding: 5px">                    
-                    <ul class="timeline">
-                        <li ng-repeat="hist in SelectedFormMeta.history.modified">
-                            <i class="fa fa-pencil bg-blue"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fa fa-clock-o"></i>{{hist.date|date}}</span>
-                                <h3 class="timeline-header"><a>{{hist.user}}</a></h3>
-
-                                <div class="timeline-body">{{hist.action}}</div>
-                                <div class="timeline-footer">
-                                    <a class="btn btn-primary btn-xs">Read more</a>
-                                    <a class="btn btn-danger btn-xs">Delete</a>
+                            <div class="btn-group pull-right">
+                                <div class="input-prepend input-group" style="display: inline-flex;">
+                                    <span class="add-on input-group-addon" style="width: 40px"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                    <input type="text" style="width: 200px" name="reservation" id="reservation" class="form-control" value="03/18/2013 - 03/23/2013" />
                                 </div>
                             </div>
-                        </li>
-                    </ul>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div ng-include="currentPage"></div>
+                    </div>
+
                 </div>
             </div><!-- /.box-body -->
             <div ng-show="_creatingForms" class="overlay">
@@ -149,19 +150,19 @@
         </div><!-- /.box -->
     </div>
 
-    <div class="col-sm-9" ng-show="SelectedFormView > 0">
+    <div class="col-sm-9" ng-if="sCurrentStage=='EDIT'">
         <!-- Custom Tabs -->
         <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-                <li ng-class="(SelectedFormView == 1 ? 'active' : '')"><a ng-click="SelectedFormView = 1" data-toggle="tab">Data</a></li>
-                <li ng-hide="SelectedFormMeta.state == 3" ng-class="(SelectedFormView == 2 ? 'active' : '')"><a  ng-click="SelectedFormView = 2" data-toggle="tab">Flow</a></li>
-                <li ng-hide="SelectedFormMeta.state == 3"  ng-class="(SelectedFormView == 3 ? 'active' : '')"><a  ng-click="SelectedFormView = 3" data-toggle="tab">Design</a></li>           
-                <li class="pull-right"><a href="javascript:void(0)" ng-click="SelectedFormView = null" class="text-muted"><i class="fa fa-remove"></i></a></li>
-                <li ng-hide="SelectedFormMeta.state==1 || SelectedFormView==1" class="pull-right"><a href="javascript:void(0)" title='Save Changes' ng-click="onUpdateForm()" class="btn btn-success"><i class="fa fa-floppy-o"></i></a></li>
+            <ul class="nav nav-tabs">                
+                <li style="padding: 0px 65px"><h4 class="text-uppercase">{{SelectedFormMeta.form_name}}</h4></li> 
+                <li ng-class="(SelectedFormView == 2 ? 'active' : '')" class="active"><a  ng-click="SelectedFormView = 1" data-toggle="tab">Data Flow</a></li>
+                <li ng-class="(SelectedFormView == 3 ? 'active' : '')"><a  ng-click="SelectedFormView = 2" data-toggle="tab">Design</a></li>           
+                <li class="pull-right"><a href="javascript:void(0)" ng-click=";stageChange('')" class="text-muted"><i class="fa fa-remove"></i></a></li>
+                <li class="pull-right"><a href="javascript:void(0)" title='Save Changes' ng-click="onUpdateForm()" class="btn btn-success"><i class="fa fa-floppy-o"></i></a></li>
             </ul>
             <div class="tab-content small_view">
                 <div class="tab-pane active" id="tab_1">
-                    <div  ng-include="sPages[SelectedFormView - 1]"></div>
+                    <div  ng-include="sPages[SelectedFormView-1]"></div>
                 </div>
             </div>
             <!-- /.tab-content -->

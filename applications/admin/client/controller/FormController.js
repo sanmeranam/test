@@ -4,7 +4,6 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
 
     $scope.sPages = [
-        "/_self/templates/forms/records.html",
         "/_self/templates/forms/flow_config.html",
         "/_self/templates/forms/desgin.html"
     ];
@@ -43,6 +42,28 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     GlobalConfig.load({context: 'db_new_form'}, function (data) {
         $scope._newFormMetaStruct = data[0].value;
     });
+    
+    $scope.sCurrentStage=null;
+
+    $scope.stageChange = function (stage) {
+        switch (stage) {
+            case "NEW":
+                $scope.sCurrentStage=stage;
+                break;
+            case "DATA":
+                $scope.sCurrentStage=stage;
+                break;
+            case "EDIT":
+                $scope.SelectedFormView=1;
+                $scope.sCurrentStage=stage;
+                break;
+            case "HIST":
+                $scope.sCurrentStage=stage;
+                break;
+            default:
+                $scope.sCurrentStage=null;
+        }
+    };
 
     $scope.loadFormMeta = function () {
         $scope._loadingForms = true;
@@ -86,7 +107,7 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     });
 
     $scope.onSelectForm = function (item) {
-        $scope.SelectedFormMeta = item;
+        $scope.SelectedFormMeta = item;        
         $scope.$broadcast('FormItemSelected', item);
     };
     $scope.onCloneForm = function () {
@@ -138,7 +159,9 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     $scope.onCreateForm = function () {
         $scope.SelectedFormMeta = null;
         $scope.SelectedFormView = 0;
-
+         
+        $scope.sCurrentStage="NEW";
+           
         var newForm = JSON.stringify($scope._newFormMetaStruct);
 
         newForm = newForm.replace("{{flow_id}}", Math.floor(Math.random() * 9999999));
@@ -159,6 +182,7 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
                 $scope.loadFormMeta();
             });
         }
+        $scope.stageChange("");
     };
     $scope.onUpdateForm = function (changeTitle, bRefresh) {
         if (changeTitle) {

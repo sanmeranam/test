@@ -44,8 +44,8 @@
                                 <h3 class="widget-user-username">{{user.first_name + " " + user.last_name}}</h3>
                                 <h5 class="widget-user-desc"><a style="color: #fff" href="mailto:{{user.email}}">{{user.email}}</a></h5>
                             </div>
-                            <div ng-click="onSelectUser(user)" class="widget-user-image pointer">
-                                <img class="img-circle" ng-src="{{user.profile}}" alt="User Avatar">
+                            <div ng-click="onSelectUser(user)" class="widget-user-image pointer">                                
+                                <img class="img-circle" ng-src="/service/avtar?_s=100&_u={{user._id}}" alt="User Avatar">
                             </div>
                             <div class="box-footer">
                                 <div class="row">
@@ -97,7 +97,7 @@
                                     <!-- Add the bg color to the header using any of the bg-* classes -->
                                     <div class="widget-user-header bg-yellow">
                                         <div class="widget-user-image">
-                                            <img class="img-circle" ng-src="{{SelectedUser.profile}}" alt="User Avatar">
+                                            <img class="img-circle" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
                                         </div>
                                         <!-- /.widget-user-image -->
                                         <h3 class="widget-user-username">{{SelectedUser.first_name + " " + SelectedUser.last_name}}</h3>
@@ -118,7 +118,7 @@
 
                                         <h4 ng-show="SelectedUser.error" class="text-danger text-center">{{SelectedUser.error}}</h4>
                                         <div class="col-sm-2">
-                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="{{SelectedUser.profile}}" alt="User Avatar">
+                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
                                             <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
                                         </div>
                                         <div class="col-sm-10">                                            

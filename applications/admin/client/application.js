@@ -130,7 +130,7 @@ window.core = {
                 'save': {method: 'POST', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},
                 'create': {method: 'PUT'},
-                'delete': {method: 'DELETE', id: '@id'},
+                'delete': {method: 'DELETE', id: '@id'}
             });
             return data;
         });

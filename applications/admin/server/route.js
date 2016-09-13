@@ -51,6 +51,7 @@ router.post('/rest/:table/:id', helper.restUpdate);
 router.put('/rest/:table', helper.restCreate);
 router.delete('/rest/:table/:id', helper.restDelete);
 
+router.get('/service/avtar', helper.getAvtar);
 router.get('/service/control_schema', helper.getControlSchema);
 
 router.get('/service/data_factory/list', helper.getGlobalConfig);

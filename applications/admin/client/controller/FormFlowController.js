@@ -1,4 +1,10 @@
 core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util) {
+    jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
+    jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
+    jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");    
+    
+
+
     $scope.flowDataSave = null;
     $scope.FlowFactory = null;
     $scope.flowData = null;

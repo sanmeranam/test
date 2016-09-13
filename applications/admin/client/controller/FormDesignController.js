@@ -3,9 +3,16 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
     jQuery(".accorContent").height(window.innerHeight * 0.5).css("overflow", "auto");
     jQuery(".accorContent2").height(window.innerHeight * 0.7).css("overflow", "auto");
 
-
     $scope.EditDisabled = true;
 
+    $scope.checkVisibleProp = function (item) {
+        console.error(item)
+        if (item.visible) {
+            return $scope.$eval("DesignerConfig.selected._a." + item.visible);
+        }
+        return true;
+    };
+    
     $scope.DesignerConfig = {
         selected: null,
         model: null,
@@ -26,7 +33,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             if (keys.length)
                 newKey = parseInt(keys[keys.length - 1]) + 1;
 
-            this.model[newKey] = {_l: false, _c: [],_s:0};
+            this.model[newKey] = {_l: false, _c: [], _s: 0};
         },
         getPageIndies: function () {
             return Object.keys(this.model);

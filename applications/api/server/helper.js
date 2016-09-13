@@ -1,4 +1,5 @@
 var fs = require('fs');
+var Jimp = require("jimp");
 var oFormFactory = require('../../../core/service/FormFactory');
 var oMessager = require('../../../core/service/MessageProcess');
 
@@ -261,15 +262,31 @@ var helper = {
             });
         },
         getProfileImage: function (req, res) {
-            var oBody = req.body;
-            var USER_ID = oBody.USER_ID;
+            var USER_ID = req.query._u;
+            var size = req.query._s;
             var tenant = req.tenant;
             req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
-                if (result) {
-                    res.json(helper.services._createSuccessPacket({
-                        _id: USER_ID,
-                        image: result.prfile
-                    }));
+                if (result && result.profile) {
+                    var base64Data = result.profile.replace(/^data:image\/(png|gif|jpeg);base64,/, "");
+                    var binaryData = new Buffer(base64Data, 'base64');
+                    res.set('Content-Type', 'image/png');
+
+                    if (size) {
+                        size=parseInt(size);
+                        Jimp.read(binaryData, function (err, image) {
+                            if (!err) {
+                                image.resize(size, size)    
+                                        .quality(60)
+                                        .getBuffer('image/png', function (err, image) {
+                                            res.send(image);
+                                        });
+                            }
+                        });
+
+                    } else {
+                            res.send(binaryData);
+                    }
+
                 } else {
                     res.json(helper.services._createErrorPacket("user not found"));
                 }
@@ -312,8 +329,8 @@ var helper = {
         onmessage: function (req, res) {
             var system_key = req.GLOBAL.Config.gcm.system_key;
             var tenant = req.tenant;
-            
-            oMessager.setSystemKey(system_key,req.db,tenant.dbname);
+
+            oMessager.setSystemKey(system_key, req.db, tenant.dbname);
 
             oMessager.onMessage(req.body, function (err, response) {
                 if (err) {

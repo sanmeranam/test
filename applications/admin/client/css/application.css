@@ -189,3 +189,7 @@ input:checked + .slider:before {
 .pointer{
     cursor: pointer;
 }
+
+.nav-tabs>li{
+    cursor: pointer
+}

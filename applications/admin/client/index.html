@@ -98,13 +98,13 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img ng-src="{{Profile.profile}}" class="user-image" alt="User Image">
+                            <img  ng-src="/service/avtar?_s=100&_u={{Profile._id}}" class="user-image" alt="User Image">
                             <span class="hidden-xs" ng-bind="Profile.user.first_name + ' ' + Profile.user.last_name">User</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img ng-src="{{Profile.profile}}" class="img-circle" alt="User Image">
+                                <img ng-src="/service/avtar?_s=100&_u={{Profile._id}}" class="img-circle" alt="User Image">
                                 <p ng-bind="Profile.user.first_name + ' ' + Profile.user.last_name">User</p>
                             </li>
                             <!-- Menu Body -->
@@ -146,8 +146,9 @@
                 <li class="active" menu="Dashboard"><a ng-click="PageConfig._switch('Dashboard')"><i class="fa fa-home"></i><span> Home</span></a></li>
                 <li menu="Forms"><a ng-click="PageConfig._switch('Forms')"><i class="fa fa-file"></i><span> Forms</span></a></li>
                 <li menu="Data Factory"><a ng-click="PageConfig._switch('Data Factory')"><i class="fa fa-database"></i><span> Data Factory</span></a></li>
+                <li menu="Doc Output"><a ng-click="PageConfig._switch('Doc Output')"><i class="fa fa-file-pdf-o"></i><span> Doc Output</span></a></li>
+                <li menu="Flow Factory"><a ng-click="PageConfig._switch('Flow Factory')"><i class="fa fa-money"></i><span> Flow Factory</span></a></li>
                 <li menu="Users"><a ng-click="PageConfig._switch('Users')"><i class="fa fa-users"></i><span> Users</span></a></li>
-                <li menu="Billing"><a ng-click="PageConfig._switch('Billing')"><i class="fa fa-money"></i><span> Billing</span></a></li>
                 <li menu="Settings"><a ng-click="PageConfig._switch('Settings')"><i class="fa fa-cogs"></i><span> Settings</span></a></li>
             </ul>
         </section>

@@ -100,7 +100,7 @@
                     <strong>No field is selected.</strong>
                 </p>
                 <table class="table table-borderless table-striped" style="font-size: 90%">
-                    <tr ng-repeat="(p, v) in DesignerConfig.selected._a" ng-if="!v.hidden">
+                    <tr ng-repeat="(p, v) in DesignerConfig.selected._a" ng-if="!v.hidden" ng-show="checkVisibleProp(DesignerConfig.selected._a[p])">
 
                         <td style="text-align: right;vertical-align: middle;padding: 2px;width: 40%;text-transform: uppercase">
                             <label>{{DesignerConfig.formatText(p)}}</label>
