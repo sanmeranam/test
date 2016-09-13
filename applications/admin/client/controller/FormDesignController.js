@@ -12,7 +12,14 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         }
         return true;
     };
-    
+
+    $scope.keyPressed = function (e) {
+        $scope.keyCode = e.which;
+        console.log("Key Code=" +  e.which);
+    };
+   
+
+
     $scope.DesignerConfig = {
         selected: null,
         model: null,
