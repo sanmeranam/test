@@ -179,7 +179,7 @@ window.core = {
                 replace: true,
                 scope: true,
                 link: function postLink(scope, iElement, iAttrs) {
-                    jQuery(document).on('keypress', function (e) {
+                    jQuery(document).on('keyup', function (e) {
                         scope.$apply(scope.keyPressed(e));
                     });
                 }

@@ -6,16 +6,18 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
     $scope.EditDisabled = true;
 
     $scope.checkVisibleProp = function (item) {
-        console.error(item)
         if (item.visible) {
             return $scope.$eval("DesignerConfig.selected._a." + item.visible);
         }
         return true;
     };
 
-    $scope.keyPressed = function (e) {
-        $scope.keyCode = e.which;
-        console.log("Key Code=" +  e.which);
+    $scope.keyPressed = function (e) {        
+        switch (e.which){
+            case 46://delete
+                $scope.DesignerConfig.evtRemove();
+                break;
+        }
     };
    
 
@@ -135,7 +137,11 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             }
         },
         evtRemove: function () {
+            if(!this.selected)
+                return;
+            
             var selItem = this.selected;
+            
             var oParent, iIndex;
 
             this.visitModel(this.model, function (item, parent, index) {
