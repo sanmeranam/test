@@ -290,7 +290,7 @@ appUi.directive('cPhotoAttach', function () {
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
                 '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
-                '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
+                '				<a ng-click="scanPhoto()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
                 '			</div>' +
                 '		</div>' +
                 '	</div>' +
@@ -300,11 +300,13 @@ appUi.directive('cPhotoAttach', function () {
         },
         controller: function ($scope) {
             $scope.clearAll = function () {
-
+                $scope.node._a.value.value=[];
             };
 
             $scope.scanPhoto = function () {
-
+                window.Device.capturePhoto(function(data){
+                    alert(data); 
+                });
             };
         }
     };

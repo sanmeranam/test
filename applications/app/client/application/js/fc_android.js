@@ -1,6 +1,16 @@
-if(window.FC) {
+if (window.FC) {
     window.Device = {
-        
+        queue: {},
+        callback: function (sId,data) {
+            if(window.Device.queue[sId]){
+                window.Device.queue[sId](data);
+            }
+        },
+        capturePhoto: function (callback) {
+            var uNum=Math.round(Math.random() * 99999);
+            this.queue[uNum] = callback;
+            FC.capturePhoto(uNum,'Device.callback');
+        }
     };
 }
 //FC.showToast(String toast)
