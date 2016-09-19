@@ -10,7 +10,7 @@ if (window.FC) {
         capturePhoto: function (callback) {
             var uNum=Math.round(Math.random() * 99999);
             this.queue[uNum] = callback;
-            FC.capturePhoto(uNum,'Device.callback');
+            FC.capturePhoto(uNum,'window.Device.callback');
         }
     };
 }
