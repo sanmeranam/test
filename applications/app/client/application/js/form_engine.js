@@ -1,6 +1,6 @@
 var FormEngine = {
     init: function () {
-        this.app = angular.module('FormApp', ['ngSanitize']);
+        this.app = angular.module('FormApp', ['ui_render_mobile','ngSanitize']);
     },
     defineController: function (name, fn) {
         this.app.controller(name, fn);

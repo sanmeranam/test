@@ -227,7 +227,7 @@
                 },
                 "value": {
                     "type": "binary",
-                    "value": "",
+                    "value": [],
                     "hidden": true,
                     "mime": "application/pdf"
                 },

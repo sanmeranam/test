@@ -1,8 +1,8 @@
-if (FC) {
+if(window.FC) {
     window.Device = {
+        
     };
 }
-
 //FC.showToast(String toast)
 //FC.getLocation(int reqId,String callback)
 //FC.getCompass(int reqId,String callback)
