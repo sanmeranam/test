@@ -2,6 +2,7 @@ if (window.FC) {
     window.Device = {
         queue: {},
         callback: function (sId,data) {
+            alert(sId+","+data)
             if(window.Device.queue[sId]){
                 window.Device.queue[sId](data);
             }
