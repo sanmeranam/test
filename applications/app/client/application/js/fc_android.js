@@ -39,10 +39,15 @@ if (window.FC) {
             this.queue[uNum] = callback;
             FC.scanBarcode(uNum, 'window.Device.callback');
         },
-        getGeoLocation: function (callback) {            
-            var uNum = fnGetNum();
-            this.queue[uNum] = callback;
-            FC.captureGPS(uNum, 'window.Device.callback');
+        getGeoLocation: function (callback) {  
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position){
+                    callback(position.coords.latitude,position.coords.longitude);
+                });
+            }
+//            var uNum = fnGetNum();
+//            this.queue[uNum] = callback;
+//            FC.captureGPS(uNum, 'window.Device.callback');
         },
         openMap: function (lat, lng) {
             FC.openMap(lat, lng)
