@@ -20,13 +20,13 @@ appUi.directive('cSection', function ($compile) {
             node: '='
         },
         template: '<div class="card" id="{{node._d}}">' +
-                '<div class="card-main" id="test_id">' +
-                '<div class="card-inner">' +
-                '<p ng-if="node._a.title.value" class="card-heading" ng-bind="node._a.title.value"></p>' +
-                '<div class="row" id="{{node._d}}-body">' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
+                '   <div class="card-main" id="test_id">' +
+                '       <div class="card-inner">' +
+                '           <p ng-if="node._a.title.value" class="card-heading" ng-bind="node._a.title.value"></p>' +
+                '           <div class="row" id="{{node._d}}-body">' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>' +
                 '</div>',
         link: function (scope, element, attrs) {
             if (angular.isArray(scope.node._c)) {
@@ -52,9 +52,9 @@ appUi.directive('cTextInput', function ($compile) {
             node: '='
         },
         template: '<div class="form-group form-group-label" id="{{node._d}}">' +
-                '<label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
-                '<input class="form-control" ng-model="node._a.value.value" id="{{node._d}}-type" ng-if="!node._a.multi_line.value" type="{{node._a.input_type.value}}">' +
-                '<textarea class="form-control textarea-autosize"  ng-model="node._a.value.value" ng-if="node._a.multi_line.value" rows="1"></textarea>' +
+                '       <label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
+                '       <input class="form-control" ng-model="node._a.value.value" id="{{node._d}}-type" ng-if="!node._a.multi_line.value" type="{{node._a.input_type.value}}">' +
+                '       <textarea class="form-control textarea-autosize"  ng-model="node._a.value.value" ng-if="node._a.multi_line.value" rows="1"></textarea>' +
                 '</div>',
         link: function (scope, element, attrs) {
         },
@@ -71,8 +71,8 @@ appUi.directive('cDatePicker', function () {
             node: '='
         },
         template: '<div class="form-group form-group-label" id="{{node._d}}">' +
-                '<label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
-                '<input class="form-control" ng-model="node._a.value.value"  type="date">' +
+                '       <label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
+                '       <input class="form-control" ng-model="node._a.value.value"  type="date">' +
                 '</div>',
         link: function (scope, element, attrs) {
 
@@ -87,8 +87,8 @@ appUi.directive('cTimePicker', function () {
             node: '='
         },
         template: '<div class="form-group form-group-label" id="{{node._d}}">' +
-                '<label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
-                '<input class="form-control" ng-model="node._a.value.value"  type="time">' +
+                '       <label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
+                '       <input class="form-control" ng-model="node._a.value.value"  type="time">' +
                 '</div>',
         link: function (scope, element, attrs) {
 
@@ -103,11 +103,11 @@ appUi.directive('cSwitch', function () {
             node: '='
         },
         template: '<div class="form-group">' +
-                '<div class="checkbox switch">' +
-                '<label for="{{node._d}}">' +
-                '<input checked="" ng-model="node._a.value.value" class="access-hide" id="{{node._d}}" name="{{node._d}}" type="checkbox"><span class="switch-toggle"></span>{{node._a.label.value}}' +
-                '</label>' +
-                '</div>' +
+                '       <div class="checkbox switch">' +
+                '           <label for="{{node._d}}">' +
+                '               <input checked="" ng-model="node._a.value.value" class="access-hide" id="{{node._d}}" name="{{node._d}}" type="checkbox"><span class="switch-toggle"></span>{{node._a.label.value}}' +
+                '           </label>' +
+                '       </div>' +
                 '</div>',
         link: function (scope, element, attrs) {
 
@@ -122,17 +122,17 @@ appUi.directive('cSingleOption', function () {
             node: '='
         },
         template: '<div class="form-group" id="{{node._d}}">' +
-                '<div class="col-sm-12" style="margin-bottom: 0px">' +
-                '<label for="{{node._d}}">{{node._a.label.value}}</label>' +
-                '</div>' +
-                '<div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in node._a.options.value">' +
-                '<div class="radiobtn  radiobtn-adv radiobtn-inline">' +
-                '<label for="{{node._d+\'_option\'+$index}}">' +
-                '<input class="access-hide" ng-model="node._a.value.value" name="{{node._d+\'_option\'}}" value="{{op}}" id="{{node._d+\'_option\'+$index}}" type="radio">{{op}}' +
-                '<span class="radiobtn-circle"></span><span class="radiobtn-circle-check"></span>' +
-                '</label>' +
-                '</div>' +
-                '</div>' +
+                '   <div class="col-sm-12" style="margin-bottom: 0px">' +
+                '       <label for="{{node._d}}">{{node._a.label.value}}</label>' +
+                '   </div>' +
+                '   <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in node._a.options.value">' +
+                '       <div class="radiobtn  radiobtn-adv radiobtn-inline">' +
+                '           <label for="{{node._d+\'_option\'+$index}}">' +
+                '           <input class="access-hide" ng-model="node._a.value.value" name="{{node._d+\'_option\'}}" value="{{op}}" id="{{node._d+\'_option\'+$index}}" type="radio">{{op}}' +
+                '           <span class="radiobtn-circle"></span><span class="radiobtn-circle-check"></span>' +
+                '           </label>' +
+                '       z</div>' +
+                '   </div>' +
                 '</div>',
         link: function (scope, element, attrs) {
 
@@ -194,7 +194,7 @@ appUi.directive('cFileAttach', function () {
                 '           </div>' +
                 '		<div class="card-inner">' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-repeat="f in node._a.value.value">' +
+                '				<div class="tile" ng-repeat="(f,v) in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -208,7 +208,7 @@ appUi.directive('cFileAttach', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">file name.pdf</span>' +
+                '						<span class="text-overflow">{{getName(v)}}</span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
@@ -237,12 +237,22 @@ appUi.directive('cFileAttach', function () {
 
         },
         controller: function ($scope) {
+            $scope.node._a.value.value=$scope.node._a.value.value||[];
+            
+            $scope.getName = function (path) {
+                var arr = path.split("/");
+                return arr[arr.length - 1].toUpperCase();
+            };
+            
             $scope.clearAll = function () {
-
+                $scope.node._a.value.value = [];
             };
 
             $scope.fnScanFile = function () {
-
+                window.Device.captureFile(function (data) {
+                    $scope.node._a.value.value.push({file: data});
+                    $scope.$apply();
+                });
             };
             $scope.fnSelectFile = function () {
 
@@ -268,7 +278,7 @@ appUi.directive('cPhotoAttach', function () {
                 '		<div class="card-inner">' +
                 '                       <div class="text-brand" ng-if="!node._a.value.value.length">No data</div>' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-repeat="(f,v) in node._a.value.value">' +
+                '				<div class="tile" ng-click="showFile(v)" ng-repeat="(f,v) in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -299,12 +309,16 @@ appUi.directive('cPhotoAttach', function () {
 
         },
         controller: function ($scope) {
+            $scope.node._a.value.value=$scope.node._a.value.value||[];
             $scope.clearAll = function () {
                 $scope.node._a.value.value = [];
             };
             $scope.getName = function (path) {
                 var arr = path.split("/");
                 return arr[arr.length - 1].toUpperCase();
+            };
+            $scope.showFile=function(file){
+                window.Device.openFile(file,"I");
             };
             $scope.scanPhoto = function () {
                 window.Device.capturePhoto(function (data) {
@@ -581,7 +595,7 @@ appUi.directive('cVideoRecord', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">{{node._a.durations.value}}</span>' +
+                '						<span class="text-overflow">{{node._a.durations.value}} sec</span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
