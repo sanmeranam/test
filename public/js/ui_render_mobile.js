@@ -237,13 +237,13 @@ appUi.directive('cFileAttach', function () {
 
         },
         controller: function ($scope) {
-            $scope.node._a.value.value=$scope.node._a.value.value||[];
-            
+            $scope.node._a.value.value = $scope.node._a.value.value || [];
+
             $scope.getName = function (path) {
                 var arr = path.split("/");
                 return arr[arr.length - 1].toUpperCase();
             };
-            
+
             $scope.clearAll = function () {
                 $scope.node._a.value.value = [];
             };
@@ -309,7 +309,7 @@ appUi.directive('cPhotoAttach', function () {
 
         },
         controller: function ($scope) {
-            $scope.node._a.value.value=$scope.node._a.value.value||[];
+            $scope.node._a.value.value = $scope.node._a.value.value || [];
             $scope.clearAll = function () {
                 $scope.node._a.value.value = [];
             };
@@ -317,8 +317,8 @@ appUi.directive('cPhotoAttach', function () {
                 var arr = path.split("/");
                 return arr[arr.length - 1].toUpperCase();
             };
-            $scope.showFile=function(file){
-                window.Device.openFile(file,"I");
+            $scope.showFile = function (file) {
+                window.Device.openFile(file, "I");
             };
             $scope.scanPhoto = function () {
                 window.Device.capturePhoto(function (data) {
@@ -545,16 +545,16 @@ appUi.directive('cAudioRecord', function () {
         link: function (scope, element, attrs) {
 
         },
-        controller:function($scope){
-            $scope.clear=function(){
-                $scope.node._a.value.value="";
+        controller: function ($scope) {
+            $scope.clear = function () {
+                $scope.node._a.value.value = "";
             };
-            $scope.play=function(){
+            $scope.play = function () {
                 if ($scope.node._a.value.value) {
-                    window.Device.openFile($scope.node._a.value.value.audio,"A");
+                    window.Device.openFile($scope.node._a.value.value.audio, "A");
                 }
             };
-            $scope.recordAudio=function(){
+            $scope.recordAudio = function () {
                 window.Device.captureAudio($scope.node._a.durations.value, function (data) {
                     $scope.node._a.value.value = {audio: data};
                     $scope.$apply();
@@ -613,7 +613,7 @@ appUi.directive('cVideoRecord', function () {
         },
         controller: function ($scope) {
             $scope.clear = function () {
-                $scope.node._a.value.value="";
+                $scope.node._a.value.value = "";
             };
             $scope.captureVideo = function () {
                 window.Device.captureVideo($scope.node._a.durations.value, function (data) {
@@ -623,7 +623,7 @@ appUi.directive('cVideoRecord', function () {
             };
             $scope.play = function () {
                 if ($scope.node._a.value.value) {
-                    window.Device.openFile($scope.node._a.value.value.video,"V");
+                    window.Device.openFile($scope.node._a.value.value.video, "V");
                 }
             };
 
@@ -680,10 +680,13 @@ appUi.directive('cSignInput', function () {
         },
         controller: function ($scope) {
             $scope.fnClear = function () {
-                $scope.node._a.value.value == "";
+                $scope.node._a.value.value = "";
             };
             $scope.fnCapture = function () {
-
+                window.Device.captureSign(function (data) {
+                    $scope.node._a.value.value= {image: data};
+                    $scope.$apply();
+                });
             };
         }
     };
@@ -720,7 +723,7 @@ appUi.directive('cLocation', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow" ng-bind="node._a.value.value"></span>' +
+                '						<span class="text-overflow" ng-bind="node._a.value.value|json"></span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
@@ -743,11 +746,20 @@ appUi.directive('cLocation', function () {
             };
 
             $scope.fnNavigate = function () {
+                if ($scope.node._a.value.value) {
+                    window.Device.openMap($scope.node._a.value.value.lat, $scope.node._a.value.value.lng);
+                }
 
             };
 
             $scope.fnUpdate = function () {
-
+                window.Device.getGeoLocation(function (lat, lng) {
+                    $scope.node._a.value.value = {
+                        lat: lat,
+                        lng: lng
+                    };
+                    $scope.$apply();
+                });
             };
         }
     };
@@ -774,7 +786,7 @@ appUi.directive('cBarcodeScan', function () {
         },
         template: '<div class="form-group form-group-label">' +
                 '	<label class="floating-label" for="{{node._d}}">{{node._a.label.value}}</label>' +
-                '	<input class="form-control width90" id="{{node._d}}" type="text">' +
+                '	<input class="form-control width90" id="{{node._d}}" ng-model="node._a.value.value" type="text">' +
                 '	<a ng-click="fnScanBarcode()" class="btn waves-attach"><i class="fa fa-qrcode"></i></a>' +
                 '</div>',
         link: function (scope, element, attrs) {
@@ -782,7 +794,10 @@ appUi.directive('cBarcodeScan', function () {
         },
         controller: function ($scope) {
             $scope.fnScanBarcode = function () {
-
+                window.Device.scanBarcode(function (data) {
+                    $scope.node._a.value.value = data;
+                    $scope.$apply();
+                });
             };
         }
     };

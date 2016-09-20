@@ -34,6 +34,21 @@ if (window.FC) {
             this.queue[uNum] = callback;
             FC.captureSign(uNum, 'window.Device.callback');
         },
+        scanBarcode: function (callback) {
+            var uNum = fnGetNum();
+            this.queue[uNum] = callback;
+            FC.scanBarcode(uNum, 'window.Device.callback');
+        },
+        getGeoLocation: function (callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position){
+                    callback(position.coords.latitude,position.coords.longitude);
+                });
+            }
+        },
+        openMap: function (lat, lng) {
+            FC.openMap(lat, lng)
+        },
         openFile: function (file, type) {
             switch (type) {
                 case "A":
