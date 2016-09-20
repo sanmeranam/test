@@ -11,26 +11,12 @@
                     "type": "string",
                     "value": "<Section Title>"
                 },
-                "theme": {
-                    "type": "options",
-                    "value": "NONE",
-                    "list": ["NONE","GRAY","GRAY-SOLID","GREEN","GREEN-SOLID","BLUE","BLUE-SOLID","ORANGE","ORANGE-SOLID","RED","RED-SOLID"]
-                },
-                "collapsible": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "columns": {
                     "type": "number",
                     "value": 2,
                     "min": 1,
                     "max": 4,
                     "step": 1
-                },
-                "scope": {
-                    "type": "list",
-                    "value": [],
-                    "source": "$user_group"
                 }
             }
         },
@@ -47,10 +33,6 @@
                 "value": {
                     "type": "string",
                     "value": ""
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "hints": {
                     "type": "string",
@@ -91,10 +73,6 @@
                     "type": "date",
                     "value": ""
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "format": {
                     "type": "string",
                     "value": "ddmmyyyy"
@@ -117,10 +95,6 @@
                 "value": {
                     "type": "time",
                     "value": ""
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "format": {
                     "type": "string",
@@ -165,10 +139,6 @@
                     "type": "string",
                     "value": ""
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "options": {
                     "type": "list",
                     "value": ["option 1"]
@@ -196,10 +166,6 @@
                 "value": {
                     "type": "string",
                     "value": ""
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "options": {
                     "type": "list",
@@ -231,10 +197,6 @@
                     "hidden": true,
                     "mime": "application/pdf"
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "scan": {
                     "type": "boolean",
                     "value": true
@@ -263,10 +225,6 @@
                     "value": "",
                     "hidden": true,
                     "mime": "image/png"
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "crop": {
                     "type": "boolean",
@@ -300,10 +258,6 @@
                     "type": "number",
                     "value": 0,
                     "step": 0.5
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "stars": {
                     "type": "number",
@@ -456,10 +410,6 @@
                     "type": "list",
                     "value": []
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "columns": {
                     "type": "list",
                     "value": ["col_name 1", "col_name 2"]
@@ -498,10 +448,6 @@
                     "value": "",
                     "mime": "audio/wav"
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "durations": {
                     "type": "number",
                     "value": 10,
@@ -527,10 +473,6 @@
                     "type": "binary",
                     "value": "",
                     "mime": "video/mp4"
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "durations": {
                     "type": "number",
@@ -563,10 +505,6 @@
                     "value": "",
                     "hidden": true
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "name": {
                     "type": "boolean",
                     "value": false
@@ -595,10 +533,6 @@
                     "type": "string",
                     "value": ""
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "address": {
                     "type": "string",
                     "value": ""
@@ -622,10 +556,6 @@
                     "type": "string",
                     "value": ""
                 },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
-                },
                 "hints": {
                     "type": "string",
                     "value": ""
@@ -644,10 +574,6 @@
                 "value": {
                     "type": "string",
                     "value": ""
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "editable": {
                     "type": "boolean",
@@ -671,10 +597,6 @@
                 "value": {
                     "type": "list",
                     "value": []
-                },
-                "mandatory": {
-                    "type": "boolean",
-                    "value": false
                 },
                 "items": {
                     "type": "list",

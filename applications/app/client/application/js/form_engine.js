@@ -1,6 +1,6 @@
 var FormEngine = {
     init: function () {
-        this.app = angular.module('FormApp', ['ui_render_mobile','ngSanitize']);
+        this.app = angular.module('FormApp', ['ui_render_mobile', 'ngSanitize']);
     },
     defineController: function (name, fn) {
         this.app.controller(name, fn);
@@ -21,28 +21,28 @@ FormEngine.defineController('RootController', function ($scope) {
 
     $scope.form_meta = angular.copy(FormMeta);
     $scope.model = $scope.form_meta.model_view;
-    $scope.currentPage = 0;
-    $scope.text = "section.html";
+
     $scope.aPages = Object.keys($scope.form_meta.model_view);
+    $scope.currentPage = 0;
 
-    $scope.switchPage = function (iPageIndex) {
-        $scope.currentPage = iPageIndex;
-    };
-
-    $scope.navPage = function (idx) {
-        $scope.currentPage = $scope.currentPage + idx;
-        if ($scope.currentPage < 0)
-            $scope.currentPage = 0;
+    $scope.nextPage = function () {
+        $scope.currentPage++;
         if ($scope.currentPage > $scope.aPages.length - 1) {
             $scope.currentPage = $scope.aPages.length - 1;
         }
-        $scope.initPluginBind();
     };
+
+    $scope.prevPage = function () {
+        $scope.currentPage--;
+        if ($scope.currentPage < 0) {
+            $scope.currentPage = 0;
+        }
+    };
+
 
     $scope.getPageModel = function () {
         if ($scope.model && $scope.aPages)
-            return $scope.model[$scope.aPages[$scope.currentPage]]._c;
-        $scope.initPluginBind();
+            return $scope.model[$scope.aPages[$scope.currentPage]];
         return null;
     };
 

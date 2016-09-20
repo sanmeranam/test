@@ -28,7 +28,19 @@ html(lang='en', ng-app='FormApp', ng-controller='RootController')
         .row
           .col-lg-6.col-lg-push-3.col-sm-10.col-sm-push-1(style='padding: 0px;')
             section.content-inner.margin-top-no
-                c:page(ng-repeat='(k,v) in model',node='v')              
+                    Page {{currentPage+1}}/{{aPages.length}}
+                c:page(node='getPageModel()')    
+    .fbtn-container(ng-if="aPages.length>1")
+      .fbtn-inner
+        a.fbtn.fbtn-sm.fbtn-brand-accent.waves-attach.waves-circle.waves-light.waves-effect(ng-click="nextPage()")
+          span.fbtn-text.fbtn-text-left Links
+          span.fbtn-ori.icon navigate_next
+          span.fbtn-sub.icon close 
+        span(style="padding-left: 10px;") {{currentPage+1}}/{{aPages.length}}
+        a.fbtn.fbtn-sm.fbtn-brand-accent.waves-attach.waves-circle.waves-light.waves-effect(ng-click="prevPage()")
+          span.fbtn-text.fbtn-text-left Links
+          span.fbtn-ori.icon chevron_left
+          span.fbtn-sub.icon close 
     #ui_dialog_confirm.modal.modal-va-middle.fade(aria-hidden='true', role='dialog', tabindex='-1')
       .modal-dialog.modal-xs
         .modal-content
