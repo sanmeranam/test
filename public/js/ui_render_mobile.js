@@ -722,7 +722,7 @@ appUi.directive('cLocation', function () {
                 '					<div class="tile-action tile-action-show">' +
                 '						<ul class="nav nav-list margin-no pull-right">' +
                 '							<li>' +
-                '								<a class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">navigation</span></a>' +
+                '								<a ng-click="fnNavigate()" class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">navigation</span></a>' +
                 '							</li>' +
                 '						</ul>' +
                 '					</div>' +
@@ -734,9 +734,9 @@ appUi.directive('cLocation', function () {
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear</a>' +
+                '				<a ng-click="fnClear()" class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear</a>' +
                 '' +
-                '				<a class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">place</span>&nbsp;Update</a>' +
+                '				<a ng-click="fnUpdate()" class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">place</span>&nbsp;Update</a>' +
                 '			</div>' +
                 '		</div>' +
                 '	</div>' +
