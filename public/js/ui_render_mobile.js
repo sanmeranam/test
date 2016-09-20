@@ -215,7 +215,7 @@ appUi.directive('cFileAttach', function () {
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
+                '				<a ng-click="clearAll()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
                 '				<ul class="nav nav-list margin-no pull-right">' +
                 '					<li class="dropdown">' +
                 '						<a class="dropdown-toggle btn btn-flat text-black waves-attach waves-effect" data-toggle="dropdown" aria-expanded="true"><span class="icon">keyboard_arrow_down</span>&nbsp;Add File</a><div class="dropdown-backdrop"></div>' +
@@ -266,9 +266,9 @@ appUi.directive('cPhotoAttach', function () {
                 '               <div class="card-title" style="font-size: 80%;padding-left: 10px;">{{node._a.label.value}}</div>' +
                 '           </div>' +
                 '		<div class="card-inner">' +
-                '                       <div class="text-brand" ng-if="!node._a.value.value">No data</div>' +
+                '                       <div class="text-brand" ng-if="!node._a.value.value.length">No data</div>' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-repeat="f in node._a.value.value">' +
+                '				<div class="tile" ng-repeat="(f,v) in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -282,14 +282,14 @@ appUi.directive('cPhotoAttach', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">file name.pdf</span>' +
+                '						<span class="text-overflow" ng-bind="getName(v)"></span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
+                '				<a ng-click="clearAll()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
                 '				<a ng-click="scanPhoto()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
                 '			</div>' +
                 '		</div>' +
@@ -300,12 +300,16 @@ appUi.directive('cPhotoAttach', function () {
         },
         controller: function ($scope) {
             $scope.clearAll = function () {
-                $scope.node._a.value.value=[];
+                $scope.node._a.value.value = [];
             };
-
+            $scope.getName = function (path) {
+                var arr = path.split("/");
+                return arr[arr.length - 1].toUpperCase();
+            };
             $scope.scanPhoto = function () {
-                window.Device.capturePhoto(function(data){
-                    alert(data); 
+                window.Device.capturePhoto(function (data) {
+                    $scope.node._a.value.value.push({image: data});
+                    $scope.$apply();
                 });
             };
         }
@@ -441,7 +445,7 @@ appUi.directive('cMatrixSelection', function () {
         scope: {
             node: '='
         },
-        template: '<div class="col-sm-12" style="padding:0;overflow: auto;">' +                
+        template: '<div class="col-sm-12" style="padding:0;overflow: auto;">' +
                 '		<label for="{{node._d}}">{{node._a.label.value}}</label>' +
                 '		<table class="table">' +
                 '			<thead>' +
@@ -472,7 +476,7 @@ appUi.directive('cMatrixSelection', function () {
                 '					</td>' +
                 '				</tr>' +
                 '			</tbody>' +
-                '		</table>' +                
+                '		</table>' +
                 '</div>',
         link: function (scope, element, attrs) {
 
@@ -556,25 +560,42 @@ appUi.directive('cVideoRecord', function () {
                 '					<div class="tile-action tile-action-show">' +
                 '						<ul class="nav nav-list margin-no pull-right">' +
                 '							<li>' +
-                '								<a class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">play_arrow</span></a>' +
+                '								<a  ng-click="play()" class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">play_arrow</span></a>' +
                 '							</li>' +
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">00:10</span>' +
+                '						<span class="text-overflow">{{node._a.durations.value}}</span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear</a>' +
-                '				<a class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">video_call</span>&nbsp;Record</a>' +
+                '				<a ng-click="clear()" class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear</a>' +
+                '				<a ng-click="captureVideo()" class="btn btn-flat waves-attach waves-effect" href="javascript:void(0)"><span class="icon">video_call</span>&nbsp;Record</a>' +
                 '			</div>' +
                 '		</div>' +
                 '	</div>' +
                 '</div>',
         link: function (scope, element, attrs) {
+
+        },
+        controller: function ($scope) {
+            $scope.clear = function () {
+                $scope.node._a.value.value="";
+            };
+            $scope.captureVideo = function () {
+                window.Device.captureVideo($scope.node._a.durations.value, function (data) {
+                    $scope.node._a.value.value = {video: data};
+                    $scope.$apply();
+                });
+            };
+            $scope.play = function () {
+                if ($scope.node._a.value.value) {
+                    window.Device.playFile($scope.node._a.value.value.video,"V");
+                }
+            };
 
         }
     };
