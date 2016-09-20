@@ -515,21 +515,37 @@ appUi.directive('cAudioRecord', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">file name.pdf</span>' +
+                '						<span class="text-overflow">{{node._a.durations.value}} sec</span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
-                '				<a class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
+                '				<a ng-click="clear()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
+                '				<a ng-click="recordAudio()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
                 '			</div>' +
                 '		</div>' +
                 '	</div>' +
                 '</div>',
         link: function (scope, element, attrs) {
 
+        },
+        controller:function($scope){
+            $scope.clear=function(){
+                $scope.node._a.value.value="";
+            };
+            $scope.play=function(){
+                if ($scope.node._a.value.value) {
+                    window.Device.openFile($scope.node._a.value.value.video,"A");
+                }
+            };
+            $scope.recordAudio=function(){
+                window.Device.captureAudio($scope.node._a.durations.value, function (data) {
+                    $scope.node._a.value.value = {audio: data};
+                    $scope.$apply();
+                });
+            };
         }
     };
 });
@@ -593,7 +609,7 @@ appUi.directive('cVideoRecord', function () {
             };
             $scope.play = function () {
                 if ($scope.node._a.value.value) {
-                    window.Device.playFile($scope.node._a.value.value.video,"V");
+                    window.Device.openFile($scope.node._a.value.value.video,"V");
                 }
             };
 
