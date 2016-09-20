@@ -42,28 +42,34 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     GlobalConfig.load({context: 'db_new_form'}, function (data) {
         $scope._newFormMetaStruct = data[0].value;
     });
-    
-    $scope.sCurrentStage=null;
+
+    $scope.sCurrentStage = null;
 
     $scope.stageChange = function (stage) {
         switch (stage) {
             case "NEW":
-                $scope.sCurrentStage=stage;
+                $scope.sCurrentStage = stage;
                 break;
             case "DATA":
-                $scope.sCurrentStage=stage;
+                $scope.sCurrentStage = stage;
                 break;
             case "EDIT":
-                $scope.SelectedFormView=1;
-                $scope.sCurrentStage=stage;
+                $scope.SelectedFormView = 1;
+                $scope.sCurrentStage = stage;
                 break;
             case "HIST":
-                $scope.sCurrentStage=stage;
+                $scope.sCurrentStage = stage;
                 break;
             default:
-                $scope.sCurrentStage=null;
+                $scope.sCurrentStage = null;
         }
     };
+
+    $scope.changeStatus = function (frm, stat) {
+        frm.state = stat;
+        $scope.saveChanges(frm);
+    };
+
 
     $scope.loadFormMeta = function () {
         $scope._loadingForms = true;
@@ -107,7 +113,7 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     });
 
     $scope.onSelectForm = function (item) {
-        $scope.SelectedFormMeta = item;        
+        $scope.SelectedFormMeta = item;
         $scope.$broadcast('FormItemSelected', item);
     };
     $scope.onCloneForm = function () {
@@ -159,9 +165,9 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     $scope.onCreateForm = function () {
         $scope.SelectedFormMeta = null;
         $scope.SelectedFormView = 0;
-         
-        $scope.sCurrentStage="NEW";
-           
+
+        $scope.sCurrentStage = "NEW";
+
         var newForm = JSON.stringify($scope._newFormMetaStruct);
 
         newForm = newForm.replace("{{flow_id}}", Math.floor(Math.random() * 9999999));
@@ -184,6 +190,16 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
         }
         $scope.stageChange("");
     };
+
+    $scope.saveChanges = function (frm, bRefresh) {
+        
+        FormMeta.save({id: frm._id},frm, function (result) {
+            if (bRefresh) {
+                $scope.loadFormMeta();
+            }
+        });
+    };
+
     $scope.onUpdateForm = function (changeTitle, bRefresh) {
         if (changeTitle) {
             $scope.SelectedFormMeta.history.modified.push({
@@ -193,7 +209,8 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
             });
         }
         bRefresh = bRefresh || true;
-
+        
+        $scope.SelectedFormMeta.version++;
         FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function (result) {
             if (bRefresh) {
                 $scope.loadFormMeta();

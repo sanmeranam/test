@@ -28,7 +28,6 @@ html(lang='en', ng-app='FormApp', ng-controller='RootController')
         .row
           .col-lg-6.col-lg-push-3.col-sm-10.col-sm-push-1(style='padding: 0px;')
             section.content-inner.margin-top-no
-                    Page {{currentPage+1}}/{{aPages.length}}
                 c:page(node='getPageModel()')    
     .fbtn-container(ng-if="aPages.length>1")
       .fbtn-inner

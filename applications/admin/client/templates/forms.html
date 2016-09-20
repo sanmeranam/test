@@ -43,8 +43,8 @@
                             <li><a href="javascript:void(0)" ng-click="stageChange('');onSelectForm(frm);stageChange('EDIT')">Edit</a></li>
                             <li><a href="javascript:void(0)" ng-click="onSelectForm(frm);stageChange('HIST')">History</a></li>
                             <li role="separator" class="divider"></li>
-                            <li ng-if="frm.state == 1"><a href="#">Deactivate</a></li>
-                            <li ng-if="frm.state != 1"><a href="#">Activate</a></li>
+                            <li ng-if="frm.state == 1"><a ng-click="changeStatus(frm,2)" href="#">Deactivate</a></li>
+                            <li ng-if="frm.state != 1"><a ng-click="changeStatus(frm,1)" href="#">Activate</a></li>
                         </ul>
                     </div>
 
