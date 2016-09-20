@@ -524,7 +524,7 @@ appUi.directive('cAudioRecord', function () {
                 '					<div class="tile-action tile-action-show">' +
                 '						<ul class="nav nav-list margin-no pull-right">' +
                 '							<li>' +
-                '								<a class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span></a>' +
+                '								<a ng-click="play()" class="text-black-sec waves-attach waves-effect" href="javascript:void(0)"><span class="icon">play_arrow</span></a>' +
                 '							</li>' +
                 '						</ul>' +
                 '					</div>' +
@@ -536,7 +536,7 @@ appUi.directive('cAudioRecord', function () {
                 '		</div>' +
                 '		<div class="card-action">' +
                 '			<div class="card-action-btn pull-left">' +
-                '				<a ng-click="clear()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear All</a>' +
+                '				<a ng-click="clear()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">delete</span>&nbsp;Clear</a>' +
                 '				<a ng-click="recordAudio()" class="btn btn-flat ng-show="node._a.value.value.length" waves-attach waves-effect" href="javascript:void(0)"><span class="icon">monochrome_photos</span>&nbsp;Capture</a>' +
                 '			</div>' +
                 '		</div>' +
@@ -551,7 +551,7 @@ appUi.directive('cAudioRecord', function () {
             };
             $scope.play=function(){
                 if ($scope.node._a.value.value) {
-                    window.Device.openFile($scope.node._a.value.value.video,"A");
+                    window.Device.openFile($scope.node._a.value.value.audio,"A");
                 }
             };
             $scope.recordAudio=function(){
