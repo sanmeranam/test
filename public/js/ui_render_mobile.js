@@ -194,7 +194,7 @@ appUi.directive('cFileAttach', function () {
                 '           </div>' +
                 '		<div class="card-inner">' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-repeat="(f,v) in node._a.value.value">' +
+                '				<div class="tile" ng-repeat="f in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -208,7 +208,7 @@ appUi.directive('cFileAttach', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow">{{getName(v)}}</span>' +
+                '						<span class="text-overflow">{{getName(f.file)}}</span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
@@ -278,7 +278,7 @@ appUi.directive('cPhotoAttach', function () {
                 '		<div class="card-inner">' +
                 '                       <div class="text-brand" ng-if="!node._a.value.value.length">No data</div>' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-click="showFile(v)" ng-repeat="(f,v) in node._a.value.value">' +
+                '				<div class="tile" ng-click="showFile(v)" ng-repeat="f in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -292,7 +292,7 @@ appUi.directive('cPhotoAttach', function () {
                 '						</ul>' +
                 '					</div>' +
                 '					<div class="tile-inner">' +
-                '						<span class="text-overflow" ng-bind="getName(v)"></span>' +
+                '						<span class="text-overflow" ng-bind="getName(f.image)"></span>' +
                 '					</div>' +
                 '				</div>' +
                 '			</div>' +
