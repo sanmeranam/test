@@ -194,7 +194,7 @@ appUi.directive('cFileAttach', function () {
                 '           </div>' +
                 '		<div class="card-inner">' +
                 '			<div class="tile-wrap">' +
-                '				<div class="tile" ng-repeat="f in node._a.value.value">' +
+                '				<div class="tile" ng-click="showFile(f.file)" ng-repeat="f in node._a.value.value">' +
                 '					<div class="tile-side pull-left">' +
                 '						<div class="avatar avatar-sm avatar-brand">' +
                 '							<span class="icon">insert_drive_file</span>' +
@@ -246,6 +246,10 @@ appUi.directive('cFileAttach', function () {
 
             $scope.clearAll = function () {
                 $scope.node._a.value.value = [];
+            };
+            
+            $scope.showFile = function (file) {
+                window.Device.openFile(file,"P");
             };
 
             $scope.fnScanFile = function () {

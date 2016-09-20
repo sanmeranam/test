@@ -4,9 +4,9 @@ var fnGetNum = function () {
 if (window.FC) {
     window.Device = {
         queue: {},
-        callback: function (sId, data) {
+        callback: function (sId, data1,data2,data3,data4) {
             if (window.Device.queue[sId]) {
-                window.Device.queue[sId](data);
+                window.Device.queue[sId](data1,data2,data3,data4);
             }
         },
         capturePhoto: function (callback) {
@@ -39,12 +39,10 @@ if (window.FC) {
             this.queue[uNum] = callback;
             FC.scanBarcode(uNum, 'window.Device.callback');
         },
-        getGeoLocation: function (callback) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position){
-                    callback(position.coords.latitude,position.coords.longitude);
-                });
-            }
+        getGeoLocation: function (callback) {            
+            var uNum = fnGetNum();
+            this.queue[uNum] = callback;
+            FC.captureGPS(uNum, 'window.Device.callback');
         },
         openMap: function (lat, lng) {
             FC.openMap(lat, lng)
