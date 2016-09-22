@@ -185,7 +185,7 @@ var helper = {
                         if (oData) {
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:formsMeta.model_view};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:v.model_view};
                                 });
                                 res.json(helper.services._createSuccessPacket(formsMeta, true));
                             });
@@ -219,7 +219,7 @@ var helper = {
 
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:formsMeta.model_view};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:v.model_view};
                                 });
 
                                 delete(oData.profile);
