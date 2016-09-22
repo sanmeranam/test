@@ -53,9 +53,10 @@ app.use(session({
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-app.use(busboy());//File uploader
+
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(busboy());//File uploader
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -66,6 +67,7 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
     req.GLOBAL = GLOBAL;
     req.db = oDBConnect;
+    req.up=isWin ? oConfig.files.upload_path : oConfig.files.upload_path_unix;
     next();
 });
 

@@ -26,7 +26,7 @@
         "www", "secure", "api", "remoiot", "admin", "forms", "static", "http", "https", "ftp", "ssl", "ssh", "sftp", "remoiotdigital", "design","account","create"
     ],
     "files": {
-        "upload_path": "D:/test_files",
+        "upload_path": "C:/Users/I326482/Desktop/connect/dummy",
         "upload_path_unix": "/home/uploaded"
     },
     "http_auth": {

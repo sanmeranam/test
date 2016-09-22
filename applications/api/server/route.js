@@ -34,6 +34,9 @@ router.post("/service/config/onmessage", helper.services.onmessage);
 router.post("/service/form/create", helper.services.createForm);
 router.post("/service/form/update", helper.services.updateForm);
 
+router.post("/service/file/upload", helper.services.fileUpload);
+router.get("/service/file/download", helper.services.fileDownload);
+
 router.get("/rest/:table", helper.rest.findAll);
 router.get("/rest/:table/:id", helper.rest.findById);
 router.get("/rest/:table/:key/:value", helper.rest.findByField);

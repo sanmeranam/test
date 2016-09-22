@@ -185,7 +185,7 @@ var helper = {
                         if (oData) {
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:v.model_view};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view};
                                 });
                                 res.json(helper.services._createSuccessPacket(formsMeta, true));
                             });
@@ -219,7 +219,7 @@ var helper = {
 
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version,model_view:v.model_view};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view};
                                 });
 
                                 delete(oData.profile);
@@ -272,10 +272,10 @@ var helper = {
                     res.set('Content-Type', 'image/png');
 
                     if (size) {
-                        size=parseInt(size);
+                        size = parseInt(size);
                         Jimp.read(binaryData, function (err, image) {
                             if (!err) {
-                                image.resize(size, size)    
+                                image.resize(size, size)
                                         .quality(60)
                                         .getBuffer('image/png', function (err, image) {
                                             res.send(image);
@@ -284,7 +284,7 @@ var helper = {
                         });
 
                     } else {
-                            res.send(binaryData);
+                        res.send(binaryData);
                     }
 
                 } else {
@@ -337,6 +337,64 @@ var helper = {
                     res.json(helper.services._createErrorPacket(err));
                 } else {
                     res.json(helper.services._createSuccessPacket(response));
+                }
+            });
+        },
+        fileUpload: function (req, res, next) {
+            var fstream;
+            req.pipe(req.busboy);
+            var tenant = req.tenant;
+
+            var fnGetMime = function (file) {
+                if (file.toLowerCase().indexOf(".pdf") > -1) {
+                    return "application/pdf";
+                }
+                if (file.toLowerCase().indexOf(".jpg") > -1 || file.toLowerCase().indexOf(".jpeg") > -1) {
+                    return "image/jpeg";
+                }
+
+                if (file.toLowerCase().indexOf(".png") > -1) {
+                    return "image/png";
+                }
+
+                if (file.toLowerCase().indexOf(".3gp") > -1) {
+                    return "video/3gpp";
+                }
+
+                if (file.toLowerCase().indexOf(".mp4") > -1) {
+                    return "video/mp4";
+                }
+                return "text/plain";
+            };
+
+            req.busboy.on('file', function (fieldname, file, filename) {
+                var sFilePath = req.up + "/" + filename;
+                fstream = fs.createWriteStream(sFilePath);
+                file.pipe(fstream);
+                fstream.on('close', function () {
+                    req.db.insertToTable(tenant.dbname + '.file_entry', {
+                        name: filename,
+                        path: sFilePath,
+                        field: fieldname,
+                        create: (new Date()).getTime(),
+                        mime: fnGetMime(filename)
+                    }, function (oResult) {
+                        res.json(helper.services._createSuccessPacket(oResult, false));
+                    });
+                });
+            });
+        },
+        fileDownload: function (req, res, next) {
+            var tenant = req.tenant;
+            var reqId = req.query.id;
+            req.db.findById(tenant.dbname + ".file_entry", reqId, function (result) {
+                if (result) {
+                    res.setHeader('Content-disposition', 'inline; filename=' + result.name);
+                    res.setHeader('Content-type', result.mime);
+                    var filestream = fs.createReadStream(result.path);
+                    filestream.pipe(res);
+                }else{
+                    res.end("File not found !!");
                 }
             });
         }
