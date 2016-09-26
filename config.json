@@ -8,7 +8,7 @@
     "server": {
         "port": 80,
         "domain": "localhost",
-        "domain_unix":"cloud4form.com"
+        "domain_unix":"egform.com"
     },
     "email": {
         "service": "Gmail",
