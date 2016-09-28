@@ -115,11 +115,11 @@ var helper = {
             };
         },
         createForm: function (req, res, next) {
-            var tenant = req.tenant.domain;
+            var tenant = req.tenant;
             var body = req.body;
             var user = body.session;
             var formId = body.formId;
-            var sTable = req.tenant.dbname + ".form_meta";
+            var sTable = tenant.dbname + ".form_data";
             req.db.findById(sTable, formId, function (resultForm) {
 //                if (resultForm && resultForm.state === 1) {
 //                    helper._local.getAllGroup(req, function (ug) {
@@ -342,8 +342,11 @@ var helper = {
         },
         fileUpload: function (req, res, next) {
             var fstream;
+            var oParams = req.query;
             req.pipe(req.busboy);
             var tenant = req.tenant;
+            var files = 0;
+            var fRes = [];
 
             var fnGetMime = function (file) {
                 if (file.toLowerCase().indexOf(".pdf") > -1) {
@@ -367,7 +370,9 @@ var helper = {
                 return "text/plain";
             };
 
+
             req.busboy.on('file', function (fieldname, file, filename) {
+                ++files;
                 var sFilePath = req.up + "/" + filename;
                 fstream = fs.createWriteStream(sFilePath);
                 file.pipe(fstream);
@@ -377,12 +382,19 @@ var helper = {
                         path: sFilePath,
                         field: fieldname,
                         create: (new Date()).getTime(),
-                        mime: fnGetMime(filename)
+                        mime: fnGetMime(filename),
+                        params: oParams
                     }, function (oResult) {
-                        res.json(helper.services._createSuccessPacket(oResult, false));
+                        fRes.push(oResult);
+                        if (files === fRes.length) {
+                            res.json(helper.services._createSuccessPacket(fRes, true));
+                        }
+
                     });
                 });
             });
+
+
         },
         fileDownload: function (req, res, next) {
             var tenant = req.tenant;
@@ -393,7 +405,7 @@ var helper = {
                     res.setHeader('Content-type', result.mime);
                     var filestream = fs.createReadStream(result.path);
                     filestream.pipe(res);
-                }else{
+                } else {
                     res.end("File not found !!");
                 }
             });
