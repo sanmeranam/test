@@ -51,7 +51,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                     html = "<a href='/service/file/audio?id="+data._v+"' target='_blank' ><i class='fa fa-music'></i></a>";
                     break;
                 case "video_record":
-                    html = "<a  href='/service/file/vide?id="+data._v+"' target='_blank'><i class='fa fa-play-circle'></i></a>";
+                    html = "<a  href='/service/file/video?id="+data._v+"' target='_blank'><i class='fa fa-play-circle'></i></a>";
                     break;
                 case "sign_input":
                     html = "<a  href='/service/file/image?id="+data._v+"' target='_blank'><i class='fa fa-pencil-square-o'></i></a>";
