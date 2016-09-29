@@ -257,7 +257,7 @@
                 "value": {
                     "type": "number",
                     "value": 0,
-                    "step": 0.5
+                    "step": 1
                 },
                 "stars": {
                     "type": "number",
@@ -275,7 +275,7 @@
     ],
     "display": [
         {
-            "_i": "fa-font",
+            "_i": "fa fa-font",
             "_t": "v",
             "_n": "heading",
             "_d": "heading_{1}",
@@ -348,9 +348,13 @@
                     "source": "$"
                 },
                 "space": {
-                    "type": "options",
-                    "value": "Relative",
-                    "list": ["Full", "Relative"]
+                    "type": "text",
+                    "value": "Full",
+                    "hidden":true
+                },
+                "source": {
+                    "type": "image",
+                    "value": ""
                 },
                 "size": {
                     "type": "number",
@@ -408,6 +412,7 @@
                 },
                 "value": {
                     "type": "list",
+                    "hidden":true,
                     "value": []
                 },
                 "columns": {
@@ -446,6 +451,7 @@
                 "value": {
                     "type": "binary",
                     "value": "",
+                    "hidden":true,
                     "mime": "audio/wav"
                 },
                 "durations": {
@@ -472,6 +478,7 @@
                 "value": {
                     "type": "binary",
                     "value": "",
+                    "hidden":true,
                     "mime": "video/mp4"
                 },
                 "durations": {
@@ -498,6 +505,7 @@
                 "value": {
                     "type": "binary",
                     "value": "",
+                    "hidden":true,
                     "mime": "image/png"
                 },
                 "name_value": {
@@ -531,6 +539,7 @@
                 },
                 "value": {
                     "type": "string",
+                    "hidden":true,
                     "value": ""
                 },
                 "address": {
@@ -554,6 +563,7 @@
                 },
                 "value": {
                     "type": "string",
+                    "hidden":true,
                     "value": ""
                 },
                 "hints": {

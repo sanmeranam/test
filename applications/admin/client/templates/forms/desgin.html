@@ -37,7 +37,7 @@
                    dnd-effect-allowed="copy"
                    dnd-copied="generateId(event)"
                    >
-                    <i class="ca fa" ng-class="item._i"></i> {{DesignerConfig.formatText(item._n)}}
+                    <i ng-class="item._i.indexOf('fa-')>-1?'fa '+item._i:'ca '+item._i"></i> {{DesignerConfig.formatText(item._n)}}
                 </a>
             </div>
         </div>
@@ -115,6 +115,8 @@
                             <input ng-switch-when="string" type="text" ng-model='DesignerConfig.selected._a[p].value' class="form-control">
 
                             <input ng-switch-when="date" type="date" ng-model='DesignerConfig.selected._a[p].value' class="form-control">
+                            
+                            <input ng-switch-when="image" type="file" onchange="angular.element(this).scope().DesignerConfig.imageSelect(this)" mind="{{p}}"  class="form-control">
 
                             <input ng-switch-when="time" type="time" ng-model='DesignerConfig.selected._a[p].value' class="form-control">
 

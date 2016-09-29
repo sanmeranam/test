@@ -12,14 +12,14 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         return true;
     };
 
-    $scope.keyPressed = function (e) {        
-        switch (e.which){
+    $scope.keyPressed = function (e) {
+        switch (e.which) {
             case 46://delete
                 $scope.DesignerConfig.evtRemove();
                 break;
         }
     };
-   
+
 
 
     $scope.DesignerConfig = {
@@ -56,29 +56,31 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             jQuery("#modalPageManager").modal("show");
         },
         getSectionClass: function (base) {
-            switch (base.theme.value) {
-                case "GRAY":
-                    return "box-default";
-                case "GRAY-SOLID":
-                    return "box-default box-solid";
-                case "GREEN":
-                    return "box-success";
-                case "GREEN-SOLID":
-                    return "box-solid box-success";
-                case "BLUE":
-                    return "box-info";
-                case "BLUE-SOLID":
-                    return "box-solid box-info";
-                case "ORANGE":
-                    return "box-warning";
-                case "ORANGE-SOLID":
-                    return "box-solid box-warning";
-                case "RED":
-                    return "box-danger";
-                case "RED-SOLID":
-                    return "box-solid box-danger";
-                default:
-                    return "";
+            if (base.theme) {
+                switch (base.theme.value) {
+                    case "GRAY":
+                        return "box-default";
+                    case "GRAY-SOLID":
+                        return "box-default box-solid";
+                    case "GREEN":
+                        return "box-success";
+                    case "GREEN-SOLID":
+                        return "box-solid box-success";
+                    case "BLUE":
+                        return "box-info";
+                    case "BLUE-SOLID":
+                        return "box-solid box-info";
+                    case "ORANGE":
+                        return "box-warning";
+                    case "ORANGE-SOLID":
+                        return "box-solid box-warning";
+                    case "RED":
+                        return "box-danger";
+                    case "RED-SOLID":
+                        return "box-solid box-danger";
+                    default:
+                        return "";
+                }
             }
         },
         getRateCal: function (max, val) {
@@ -104,6 +106,30 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         evtDropCallback: function (event, index, item, external, type) {
             item._d = item._d.replace("{1}", this._getRandomNumber(99999));
             return item;
+        },
+        imageSelect: function (file) {
+            var inz = jQuery(file).attr("mind");
+
+            if (file.files && file.files[0]) {
+                var FR = new FileReader();
+                FR.onload = function (e) {
+                    var image = new Image();
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+
+                    image.onload = function () {
+                        var min = Math.min(image.width, image.height);
+                        canvas.height = min;
+                        canvas.width = min;
+                        ctx.drawImage(image, 0, 0, min, min, 0, 0, min, min);
+                        
+                        $scope.DesignerConfig.selected._a[inz].value=canvas.toDataURL();
+                        $scope.$apply();
+                    };
+                    image.src = e.target.result;
+                };
+                FR.readAsDataURL(file.files[0]);
+            }
         },
         evtClone: function () {
             var oClone = angular.copy(this.selected);
@@ -137,11 +163,11 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
             }
         },
         evtRemove: function () {
-            if(!this.selected)
+            if (!this.selected)
                 return;
-            
+
             var selItem = this.selected;
-            
+
             var oParent, iIndex;
 
             this.visitModel(this.model, function (item, parent, index) {

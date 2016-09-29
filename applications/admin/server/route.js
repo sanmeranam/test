@@ -54,6 +54,11 @@ router.delete('/rest/:table/:id', helper.restDelete);
 router.get('/service/avtar', helper.getAvtar);
 router.get('/service/control_schema', helper.getControlSchema);
 
+router.get('/service/file/video', helper.getVideoFile);
+router.get('/service/file/image', helper.getImageFile);
+router.get('/service/file/audio', helper.getAudioFile);
+router.get('/service/file/pdf', helper.getPdfFile);
+
 router.get('/service/data_factory/list', helper.getGlobalConfig);
 router.get('/service/global/:context', helper.getGlobalConfig);
 router.get('/service/var/:context', helper.getGlobalVariables);

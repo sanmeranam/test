@@ -2,12 +2,12 @@
     <table id="datatable-buttons" class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th ng-repeat="hdr in BaseData.headers">{{hdr}}</th>
+                <th ng-repeat="hdr in BaseData[0].data">{{hdr._l}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="ele in BaseData.elements">
-                <td ng-repeat="hdr in BaseData.headers">{{ele[hdr]}}</td>
+            <tr ng-repeat="row in BaseData">
+                <td ng-repeat="col in row.data" align="center" ng-bind-html="TableViewConfig.parseCol(col)"></td>
             </tr>            
         </tbody>
     </table>
