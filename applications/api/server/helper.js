@@ -1,5 +1,6 @@
 var fs = require('fs');
 var Jimp = require("jimp");
+var path = require("path");
 var oFormFactory = require('../../../core/service/FormFactory');
 var oMessager = require('../../../core/service/MessageProcess');
 
@@ -399,10 +400,18 @@ var helper = {
             var reqId = req.query.id;
             req.db.findById(tenant.dbname + ".file_entry", reqId, function (result) {
                 if (result) {
-                    res.setHeader('Content-disposition', 'inline; filename=' + result.name);
-                    res.setHeader('Content-type', result.mime);
-                    var filestream = fs.createReadStream(result.path);
-                    filestream.pipe(res);
+                    try {
+                        var stats = fs.statSync(result.path);
+                        var fileSizeInBytes = stats["size"]
+                        res.setHeader('Content-disposition', 'inline; filename=' + result.name);
+                        res.setHeader('Content-type', result.mime);
+                        res.setHeader('Content-Length', fileSizeInBytes);
+                        var filestream = fs.createReadStream(result.path);
+                        filestream.pipe(res);
+
+                    } catch (e) {
+                        res.end("File not found !!");
+                    }
                 } else {
                     res.end("File not found !!");
                 }
