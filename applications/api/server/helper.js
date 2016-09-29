@@ -117,18 +117,16 @@ var helper = {
         createForm: function (req, res, next) {
             var tenant = req.tenant;
             var body = req.body;
-            var user = body.session;
-            var formId = body.formId;
             var sTable = tenant.dbname + ".form_data";
-            req.db.findById(sTable, formId, function (resultForm) {
-//                if (resultForm && resultForm.state === 1) {
-//                    helper._local.getAllGroup(req, function (ug) {
-//                        var resJSON = oFormFactory.createForm(req.db, tenant, user, ug, resultForm);
-//                        res.json(resJSON);
-//                    });
-//                } else {
-//
-//                }
+
+            req.db.find(sTable, {"temp_id": body.temp_id}, function (resultForm) {
+                if (resultForm && resultForm.length) {
+                    res.json(helper.services._createSuccessPacket(resultForm[0], false));
+                } else {
+                    req.db.insertToTable(sTable, body, function (repo) {
+                        res.json(helper.services._createSuccessPacket(repo, false));
+                    });
+                }
             });
         },
         updateForm: function (req, res, next) {
