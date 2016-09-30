@@ -120,14 +120,8 @@ var helper = {
             var body = req.body;
             var sTable = tenant.dbname + ".form_data";
 
-            req.db.find(sTable, {"temp_id": body.temp_id}, function (resultForm) {
-                if (resultForm && resultForm.length) {
-                    res.json(helper.services._createSuccessPacket(resultForm[0], false));
-                } else {
-                    req.db.insertToTable(sTable, body, function (repo) {
-                        res.json(helper.services._createSuccessPacket(repo, false));
-                    });
-                }
+            req.db.insertToTable(sTable, body, function (repo) {
+                res.json(helper.services._createSuccessPacket(repo, false));
             });
         },
         updateForm: function (req, res, next) {
