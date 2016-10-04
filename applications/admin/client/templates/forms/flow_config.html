@@ -1,62 +1,76 @@
 <div class="row" ng-controller="FormFlowController">
-    <div class="col-sm-8" style="min-height: 500px">
-        <div id="grapContainer" style="height: 300px;overflow: auto;border: 2px dashed gray">
-            <svg width="100%" height="100%"  preserveAspectRatio="xMaxYMax" id="formFlowDrawPane" ></svg>
+    <div class="col-sm-12">
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Data Stages <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="ff in FlowFactory"><a class="text-uppercase" ng-click="AddNextAction(ff)">{{formatText(ff._t)}}</a></li>                
+            </ul>
+        </div>
+        <button class="btn btn-danger" ng-click="deleteFlowAction()" ng-show="SelectedNode && SelectedNode._t != 'CREATE'"><i class="fa fa-trash"></i> Remove</button>
+    </div>
+    <div class="col-sm-12">
+        <div id="grapContainer" style="overflow-x: auto;border: 2px solid gray">
+            <svg width="10000" height="350"  preserveAspectRatio="xMaxYMax" id="formFlowDrawPane" ></svg>
         </div>
     </div>
-    <div class="col-sm-4" >
+    <div class="col-sm-12" >
         <div class="box" ng-show="SelectedNode">
             <div class="box-header">
                 <div class="box-title">
-                    <div class="title">Flow Action: ({{SelectedNode.model.name}})</div>
+                    <div class="title">Flow Action: ({{SelectedNode._t}})
+
+                        <div class="pull-right" ng-show="SelectedNode._n > 0 && SelectedNode._a.length < SelectedNode._n">
+                            <button class="btn btn-success" ng-click="addAction(SelectedNode)"><i class="fa fa-plug"></i> Add Action</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="box-body">
-                <div ng-hide="$parent.SelectedFormMeta.state == 1" class="btn-group" role="group" >
-                    <button ng-hide="SelectedNode.type === 'create'" ng-click="deleteFlowAction()" title="Delete selected flow action." type="button" class="btn btn-link" ng-class=""><i class="fa fa-trash"></i></button>
-                    <button ng-hide="SelectedNode.edit" ng-click="SelectedNode.edit = true" title="Edit selected flow action details." type="button" class="btn btn-link" ng-class=""><i class="fa fa-pencil"></i></button>                
-                    <button ng-show="SelectedNode.edit" ng-click="SelectedNode.edit = false" title="Save changes" type="button" class="btn btn-link" ng-class=""><i class="fa fa-floppy-o"></i></button>
-                    <button ng-click="" type="button" class="btn btn-link dropdown-toggle" ng-class="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <i class="fa fa-plus"></i><i class="fa fa-sitemap"></i>
-                        <span class="caret"></span>
-                    </button>                
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li ng-repeat="(f, m) in FlowFactory"><a class="text-uppercase" ng-click="AddNextAction(m)">{{formatText(f)}}</a></li>
-                    </ul>
-                </div>
-                <div  ng-show="$parent.SelectedFormMeta.state == 1" class="alert alert-warning alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    Form flow actions can't be change, as form is in active mode.
-                </div>
                 <div style="min-height: 400px" id="flowDetailsHolder">
-                    <div class="col-sm-12" style="margin-bottom: 10px" ng-repeat="(f, m) in SelectedNode.model.fields" ng-show="checkVisibleProp(m)">
+                    <div class="col-sm-3" style="margin-bottom: 10px" ng-repeat="(f, m) in SelectedNode._f" ng-show="checkVisibleProp(m)">
                         <label>{{formatText(f)}}:</label>
                         <div>
-                            <input ng-disabled="!SelectedNode.edit" type="text" ng-if="m.type == 'string'" ng-model="SelectedNode.model.fields[f].value" class="form-control" placeholder=""> 
+                            <input type="text" ng-if="m.type == 'string'" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
 
-                            <input ng-disabled="!SelectedNode.edit"  type="password" ng-if="m.type == 'password'" ng-model="SelectedNode.model.fields[f].value" class="form-control" placeholder=""> 
+                            <input   type="password" ng-if="m.type == 'password'" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
 
-                            <input ng-disabled="!SelectedNode.edit"  type="number" ng-if="m.type == 'number'" min="{{m.min}}" ng-model="SelectedNode.model.fields[f].value" class="form-control" placeholder=""> 
+                            <input   type="number" ng-if="m.type == 'number'" min="{{m.min}}" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
 
-                            <input ng-disabled="!SelectedNode.edit"  type="checkbox" ng-if="m.type == 'boolean'" ng-model="SelectedNode.model.fields[f].value" style="float: right;margin-top: -20px;"> 
+                            <input  type="checkbox" ng-if="m.type == 'boolean'" ng-model="SelectedNode._f[f].value" style="float: right;margin-top: -20px;"> 
 
 
-                            <select ng-disabled="!SelectedNode.edit"  class="form-control" ng-model="SelectedNode.model.fields[f].value" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
+                            <select   class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
                                 <option ng-repeat="item in _gv[m.list]" ng-value="item.value">{{item.name}}</option>
-                            
+
                             </select>
 
-                            <select  ng-disabled="!SelectedNode.edit"  class="form-control" ng-model="SelectedNode.model.fields[f].value" ng-if="m.type == 'options' && isArray(m.list)">
+                            <select    class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && isArray(m.list)">
                                 <option ng-repeat="v in m.list" ng-value="v">{{v}}</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="col-sm-3" ng-show="SelectedNode._n > 0">
+                        <div class="input-group" ng-repeat="s in SelectedNode._a">
+                            <label>Stage Action</label>
+                            <input type="text" class="form-control" ng-model="s.n" placeholder="name (e.g Submit)">
+                            <div class="input-group-btn">                                
+                                <button type="button" style="margin-top: 25px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{'Stage ' + s.r}} <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li ng-repeat="(st,v) in flowData"><a href="javascript:void(0)" ng-click="s.r = st;_renderGraph();">Stage {{st}}</a></li>
+                                </ul>
+                                <button type="button" ng-click="removeAction(SelectedNode,$index)" style="margin-top: 25px;" class="btn btn-danger" ><i class="fa fa-trash"></i></button>
+                            </div><!-- /btn-group -->
+                        </div><!-- /input-group -->
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
-<div class="overlay_disabled" ng-show="$parent.SelectedFormMeta.state==1">
+    <div class="overlay_disabled" ng-show="$parent.SelectedFormMeta.state == 1">
         <h3>Flow design locked</h3>
         <p>As this form is already active, flow changes can't be possible.</p>
         <!--<button class="btn btn-sm btn-info" ng-click="EditDisabled = false"><i class="fa fa-eye"></i> Preview</button>-->

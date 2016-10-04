@@ -40,7 +40,7 @@ app._port = oConfig.server.port;
 var oDBConnect = new _cDBConnect(isWin ? oConfig.db.url : oConfig.db.url_unix);
 
 app.use(compression());
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public/fav/', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(cookieParser());
 

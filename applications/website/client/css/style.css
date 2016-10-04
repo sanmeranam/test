@@ -7711,6 +7711,23 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #444;
 }
 
+.navbar-brand > #logo1 {
+  display:inherit
+}
+
+.navbar-brand > #logo2 {
+  display:none
+}
+
+.scrolled .navbar-brand > #logo2 {
+  display:inherit
+}
+
+.scrolled .navbar-brand > #logo1 {
+  display:none
+}
+
+
 #fh5co-clients {
   padding: 2em 0;
   background: #4fd2c2;

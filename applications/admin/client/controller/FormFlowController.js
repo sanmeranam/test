@@ -1,4 +1,4 @@
-core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util) {
+core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util,FlowFactory) {
     jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");    
@@ -9,13 +9,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     $scope.FlowFactory = null;
     $scope.flowData = null;
     $scope._gv = {};
-    $scope.oChartHelper = new ChartHelper({
-        canvas: Snap("#formFlowDrawPane"),
-        cardHeight: 100,
-        cardWidth: 150,
-        cardVGap: 20,
-        cardHGap: 50
-    });
+    $scope.oChartHelper = new FunctionalDraw("formFlowDrawPane");
 
     $scope._resetAll = function () {
         $scope.flowDataSave = null;
@@ -38,15 +32,18 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
 
 
     $scope._loadFlowFactory = function () {
-        GlobalConfig.load({context: 'flow_factory'}, function (aData) {
-            if (aData && aData[0]) {
-                var oBase = {};
-                aData[0].value.map(function (v) {
-                    oBase[v.type] = v;
-                });
-                $scope.FlowFactory = oBase;
-            }
+        FlowFactory.getAll({},function(oBase){
+            $scope.FlowFactory = oBase;
         });
+//        GlobalConfig.load({context: 'flow_factory'}, function (aData) {
+//            if (aData && aData[0]) {
+//                var oBase = {};
+//                aData[0].value.map(function (v) {
+//                    oBase[v.type] = v;
+//                });
+//                $scope.FlowFactory = oBase;
+//            }
+//        });
     };
     $scope._loadFlowFactory();
 
@@ -63,7 +60,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
 
     $scope._renderGraph = function () {
         $scope.oChartHelper.clear();
-        $scope.oChartHelper.drawFlow(40, 50, $scope.flowData);
+        $scope.oChartHelper.draw($scope.flowData);//.drawFlow(40, 50, $scope.flowData);
     };
 
     $scope.$watchCollection('flowData', function () {
@@ -79,7 +76,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
 
     $scope.checkVisibleProp = function (item) {
         if (item.visible) {
-            return $scope.$eval("SelectedNode.model.fields." + item.visible);
+            return $scope.$eval("SelectedNode._f." + item.visible);
         }
         return true;
     };
@@ -91,12 +88,16 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     });
 
     $scope.AddNextAction = function (oItem) {
-        if ($scope.SelectedNode) {
-            var item = angular.copy(oItem);
-            item.id = Math.floor(Math.random() * 9999999);
-            $scope.SelectedNode.next.push(item);
+        var aKeys=Object.keys($scope.flowData);
+        var i=aKeys[aKeys.length-1];
+        var m=parseInt(i)+1;
+        $scope.flowData[m]=angular.copy(oItem);
+//        if ($scope.SelectedNode) {
+//            var item = angular.copy(oItem);
+//            item.id = Math.floor(Math.random() * 9999999);
+//            $scope.SelectedNode.next.push(item);
             $scope._renderGraph();
-        }
+//        }
     };
 
     var findParentNode = function (oBase, iId) {
@@ -109,6 +110,21 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
             }
         }
         return {p: null, i: -1};
+    };
+    
+    $scope.addAction=function(node){
+        node._a=node._a||[];
+        
+        node._a.push({
+          r:"",
+          n:""
+        });
+        $scope._renderGraph();
+    };
+    
+    $scope.removeAction=function(node,index){
+        node._a.splice(index,1);
+        $scope._renderGraph();
     };
 
     $scope.deleteFlowAction = function () {
@@ -126,6 +142,6 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
         }
     };
 
-    jQuery("#grapContainer").height(window.innerHeight * 0.65);
+//    jQuery("#grapContainer").height(window.innerHeight * 0.65);
     jQuery("#flowDetailsHolder").height(window.innerHeight * 0.63).css("overflow-y", "auto");
 });

@@ -8,7 +8,7 @@
                 </div>
                 <div class="box-body small_view" ng-class="(SelectedUser || NewGroup || NewUser) ? 'blur' : ''">
                     <div class="row no-margin">
-                        <div class="col-xs-8">
+                        <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
                             <button type="button" class="btn btn-info dropdown-toggle text-uppercase" data-toggle="dropdown">{{SelectedGroup?SelectedGroup.value:'All'}}<span class="fa fa-caret-down"></span></button>
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">All</a></li>
@@ -23,13 +23,13 @@
                             <button title="Refresh List" type="button" ng-click="loadUserGroups();loadUsers();" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
 
                         </div>
-                        <div class="col-xs-1 no-padding">
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 col-xs-offset-1 no-padding">
                             <div  class="number_view_sm">
                                 <label>Count</label>
                                 <label class="text-info" ng-bind="Users.length || 0"></label>
                             </div>
                         </div>
-                        <div class="col-xs-3">
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8">
                             <div class="has-feedback">
                                 <input type="text" ng-model="userGrpFilterText" class="form-control input-sm" placeholder="Filter...">
                                 <span class="glyphicon glyphicon-filter form-control-feedback"></span>
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <h4 ng-show="!Users.length" class="text-center">-Empty-</h4>
-                    <div class="col-sm-3" ng-repeat="user in Users| filter:filterUser(userGrpFilterText)">
+                    <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="user in Users| filter:filterUser(userGrpFilterText)">
                         <div class="box box-widget widget-user">
                             <!-- Add the bg color to the header using any of the bg-* classes -->
                             <div ng-click="onSelectUser(user)" class="widget-user-header bg-aqua-active pointer">
