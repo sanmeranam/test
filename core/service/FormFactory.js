@@ -35,10 +35,12 @@ var FormFactory = {
         });
     },
     _checkAccess: function (user, group, flow) {
-//        var flatList = [];
-        //FormFactory.FlatFlow(flow, flatList);
+        var flatList = [];
+        for(var m in flow){
+            flatList.push(flow[m]);
+        }
         var bAccessCreate = false;
-        var fList = flow.filter(function (v) {
+        var fList = flatList.filter(function (v) {
             switch (v._t) {
                 case "CREATE":
                     if (v._f.by.value.toLowerCase() === "any") {

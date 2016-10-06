@@ -212,7 +212,7 @@ var helper = {
 
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view};//,flow:v.flow};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view,flow:v.flow};
                                 });
 
                                 delete(oData.profile);
