@@ -1,12 +1,35 @@
-core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig) {
+core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig, CurrentFormMeta) {
     jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
 
+
     $scope.sPages = [
-        "/_self/templates/forms/flow_config.html",
-        "/_self/templates/forms/desgin.html"
+        "/_self/templates/form_views/form_tile_view.html",
+        "/_self/templates/form_views/form_data_view.html",
+        "/_self/templates/form_views/form_design_view.html",
+        "/_self/templates/form_views/form_flow_view.html"
     ];
+
+    $scope.CurrentFormView = $scope.sPages[0];
+
+    $scope.stageChange = function (stage,frm) {
+        $scope.onSelectForm(frm);
+        switch (stage) {
+            case "DATA":
+                $scope.CurrentFormView = $scope.sPages[1];
+                break;
+            case "FLOW":
+                $scope.CurrentFormView = $scope.sPages[3];
+                break;
+            case "DEG":
+                $scope.CurrentFormView = $scope.sPages[2];
+                break;
+            case "TILE":
+            default:
+                $scope.CurrentFormView = $scope.sPages[0];
+        }
+    };
 
     $scope.FormMetaList = [];
     $scope.SelectedFormMeta = null;
@@ -43,27 +66,9 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
         $scope._newFormMetaStruct = data[0].value;
     });
 
-    $scope.sCurrentStage = null;
+//    $scope.sCurrentStage = null;
 
-    $scope.stageChange = function (stage) {
-        switch (stage) {
-            case "NEW":
-                $scope.sCurrentStage = stage;
-                break;
-            case "DATA":
-                $scope.sCurrentStage = stage;
-                break;
-            case "EDIT":
-                $scope.SelectedFormView = 1;
-                $scope.sCurrentStage = stage;
-                break;
-            case "HIST":
-                $scope.sCurrentStage = stage;
-                break;
-            default:
-                $scope.sCurrentStage = null;
-        }
-    };
+
 
     $scope.changeStatus = function (frm, stat) {
         frm.state = stat;
@@ -97,24 +102,25 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     };
     $scope.loadFormMeta();
 
-    $scope.$watch("SelectedFormMeta", function () {
-        if ($scope.SelectedFormMeta) {
-            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
-        } else {
-            $scope.hashManager.setParams();
-        }
-    });
-    $scope.$watch("SelectedFormView", function () {
-        if ($scope.SelectedFormView && $scope.SelectedFormMeta) {
-            $scope.hashManager.setParams($scope.SelectedFormMeta._id, $scope.SelectedFormView);
-        } else if ($scope.SelectedFormMeta) {
-            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
-        }
-    });
+//    $scope.$watch("SelectedFormMeta", function () {
+//        if ($scope.SelectedFormMeta) {
+//            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
+//        } else {
+//            $scope.hashManager.setParams();
+//        }
+//    });
+//    $scope.$watch("SelectedFormView", function () {
+//        if ($scope.SelectedFormView && $scope.SelectedFormMeta) {
+//            $scope.hashManager.setParams($scope.SelectedFormMeta._id, $scope.SelectedFormView);
+//        } else if ($scope.SelectedFormMeta) {
+//            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
+//        }
+//    });
 
     $scope.onSelectForm = function (item) {
         $scope.SelectedFormMeta = item;
-        $scope.$broadcast('FormItemSelected', item);
+        CurrentFormMeta.setFormMeta(item);
+//        $scope.$broadcast('FormItemSelected', item);
     };
     $scope.onCloneForm = function () {
         if ($scope.SelectedFormMeta) {
@@ -192,8 +198,8 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     };
 
     $scope.saveChanges = function (frm, bRefresh) {
-        
-        FormMeta.save({id: frm._id},frm, function (result) {
+
+        FormMeta.save({id: frm._id}, frm, function (result) {
             if (bRefresh) {
                 $scope.loadFormMeta();
             }
@@ -204,12 +210,12 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
         if (changeTitle) {
             $scope.SelectedFormMeta.history.modified.push({
                 date: Date.now(),
-                user: core.Profile.user.first_name,
+                user: (core && core.Profile && core.Profile.user?core.Profile.user.first_name:""),
                 action: changeTitle
             });
         }
         bRefresh = bRefresh || true;
-        
+
         $scope.SelectedFormMeta.version++;
         FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function (result) {
             if (bRefresh) {

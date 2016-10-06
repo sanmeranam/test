@@ -1,7 +1,7 @@
-core.createController('FormDesignController', function ($scope, FormMeta, Message) {
+core.createController('FormDesignController', function ($scope, FormMeta, Message, CurrentFormMeta) {
     jQuery("#designerPane").height(window.innerHeight * 0.78).css("overflow", "auto");
     jQuery(".accorContent").height(window.innerHeight * 0.5).css("overflow", "auto");
-    jQuery(".accorContent2").height(window.innerHeight * 0.7).css("overflow", "auto");
+    jQuery(".accorContent2").height(window.innerHeight * 0.72).css("overflow", "auto");
 
     $scope.EditDisabled = true;
 
@@ -15,16 +15,35 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
     $scope.keyPressed = function (e) {
         switch (e.which) {
             case 46://delete
-                $scope.DesignerConfig.evtRemove();
+//                $scope.DesignerConfig.evtRemove();
                 break;
         }
     };
-
+    
+    window.onbeforeunload=function(){
+      if($scope.DesignerConfig.durty>1){
+            return "Save your changes before close or reload window.";
+      }  
+    };
+    
+    $scope.onCloseDesigner=function(){
+        if($scope.DesignerConfig.durty>1){
+            Message.confirm("Changes are not saved. Are you sure want to close?",function(v){
+                if(v){                     
+                    $scope.formMeta.model_view=$scope.DesignerConfig.modelBack;
+                    $scope.$parent.stageChange('TILE',$scope.formMeta);
+                }
+            });
+        }else{
+            $scope.$parent.stageChange('TILE',$scope.flowMeta);
+        }
+    };
 
 
     $scope.DesignerConfig = {
         selected: null,
         model: null,
+        durty: 0,
         CurrentPage: null,
         pallets: [],
         parent_map: {},
@@ -36,6 +55,10 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         _getRandomNumber: function (num) {
             return Math.round(Math.random() * num);
         },
+        saveChanges:function(){
+            this.durty=1;
+            $scope.$parent.onUpdateForm("Form model updated.",true);
+        },
         addPage: function () {
             var keys = this.getPageIndies();
             var newKey = 1;
@@ -43,6 +66,11 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
                 newKey = parseInt(keys[keys.length - 1]) + 1;
 
             this.model[newKey] = {_l: false, _c: [], _s: 0};
+        },
+        addSection: function () {
+            var oSectionItem = angular.copy($scope.DesignerConfig.pallets.common[0]);
+            oSectionItem._d = oSectionItem._d.replace("{1}", Math.round(Math.random() * 9999));
+            this.CurrentPage._c.push(oSectionItem);
         },
         getPageIndies: function () {
             return Object.keys(this.model);
@@ -122,8 +150,8 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
                         canvas.height = min;
                         canvas.width = min;
                         ctx.drawImage(image, 0, 0, min, min, 0, 0, min, min);
-                        
-                        $scope.DesignerConfig.selected._a[inz].value=canvas.toDataURL();
+
+                        $scope.DesignerConfig.selected._a[inz].value = canvas.toDataURL();
                         $scope.$apply();
                     };
                     image.src = e.target.result;
@@ -185,7 +213,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
         },
         evtModelChange: function () {
-
+            this.durty +=1;
         },
         visitModel: function (oBase, callback) {
             if (oBase && !oBase._c) {
@@ -234,26 +262,36 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
     $scope.DesignerConfig.init();
 
-    if ($scope.$parent.SelectedFormMeta) {
-        var data = $scope.$parent.SelectedFormMeta;
-        if (data.model_view) {
-            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
-            $scope.DesignerConfig.model = data.model_view;
-        }
+    $scope.formMeta = CurrentFormMeta.getFormMeta();
+    if ($scope.formMeta.model_view) {
+        $scope.DesignerConfig.CurrentPage = ($scope.formMeta.model_view[Object.keys($scope.formMeta.model_view)[0]]);
+        $scope.DesignerConfig.model = $scope.formMeta.model_view;
+        $scope.DesignerConfig.modelBack = angular.copy($scope.formMeta.model_view);
+
     }
-    $scope.$on('FormItemSelected', function (event, data) {
-        if (data.model_view) {
-            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
-            $scope.DesignerConfig.model = data.model_view;
-        }
-    });
-
-
-
-
-    $scope.$watch('DesignerConfig.model', function (model) {
+    $scope.$watch('formMeta.model_view', function (model) {
         $scope.DesignerConfig.evtModelChange(model);
     }, true);
+
+
+//    if ($scope.$parent.SelectedFormMeta) {
+//        var data = $scope.$parent.SelectedFormMeta;
+//        if (data.model_view) {
+//            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
+//            $scope.DesignerConfig.model = data.model_view;
+//        }
+//    }
+//    $scope.$on('FormItemSelected', function (event, data) {
+//        if (data.model_view) {
+//            $scope.DesignerConfig.CurrentPage = (data.model_view[Object.keys(data.model_view)[0]]);
+//            $scope.DesignerConfig.model = data.model_view;
+//        }
+//    });
+
+
+
+
+
 
     $scope.oOptionsEditor = {
         backup: [],

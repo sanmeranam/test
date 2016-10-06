@@ -9,7 +9,7 @@
             "_a": {
                 "title": {
                     "type": "string",
-                    "value": "<Section Title>"
+                    "value": "Section Title"
                 },
                 "columns": {
                     "type": "number",
@@ -67,7 +67,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "date",
@@ -90,7 +90,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "time",
@@ -113,7 +113,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "boolean",
@@ -133,7 +133,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "string",
@@ -161,7 +161,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "string",
@@ -189,7 +189,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<label here>"
+                    "value": "label here"
                 },
                 "value": {
                     "type": "binary",
@@ -218,7 +218,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<label here>"
+                    "value": "label here"
                 },
                 "value": {
                     "type": "binary",
@@ -252,7 +252,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<Label>"
+                    "value": "Label"
                 },
                 "value": {
                     "type": "number",
@@ -379,7 +379,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<label>"
+                    "value": "label"
                 },
                 "value": {
                     "type": "list",
@@ -408,7 +408,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<lable>"
+                    "value": "lable"
                 },
                 "value": {
                     "type": "list",
@@ -579,7 +579,7 @@
             "_a": {
                 "label": {
                     "type": "string",
-                    "value": "<label here>"
+                    "value": "label here"
                 },
                 "value": {
                     "type": "string",

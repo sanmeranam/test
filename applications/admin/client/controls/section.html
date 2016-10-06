@@ -1,9 +1,6 @@
 <div class="box"  id="{{item._d}}" ng-class="DesignerConfig.getSectionClass(item._a)">
-    <div class="box-header with-border" ng-if="item._a.title.value">
-        <h4 class="box-title">{{item._a.title.value}}</h4>
-        <div class="box-tools pull-right" ng-if="item._a.collapsible.value">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-        </div>
+    <div class="box-header with-border" ng-if="item._a.title.value" >
+        <div class="box-title" contenteditable ng-model="item._a.title.value"></div>        
     </div>
     <div class="box-body" style="padding: 10px">
         <div class="row" style="list-style-type: none;padding-left: 0px;min-height: 100px;" 

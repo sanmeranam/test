@@ -36,6 +36,25 @@ window.core = {
         return [];
     },
     _initRestful: function () {
+
+        this.ngApp.service('CurrentFormMeta', function () {
+            var currentForm = null;
+
+            var setFormMeta = function (newObj) {
+                currentForm = newObj;
+            };
+
+            var getFormMeta = function () {
+                return currentForm;
+            };
+
+            return {
+                setFormMeta: setFormMeta,
+                getFormMeta: getFormMeta
+            };
+
+        });
+
         this.ngApp.factory('Message', function () {
             var obj = {
                 alertcb: null,
@@ -134,7 +153,7 @@ window.core = {
             });
             return data;
         });
-        
+
         this.ngApp.factory('FlowFactory', function ($resource) {
             var data = $resource('/rest/FlowFactory/:id', {}, {
                 'get': {method: 'GET', id: '@id'},
@@ -193,6 +212,42 @@ window.core = {
                     jQuery(document).on('keyup', function (e) {
                         scope.$apply(scope.keyPressed(e));
                     });
+                }
+            };
+        });
+
+        this.ngApp.directive("contenteditable", function () {
+            return {
+                restrict: "A",
+                require: "ngModel",
+                link: function (scope, element, attrs, ngModel) {
+
+                    function read() {
+                        ngModel.$setViewValue(element.html());
+                    }
+
+                    ngModel.$render = function () {
+                        element.html(ngModel.$viewValue || "");
+                    };
+
+                    element.bind("blur keyup change", function () {
+                        scope.$apply(read);
+                    });
+                }
+            };
+        });
+
+        this.ngApp.directive('flowpallet', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                scope: {
+                    node: '='
+                },
+                template: "<svg height='150' width='200' style='background:rgba(255, 0, 0, 0);'></svg>",
+                link: function postLink(scope, iElement, iAttrs) {
+                    var paper = Snap(iElement[0]);
+                    var b = new Block(10, 10, paper, scope.node)
                 }
             };
         });

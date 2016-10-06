@@ -139,7 +139,7 @@ var User = function (x, y, Paper) {
 
 
 
-var Block = function (x, y, Paper, node,ppx,stage) {
+var Block = function (x, y, Paper, node,stage) {
     this.id=Math.round(Math.random()*99999);
     this.node=node;
     var aActions = node._a || [];
@@ -199,6 +199,7 @@ var Block = function (x, y, Paper, node,ppx,stage) {
     
     var bb=this.shape.getBBox();
     
+    if(stage)
     Paper.text(bb.x+(bb.w/3),bb.y2+bb.h, "Stage "+stage);
     
     this.click=function(cb){
@@ -295,7 +296,7 @@ FunctionalDraw.prototype.draw = function(oData){
         var d = oData[i];
         this.oBlocks[i] = {
             data: d,
-            shape: new Block(draeStartX, this.box.y, this.oPaper, d,that,i)
+            shape: new Block(draeStartX, this.box.y, this.oPaper, d,i)
         };
 
         draeStartX += this.box.gap;

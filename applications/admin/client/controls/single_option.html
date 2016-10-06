@@ -1,11 +1,11 @@
 <div class="row" id="{{field._d}}">
     <div class="col-sm-12" style="margin-bottom: 0px">
-        <label for="{{field._d}}">{{field._a.label.value}}</label>
+        <label contenteditable ng-model="field._a.label.value"></label>
     </div>
-    <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in field._a.options.value">
+    <div class="col-sm-10" style="margin-bottom: 0px" ng-repeat="op in field._a.options.value track by $index">
         <div class="radio">
             <label>
-                <input type="radio" value="{{op}}" class="flat" name="{{field._d+'_option'}}">  {{op}}
+                <input type="radio" value="{{op}}" class="flat" name="{{field._d+'_option'}}"><div contenteditable ng-model="field._a.options.value[$index]"></div>
             </label>
         </div>
     </div>

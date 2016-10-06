@@ -1,5 +1,5 @@
 <div ng-switch="field._a.input_type.value" class="form-group" id="{{field._d}}">
-    <label for="{{field._d}}">{{field._a.label.value}}</label>
+    <label contenteditable ng-model="field._a.label.value"></label>
     
     <input ng-switch-when="text"  ng-model="field._a.value.value" ng-if="!field._a.multi_line.value" type="text" class="form-control" placeholder="{{field._a.hints.value}}"> 
     

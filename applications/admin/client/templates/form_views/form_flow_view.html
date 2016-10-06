@@ -1,0 +1,114 @@
+<div class="col-md-12 col-xs-12" ng-controller="FormFlowController">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Form [{{flowMeta.form_name}}]-Document Flow</h3>
+            <div class="box-tools pull-right">
+                <div class="box-tools pull-right">
+                    <button ng-click="saveChanges()" class="btn btn-info" title="Save" style="margin-right: 80px"><i class="fa fa-floppy-o"></i></button>
+                    <button type="button"  ng-click="onCloseDesigner()" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                </div>                  
+            </div><!-- /.box-tools -->
+        </div>
+        <div class="box-body large_view">
+            <div class="col-sm-2 no-padding" >
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Stage Pallet</h3>
+                    </div>
+                    <div class="box-body small_view">
+                        <div dnd-draggable="item"
+                             dnd-effect-allowed="copy" 
+                             dnd-type="'t'"
+                             draggable="true"                                         
+                             ng-repeat="item in FlowFactory">
+                            <flowpallet node="item"></flowpallet>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Stage Pallet</h3>
+                    </div>
+                    <div class="box-body small_viewx" dnd-list="list" 
+                         dnd-drop="fnAfterDrop(event,item)"
+                         dnd-allowed-types="['t']" style="overflow-x: auto;border: 0px dotted gray;background-image: url(/_static/images/photography.png);background-repeat: repeat">
+                        <svg width="10000" height="350"  preserveAspectRatio="xMaxYMax" id="formFlowDrawPane" ></svg>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-sm-3" >
+                <div class="box" ng-show="SelectedNode">
+                    <div class="box-header">
+                        <div class="box-title">
+                            <div class="title">Flow Action: ({{SelectedNode._t}})</div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered table-responsive" >
+                            <tr ng-repeat="(f, m) in SelectedNode._f"  ng-show="checkVisibleProp(m)">
+                                <td style="vertical-align: middle"><label>{{formatText(f)}}</label></td>
+                                <td>
+                                    <input type="text" ng-if="m.type == 'string'" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
+
+                                    <input   type="password" ng-if="m.type == 'password'" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
+
+                                    <input   type="number" ng-if="m.type == 'number'" min="{{m.min}}" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
+                                    
+                                    <label class="switch" ng-if="m.type == 'boolean'">
+                                        <input type="checkbox" ng-model="SelectedNode._f[f].value">
+                                        <div class="slider round"></div>
+                                    </label>
+                                    
+                                    <!--<input  type="checkbox"  ng-model="SelectedNode._f[f].value" style="float: right;margin-top: -20px;">--> 
+
+
+                                    <select class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
+                                        <option ng-repeat="item in _gv[m.list]" ng-value="item.value">{{item.name}}</option>
+
+                                    </select>
+
+                                    <select class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && isArray(m.list)">
+                                        <option ng-repeat="v in m.list" ng-value="v">{{v}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr ng-show="SelectedNode._n > 0 && SelectedNode._a.length < SelectedNode._n">
+                                <td>Stage Action</td>
+                                <td style="text-align: right">
+                                    <button class="btn btn-success" ng-click="addAction(SelectedNode)"><i class="fa fa-plus"></i> Add</button>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="s in SelectedNode._a">
+                                <td colspan="2">
+                                    <div class="input-group">
+                                        <label>Stage Action</label>
+                                        <input type="text" class="form-control" ng-model="s.n" placeholder="name (e.g Submit)">
+                                        <div class="input-group-btn">                                
+                                            <button type="button" style="margin-top: 25px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{'Stage ' + s.r}} <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li ng-repeat="(st,v) in flowData"><a href="javascript:void(0)" ng-click="s.r = st;_renderGraph();">Stage {{st}}</a></li>
+                                            </ul>
+                                            <button type="button" ng-click="removeAction(SelectedNode, $index)" style="margin-top: 25px;" class="btn btn-danger" ><i class="fa fa-trash"></i></button>
+                                        </div><!-- /btn-group -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay_disabled" ng-show="$parent.SelectedFormMeta.state == 1">
+                <h3>Flow design locked</h3>
+                <p>As this form is already active, flow changes can't be possible.</p>
+                <!--<button class="btn btn-sm btn-info" ng-click="EditDisabled = false"><i class="fa fa-eye"></i> Preview</button>-->
+            </div>
+
+
+        </div>
+    </div>
+</div>

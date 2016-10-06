@@ -6,6 +6,9 @@
 .box-body>.list-group>.active>p{
     color: #fff;
 }
+body{
+    overflow: hidden
+}
 
 .number_view_sm{
 
@@ -192,4 +195,15 @@ input:checked + .slider:before {
 
 .nav-tabs>li{
     cursor: pointer
+}
+
+
+.dialog_modal_overlay{
+    z-index: 999;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(244, 244, 244, 0.5);
 }

@@ -1,6 +1,6 @@
 <div class="row" id="{{field._d}}">
     <div class="col-sm-12" style="margin-bottom: 0px">
-        <label for="{{field._d}}">{{field._a.label.value}}</label>
+        <label contenteditable ng-model="field._a.label.value"></label>
     </div>
     <div class="col-sm-12" style="margin-bottom: 15px">
         <span style="display: none">{{t=DesignerConfig.getRateCal(field._a.stars.value, field._a.value.value, field._d)|json}}</span>
