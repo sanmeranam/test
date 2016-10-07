@@ -4,7 +4,7 @@
             <h3 class="box-title">Form [{{flowMeta.form_name}}]-Document Flow</h3>
             <div class="box-tools pull-right">
                 <div class="box-tools pull-right">
-                    <button ng-click="saveChanges()" class="btn btn-info" title="Save" style="margin-right: 80px"><i class="fa fa-floppy-o"></i></button>
+                    <button ng-hide="$parent.SelectedFormMeta.state == 1" ng-click="saveChanges()" class="btn btn-info" title="Save" style="margin-right: 80px"><i class="fa fa-floppy-o"></i></button>
                     <button type="button"  ng-click="onCloseDesigner()" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
                 </div>                  
             </div><!-- /.box-tools -->
@@ -45,7 +45,7 @@
                 <div class="box" ng-show="SelectedNode">
                     <div class="box-header">
                         <div class="box-title">
-                            <div class="title">Flow Action: ({{SelectedNode._t}})</div>
+                            <div class="title">Flow Action: ({{SelectedNode._t}})  <button class="btn btn-sm btn-link" title="Delete Stage" ng-click="deleteNode()"><i class="fa fa-trash"></i></button></div>
                         </div>
                     </div>
                     <div class="box-body">
@@ -58,22 +58,18 @@
                                     <input   type="password" ng-if="m.type == 'password'" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
 
                                     <input   type="number" ng-if="m.type == 'number'" min="{{m.min}}" ng-model="SelectedNode._f[f].value" class="form-control" placeholder=""> 
-                                    
+
                                     <label class="switch" ng-if="m.type == 'boolean'">
                                         <input type="checkbox" ng-model="SelectedNode._f[f].value">
                                         <div class="slider round"></div>
                                     </label>
-                                    
-                                    <!--<input  type="checkbox"  ng-model="SelectedNode._f[f].value" style="float: right;margin-top: -20px;">--> 
-
 
                                     <select class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && !isArray(m.list)" ng-init="loadGlobalVar(m.list)">
-                                        <option ng-repeat="item in _gv[m.list]" ng-value="item.value">{{item.name}}</option>
-
+                                        <option ng-repeat="item in _gv[m.list]" value="{{item.value}}">{{item.name}}</option>
                                     </select>
 
                                     <select class="form-control" ng-model="SelectedNode._f[f].value" ng-if="m.type == 'options' && isArray(m.list)">
-                                        <option ng-repeat="v in m.list" ng-value="v">{{v}}</option>
+                                        <option ng-repeat="v in m.list" value="{{v}}">{{v}}</option>
                                     </select>
                                 </td>
                             </tr>

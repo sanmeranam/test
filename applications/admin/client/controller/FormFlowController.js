@@ -32,25 +32,75 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     $scope.fnAfterDrop = function (event, node) {
         $scope.AddNextAction(node);
     };
-    
-    $scope.onCloseDesigner=function(){
-        if($scope.durty>1){
-            Message.confirm("Changes are not saved. Are you sure want to close?",function(v){
-                if(v){
-                    $scope.flowMeta.flow=$scope.flowDataBack;
-                    $scope.$parent.stageChange('TILE',$scope.flowMeta);
+
+    $scope.onCloseDesigner = function () {
+        if ($scope.durty > 1) {
+            Message.confirm("Changes are not saved. Are you sure want to close?", function (v) {
+                if (v) {
+                    $scope.flowMeta.flow = $scope.flowDataBack;
+                    $scope.$parent.stageChange('TILE', $scope.flowMeta);
                 }
             });
-        }else{
-            $scope.$parent.stageChange('TILE',$scope.flowMeta);
+        } else {
+            $scope.$parent.stageChange('TILE', $scope.flowMeta);
         }
     };
 
     $scope.saveChanges = function () {
-        $scope.durty=1;
-        $scope.$parent.onUpdateForm("Form model updated.",true);
+        if(!$scope.stageValidation()){
+            Message.alert("Some stage action created without reference or without name. Save not possible.");            
+            return;
+        }
+        
+        if(!$scope.nodeLinkValidation()){
+            Message.alert("Some stage created but not linked to any action. Save not possible.");            
+            return;
+        }
+        
+        $scope.durty = 1;
+        $scope.$parent.onUpdateForm("Form model updated.", true);
+        
+        Message.alert("Saved successfully!");
     };
 
+
+    $scope.deleteNode = function () {
+        Message.confirm("Are sure want delete this stage?", function (v) {
+            if (v) {
+                var newList = {};
+
+                var sIndex = "";
+
+                for (var m in $scope.flowData) {
+                    if ($scope.flowData[m] == $scope.SelectedNode) {
+                        sIndex = m;
+                    }
+                }
+
+                //Removeing references
+                for (var m in $scope.flowData) {
+                    var node = $scope.flowData[m];
+                    var reff = [];
+                    for (var i in node._a) {
+                        if (node._a[i].r == sIndex) {
+                            reff.push(i);
+                        }
+                    }
+                    for (var n in reff) {
+                        node._a.splice(parseInt(reff[n]), 1);
+                    }
+                }
+                $scope.SelectedNode = null;
+                delete($scope.flowData[sIndex]);
+
+                var mlist = {}, im = 1;
+                for (var m in $scope.flowData) {
+                    mlist[im++] = $scope.flowData[m];
+                }
+                $scope.flowData = mlist;
+            }
+        });
+    };
 
 
     $scope._loadFlowFactory = function () {
@@ -73,13 +123,15 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
 
     $scope._renderGraph = function () {
         $scope.oChartHelper.clear();
-        $scope.oChartHelper.draw($scope.flowData);//.drawFlow(40, 50, $scope.flowData);
+        if (!$scope.SelectedNode) {
+            $scope.oChartHelper.clearSelection();
+        }
+        $scope.oChartHelper.draw($scope.flowData);
     };
 
     $scope.$watchCollection('flowData', function () {
         $scope._renderGraph();
-        
-        $scope.durty+=1;
+        $scope.durty += 1;
     });
 
 
@@ -134,8 +186,52 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     };
 
     $scope.removeAction = function (node, index) {
-        node._a.splice(index, 1);
-        $scope._renderGraph();
+        Message.confirm("Are you sure want to remove this action?", function (v) {
+            if (v) {
+                node._a.splice(index, 1);
+                $scope._renderGraph();
+            }
+        });
+    };
+    
+    $scope.nodeLinkValidation=function(){
+        
+        var uvals={};
+        
+        for(var m in $scope.flowData){
+            var node=$scope.flowData[m];
+            for(var i in node._a){
+                var nm=node._a[i];
+                if(jQuery.trim(nm.r)){
+                    uvals[nm.r]=0;
+                }
+            }
+        }        
+        
+        
+        return Object.keys($scope.flowData).length-1<=Object.keys(uvals).length;
+    };
+    
+    
+    $scope.stageValidation=function(){
+        var isValid=true;
+        for(var m in $scope.flowData){
+            var node=$scope.flowData[m];
+            for(var i in node._a){
+                var nm=node._a[i];
+                if(jQuery.trim(nm.n) && jQuery.trim(nm.r)){
+                    
+                }else{
+                    isValid=false;
+                    break;
+                }
+            }
+            if(!isValid){
+                break;
+            }
+        }        
+        
+        return isValid;
     };
 
     $scope.deleteFlowAction = function () {

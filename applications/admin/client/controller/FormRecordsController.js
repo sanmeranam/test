@@ -1,4 +1,4 @@
-core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData) {
+core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData,CurrentFormMeta) {
     jQuery("#recordsViewContainer").height(window.innerHeight * 0.68).css("overflow", "auto");
     $scope.DivTimeLineStyle = {
         height: (window.innerHeight * 0.6) + "px",
@@ -18,14 +18,13 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
     $scope._chartitems = {};
     $scope.charts = $scope.$parent.SelectedFormMeta ? $scope.$parent.SelectedFormMeta.charts : [];
 
-    $scope.$on('FormItemSelected', function (event, data) {
-        $scope.charts = data.charts;
-        $scope.switchView("TABLE");
-    });
+    $scope.CurrentForm=CurrentFormMeta.getFormMeta();
+    $scope.charts = $scope.CurrentForm.charts;
+    
 
     $scope.BaseData = [];
 
-    FormData.getAll({}, function (oData) {
+    FormData.getAll({meta_id:$scope.CurrentForm._id}, function (oData) {
         $scope.BaseData = oData;
     });
 

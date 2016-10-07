@@ -58,6 +58,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         saveChanges:function(){
             this.durty=1;
             $scope.$parent.onUpdateForm("Form model updated.",true);
+            Message.alert("Saved successfully!");
         },
         addPage: function () {
             var keys = this.getPageIndies();

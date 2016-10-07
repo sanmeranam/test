@@ -3,6 +3,10 @@ var FormFactory = {
     createForm: function (db, dbname, oUser, FormMetaId, callback) {
         //TODO
         /**
+         * last_action
+         * current_action
+         * 
+         * 
          * Check flow
          * Create form structure
          * create current_stage

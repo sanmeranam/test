@@ -199,8 +199,10 @@ var Block = function (x, y, Paper, node,stage) {
     
     var bb=this.shape.getBBox();
     
-    if(stage)
-    Paper.text(bb.x+(bb.w/3),bb.y2+bb.h, "Stage "+stage);
+    if(stage){
+        Paper.text(bb.x+(bb.w/3),bb.y2+bb.h, "Stage "+stage);   
+        this.myStage=stage;
+    }
     
     this.click=function(cb){
       var that=this;
@@ -283,6 +285,10 @@ var FunctionalDraw = function (sId) {
     return this;
 };
 
+FunctionalDraw.prototype.clearSelection = function(){
+    this.Selected=null;
+};
+
 FunctionalDraw.prototype.clear = function(oData){
     this.oPaper.clear();
 };
@@ -292,13 +298,23 @@ FunctionalDraw.prototype.draw = function(oData){
     this.clear();
     this.oBlocks = {};
     var draeStartX = this.box.x;
+    
+    var lastSelection=null;
+    if(this.Selected){
+        lastSelection=this.Selected.myStage;
+    }
+    
     for (var i in oData) {
         var d = oData[i];
         this.oBlocks[i] = {
             data: d,
             shape: new Block(draeStartX, this.box.y, this.oPaper, d,i)
         };
-
+        
+        if(lastSelection == i){
+            this.Selected=this.oBlocks[i].shape;
+        }
+        
         draeStartX += this.box.gap;
     }
     for (var b in this.oBlocks) {
