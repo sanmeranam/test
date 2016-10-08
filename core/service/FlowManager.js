@@ -39,7 +39,7 @@ FlowManager.prototype.processFlow = function () {
 
 FlowManager.prototype._processNext = function (oAction) {
     this.data.current_action = oAction;
-    this.db.updateById('accounts', this.data._id, this.data, function (data) {});
+    this.db.updateById('accounts', this.data._id.toString(), this.data, function (data) {});
 
     switch (oAction._t) {
         case "SMS":
