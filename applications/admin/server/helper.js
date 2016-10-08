@@ -135,7 +135,7 @@ var helper = {
                 var oData = result.length ? result[0] : null;
                 if (oData) {
                     oData.user_group = req.body;
-                    req.db.updateById('accounts', oData._id, oData, function (data) {
+                    req.db.updateById(req.tenant.dbname +'.accounts', oData._id, oData, function (data) {
                         res.json(data);
                     });
                 }
