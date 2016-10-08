@@ -1,0 +1,60 @@
+<div class="container-fluid" ng-controller="TemplateController">
+    <div class="side-body padding-top">
+        <div class="row" style="margin-bottom: 20px" ng-show="!openPage">
+            <div class="col-sm-12">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-plus"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0)" ng-click="open('sms')">SMS Template</a></li>
+                        <li><a href="javascript:void(0)" ng-click="open('notify')">Notification</a></li>
+                        <li><a href="javascript:void(0)" ng-click="open('email')">Email Template</a></li>
+                        <li><a href="javascript:void(0)" ng-click="open('excel')">Excel Template</a></li>
+                        <li><a href="javascript:void(0)" ng-click="open('pdf')">PDF Template</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="!openPage">
+            <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="temp in aTemplateList">
+                <div class="box box-widget widget-user">
+                    <div ng-click="" class="widget-user-header bg-fuchsia-gradient pointer">
+                        <div class="icon pull-right" style="font-size: 60px;color: rgba(51, 122, 183, 0.81);" ng-switch="temp.type">
+                            <i ng-switch-when="SMS" class="fa fa-comment-o"></i>
+                            <i ng-switch-when="EMAIL" class="fa fa-envelope-o"></i>
+                            <i ng-switch-when="PDF" class="fa fa-file-pdf-o"></i>
+                            <i ng-switch-when="EXCEL" class="fa fa-file-excel-o"></i>
+                            <i ng-switch-when="NOTIFY" class="fa fa-comment-o"></i>
+                        </div>
+
+                        <h3 class="widget-user-username"><strong>{{temp.name}}</strong></h3>
+                        <h5 class="widget-user-desc">{{temp.type}}</h5>
+
+                    </div>
+                    <div class="box-footer" style="padding-top: 0px">
+                        <div class="row">
+                            <div class="col-sm-4 border-right">
+                                <div class="description-block">
+                                    <button class="btn btn-link" ng-click="editTempalte(temp)"><i class="fa fa-pencil"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 border-right">
+                                <div class="description-block">
+                                    <button class="btn btn-link" ng-click="removeTemplate(temp._id)"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 border-right">
+                                <div class="description-block">
+                                    <button class="btn btn-link"><i class="fa fa-eye"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row"  ng-show="openPage">
+            <div ng-include="openPage"></div>
+        </div>
+    </div>
+</div>

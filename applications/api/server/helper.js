@@ -120,7 +120,7 @@ var helper = {
             var body = req.body;
             var sTable = tenant.dbname + ".form_data";
 
-            req.db.insertToTable(sTable, body, function (repo) {
+            oFormFactory.createForm(req.db,sTable,body,function(repo){
                 res.json(helper.services._createSuccessPacket(repo, false));
             });
         },

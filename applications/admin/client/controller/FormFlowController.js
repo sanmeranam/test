@@ -159,6 +159,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
         var i = aKeys[aKeys.length - 1];
         var m = parseInt(i) + 1;
         $scope.flowData[m] = angular.copy(oItem);
+        $scope.flowData[m].uid=Math.round(Math.random()*9999999);
         $scope._renderGraph();
 
     };

@@ -207,3 +207,7 @@ input:checked + .slider:before {
     right: 0;
     background: rgba(244, 244, 244, 0.5);
 }
+
+.menu_section>li{
+    cursor: pointer
+}

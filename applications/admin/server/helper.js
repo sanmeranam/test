@@ -10,6 +10,44 @@ var tableNameFormat = function (text) {
 };
 
 var helper = {
+    _getObject: function (ins, trg) {
+        if (ins._n && ins._a.value) {
+            trg[ins._d] = {
+                type: ins._n,
+                id: ins._d,
+                label: ins._a.label.value
+            };
+        }
+        if (ins._c && ins._c.length) {
+            for (var m in ins._c) {
+                helper._getObject(ins._c[m], trg);
+            }
+        }
+    },
+    _collectFields: function (model_view) {
+        var resData = {};
+        for (var iPage in model_view) {
+            helper._getObject(model_view[iPage], resData);
+        }
+        return resData;
+    },
+    getFormDetails: function (req, res) {
+        req.db.find(req.tenant.dbname + ".form_meta", {}, function (result) {
+            if (result) {
+                result = result.map(function (f) {
+                    return {
+                        name: f.form_name,
+                        value: f._id,
+                        fields: helper._collectFields(f.model_view)
+                    };
+                });
+
+                res.json(result);
+            } else {
+                res.json([]);
+            }
+        });
+    },
     doLogin: function (req, res, next) {
         var user = req.body.email;
         var password = req.body.secret;
@@ -125,6 +163,28 @@ var helper = {
                 });
                 break;
             case '$products':
+                break;
+            case '$sms':
+                var sTable = req.tenant.dbname + ".template_factory";
+
+                req.db.find(sTable, {type: 'SMS'}, function (temps) {
+                    temps = temps.map(function (v) {
+                        v.value = v._id;
+                        return v;
+                    });
+                    res.json(temps);
+                });
+                break;
+            case '$email':
+                break;
+            case '$notify':
+                break;
+            case '$pdf':
+                break;
+            case '$excel':
+                break;
+            case '$forms':
+                helper.getFormDetails(req, res);
                 break;
             case '$user_group':
                 req.db.find(req.tenant.dbname + '.global_config', {"key": 'user_group'}, function (ug) {

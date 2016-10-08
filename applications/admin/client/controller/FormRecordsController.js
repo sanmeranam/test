@@ -80,7 +80,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                 latitude: 12.9375312,
                 longitude: 77.7006514
             },
-            zoom: 8,
+            zoom: 12,
             control: {}
         },
         init: function () {

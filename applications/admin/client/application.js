@@ -164,6 +164,17 @@ window.core = {
             });
             return data;
         });
+        
+        this.ngApp.factory('TemplateFactory', function ($resource) {
+            var data = $resource('/rest/TemplateFactory/:id', {}, {
+                'get': {method: 'GET', id: '@id'},
+                'save': {method: 'POST', id: '@id'},
+                'getAll': {method: 'GET', isArray: true},
+                'create': {method: 'PUT'},
+                'delete': {method: 'DELETE', id: '@id'}
+            });
+            return data;
+        });
 
         this.ngApp.factory('GCUpdate', function ($resource) {
             var data = $resource('/rest/GlobalConfig/:id', {}, {

@@ -1,6 +1,18 @@
+var FlowManager = require('./FlowManager');
 
 var FormFactory = {
-    createForm: function (db, dbname, oUser, FormMetaId, callback) {
+    createForm: function (db, dbname, FormData, callback) {
+
+        db.insertToTable(dbname, FormData, function (repo) {
+            callback(repo);
+
+            var fm = new FlowManager(repo.ops[0], db, dbname);
+            if (fm.hasNextFlow()) {
+                fm.processFlow();
+            }
+
+        });
+
         //TODO
         /**
          * last_action
@@ -15,9 +27,7 @@ var FormFactory = {
          * response entry
          */
 
-        db.findById(dbname + ".form_meta", FormMetaId, function (res) {
-            callback({meta: res, data: {}});
-        });
+
 
         return {};
     },
@@ -40,7 +50,7 @@ var FormFactory = {
     },
     _checkAccess: function (user, group, flow) {
         var flatList = [];
-        for(var m in flow){
+        for (var m in flow) {
             flatList.push(flow[m]);
         }
         var bAccessCreate = false;

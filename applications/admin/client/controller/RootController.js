@@ -92,8 +92,8 @@ core.createController('RootController', function ($scope, Session, Message) {
         "Forms": {
             path: "/_self/templates/forms.html"
         },
-        "Flow Factory": {
-            path: "/_self/templates/flowfactory.html"
+        "Doc Output": {
+            path: "/_self/templates/docoutput.html"
         },
         "Data Factory": {
             path: "/_self/templates/dataprocess.html"
