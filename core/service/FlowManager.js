@@ -38,8 +38,11 @@ FlowManager.prototype.processFlow = function () {
 };
 
 FlowManager.prototype._processNext = function (oAction) {
+    delete(oAction._id);
     this.data.current_action = oAction;
-    this.db.updateById('accounts', this.data._id.toString(), this.data, function (data) {});
+    this.db.updateById(this.tableName, this.data._id.toString(), this.data, function (data) {
+                
+    });
 
     switch (oAction._t) {
         case "SMS":
