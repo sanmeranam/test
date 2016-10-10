@@ -1,3 +1,7 @@
 module.exports={
-    LiveEvent:null
+    InternalEvent:null,
+    ServerEvent:null,
+    db:null,
+    email:null,
+    config:null
 };

@@ -9,6 +9,7 @@ var compression = require('compression');
 var session = require('express-session');
 
 var oLiveEvents=require('./core/event/LiveEvents');
+var EmailService=require('./core/email/EmailService');
 
 var _mRouteAdmin = require('./applications/admin/server/route');
 var _mRouteWebsite = require('./applications/website/server/route');
@@ -64,14 +65,18 @@ app.use(function (req, res, next) {
     next();
 });
 
+GLOBAL.db=oDBConnect;
+GLOBAL.Config=oConfig;
+GLOBAL.EmailService=new EmailService(oConfig);
+GLOBAL.up=isWin ? oConfig.files.upload_path : oConfig.files.upload_path_unix;
+
 app.use(function (req, res, next) {
-    req.GLOBAL = GLOBAL;
     req.db = oDBConnect;
     req.up=isWin ? oConfig.files.upload_path : oConfig.files.upload_path_unix;
     next();
 });
 
-GLOBAL.Config=oConfig;
+
 
 app.use('/wildcard/app/_self_app', express.static(path.join(__dirname, 'applications/app/client')));
 app.use('/wildcard/app/_static_app', express.static(path.join(__dirname, 'public')));

@@ -1,7 +1,7 @@
 window.core = {
     Profile: null,
     init: function () {
-        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps', "dndLists", "ngSanitize"]);
+        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps', "dndLists", "ngSanitize","ngWYSIWYG"]);
         this.ngApp.config(
                 ['uiGmapGoogleMapApiProvider', function (GoogleMapApiProviders) {
                         GoogleMapApiProviders.configure({

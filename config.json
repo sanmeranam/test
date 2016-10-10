@@ -12,7 +12,7 @@
     },
     "email": {
         "service": "Gmail",
-        "user": "info@remoiot.com",
+        "user": "info@egform.com",
         "pass": "gayatri@00"
     },
     "notif": [
@@ -23,7 +23,7 @@
         "password_rest_base": "http://localhost:8090/reset/"
     },
     "blacklist_wc": [
-        "www", "secure", "api", "remoiot", "admin", "forms", "static", "http", "https", "ftp", "ssl", "ssh", "sftp", "remoiotdigital", "design","account","create"
+        "www", "secure", "api", "egform", "admin", "forms", "static", "http", "https", "ftp", "ssl", "ssh", "sftp", "app", "design","account","create"
     ],
     "files": {
         "upload_path": "C:/Users/I326482/Desktop/connect/dummy",

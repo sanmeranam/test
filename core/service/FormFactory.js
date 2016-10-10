@@ -1,12 +1,14 @@
 var FlowManager = require('./FlowManager');
+var GLOBAL=require('../GLOBAL');
+
 
 var FormFactory = {
-    createForm: function (db, dbname, FormData, callback) {
-
-        db.insertToTable(dbname, FormData, function (repo) {
+    createForm: function (tenant,FormData, callback) {
+        var sTable = tenant.dbname + ".form_data";
+        GLOBAL.db.insertToTable(sTable, FormData, function (repo) {
             callback(repo);
 
-            var fm = new FlowManager(repo.ops[0], db, dbname);
+            var fm = new FlowManager(repo.ops[0], tenant);
             if (fm.hasNextFlow()) {
                 fm.processFlow();
             }

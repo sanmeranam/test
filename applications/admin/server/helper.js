@@ -2,6 +2,8 @@ var util = require('./util');
 var fs = require('fs');
 var mongoAPI = require('mongodb');
 var Jimp = require("jimp");
+var GLOBAL=require('../../../core/GLOBAL');
+
 
 var tableNameFormat = function (text) {
     return text.replace(/\.?([A-Z]+)/g, function (x, y) {
@@ -176,6 +178,15 @@ var helper = {
                 });
                 break;
             case '$email':
+                var sTable = req.tenant.dbname + ".template_factory";
+
+                req.db.find(sTable, {type: 'EMAIL'}, function (temps) {
+                    temps = temps.map(function (v) {
+                        v.value = v._id;
+                        return v;
+                    });
+                    res.json(temps);
+                });
                 break;
             case '$notify':
                 break;
@@ -304,6 +315,7 @@ var helper = {
         });
     },
     restGetAll: function (req, res, next) {
+        console.log(GLOBAL.Config);
         var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         req.db.find(sTable, {}, function (result) {
             res.json(helper.restAccountsHook(req.params.table, result));

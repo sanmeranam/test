@@ -1,8 +1,10 @@
-var FlowManager = function (formData, db, formDataDb) {
+var GLOBAL = require('../GLOBAL');
+
+var FlowManager = function (formData, tenant) {
     this.data = formData;
     this.flow = formData.flow;
-    this.db = db;
-    this.tableName = formDataDb;
+    this.tenant = tenant;
+    this.tableName = tenant.dbname + ".form_data";
     this.lastActiondata = formData.last_action;
 
     for (var m in this.flow) {
@@ -40,8 +42,8 @@ FlowManager.prototype.processFlow = function () {
 FlowManager.prototype._processNext = function (oAction) {
     delete(oAction._id);
     this.data.current_action = oAction;
-    this.db.updateById(this.tableName, this.data._id.toString(), this.data, function (data) {
-                
+    GLOBAL.db.updateById(this.tableName, this.data._id.toString(), this.data, function (data) {
+
     });
 
     switch (oAction._t) {
@@ -85,6 +87,50 @@ FlowManager.prototype._processSMSAction = function (oAction) {
 };
 
 FlowManager.prototype._processEmailAction = function (oAction) {
+    var cc = oAction._f.cc.value;
+    var tempalte = oAction._f.template.value;
+    var bIncludeAttach = new Boolean(oAction._f.inclue_attach.value);
+    var that = this;
+
+    var oEmail = GLOBAL.EmailService.getInstance();
+
+    var tableName = this.tenant.dbname + ".template_factory";
+    
+    var fntaskDone=function(){
+        
+    };
+    
+    
+
+    GLOBAL.db.findById(tableName, tempalte, function (data) {
+        if (data) {
+            var to = data.to.split(",");
+            var subject = that._compileData(data.subject, that.data);
+            var html = that._compileData(data.body, that.data);
+
+            if (bIncludeAttach) {
+                that._collectAttachments(that.tenant.dbname + ".file_entry", that.data, function (attach) {
+                    oEmail.sendRaw({
+                        to: to,
+                        subject: subject,
+                        html: html,
+                        cc: cc,
+                        attachments: attach
+                    },fntaskDone);
+
+                });
+
+            } else {
+                oEmail.sendRaw({
+                    to: to,
+                    subject: subject,
+                    html: html,
+                    cc: cc
+                },fntaskDone);
+            }
+        }
+    });
+
     /**
      * collect template
      * fill template
@@ -156,6 +202,44 @@ FlowManager.prototype._processCustomAction = function (oAction) {
      */
 };
 
+
+FlowManager.prototype._compileData = function (sText, formData) {
+    var aData = formData.data;
+    for (var i in aData) {
+        var dd = aData[i];
+        var exp = "[" + dd._i + ":" + dd._l + "]";
+        if (sText.indexOf(exp) > -1) {
+            sText = sText.split(exp).join(dd._v);
+        }
+    }
+    return sText;
+};
+
+
+FlowManager.prototype._collectAttachments = function (sTable, formData, callback) {
+    var aData = formData.data;
+    var ids = [];
+    for (var i in aData) {
+        var dd = aData[i];
+        if (dd._t == "audio_record" || dd._t == "video_record" || dd._t == "sign_input" || dd._t == "file_attach" || dd._t == "photo_attach") {
+            if (dd._v) {
+                if (dd._v.indexOf("|") > -1) {
+                    ids = ids.concat(dd._v.split("|"));
+                } else {
+                    ids.push(dd._v);
+                }
+            }
+        }
+    }
+    if (ids.length) {
+        GLOBAL.db.findByIds(sTable, ids, function (result) {
+            result = result.map(function (v) {
+                return v.path;
+            });
+            callback(result);
+        });
+    }
+};
 
 
 

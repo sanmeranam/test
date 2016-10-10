@@ -1,4 +1,4 @@
-core.createController('TemplateController', function ($scope, GlobalVar, TemplateFactory, Message) {
+core.createController('TemplateController', function ($scope, GlobalVar, TemplateFactory, Message,$q, $timeout) {
     $scope.templates = {
         "sms": "/_self/templates/outemp/sms_template.html",
         "excel": "/_self/templates/outemp/excel_template.html",
@@ -76,10 +76,10 @@ core.createController('TemplateController', function ($scope, GlobalVar, Templat
             body: {}
         };
     };
-    
-    
-    $scope.closeWindow=function(){
-        $scope.openPage =null;
+
+
+    $scope.closeWindow = function () {
+        $scope.openPage = null;
         $scope.createObject = null;
     };
 
@@ -90,9 +90,9 @@ core.createController('TemplateController', function ($scope, GlobalVar, Templat
                 break;
             }
         }
-        
+
         $scope.openPage = $scope.templates[object.type.toLowerCase()];
-        $scope.createObject = object;      
+        $scope.createObject = object;
 
     };
 
@@ -196,4 +196,33 @@ core.createController('TemplateController', function ($scope, GlobalVar, Templat
 
 
     $scope.loadTemplates();
+
+    $scope.api = {
+        scope: $scope,
+        editorConfig: {
+            sanitize: false,
+            toolbar: [
+                {name: 'basicStyling', items: ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', '-', 'leftAlign', 'centerAlign', 'rightAlign', 'blockJustify', '-']},
+                {name: 'paragraph', items: ['orderedList', 'unorderedList', 'outdent', 'indent', '-']},
+                {name: 'doers', items: ['removeFormatting', 'undo', 'redo', '-']},
+                {name: 'colors', items: ['fontColor', 'backgroundColor', '-']},
+                {name: 'links', items: ['image', 'hr', 'symbols', 'link', 'unlink', '-']},
+                {name: 'tools', items: ['print', '-']},
+                {name: 'styling', items: ['font', 'size', 'format']}
+            ]
+        },
+        insertImage: function() {
+            var deferred = $q.defer();
+            $timeout(function() {
+                var val = prompt('Enter image url', 'http://');
+                if(val) {
+                    deferred.resolve('<img src="' + val + '" style="width: 30%;">');
+                }
+                else {
+                    deferred.reject(null);
+                }
+            }, 1000);
+            return deferred.promise;
+        }
+    };
 });

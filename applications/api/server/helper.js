@@ -120,7 +120,7 @@ var helper = {
             var body = req.body;
             var sTable = tenant.dbname + ".form_data";
 
-            oFormFactory.createForm(req.db,sTable,body,function(repo){
+            oFormFactory.createForm(tenant,body,function(repo){
                 res.json(helper.services._createSuccessPacket(repo, false));
             });
         },
