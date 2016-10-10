@@ -95,12 +95,12 @@ FlowManager.prototype._processEmailAction = function (oAction) {
     var oEmail = GLOBAL.EmailService.getInstance();
 
     var tableName = this.tenant.dbname + ".template_factory";
-    
-    var fntaskDone=function(){
-        
+
+    var fntaskDone = function () {
+
     };
-    
-    
+
+
 
     GLOBAL.db.findById(tableName, tempalte, function (data) {
         if (data) {
@@ -116,7 +116,7 @@ FlowManager.prototype._processEmailAction = function (oAction) {
                         html: html,
                         cc: cc,
                         attachments: attach
-                    },fntaskDone);
+                    }, fntaskDone);
 
                 });
 
@@ -126,7 +126,7 @@ FlowManager.prototype._processEmailAction = function (oAction) {
                     subject: subject,
                     html: html,
                     cc: cc
-                },fntaskDone);
+                }, fntaskDone);
             }
         }
     });
@@ -204,13 +204,16 @@ FlowManager.prototype._processCustomAction = function (oAction) {
 
 
 FlowManager.prototype._compileData = function (sText, formData) {
-    var aData = formData.data;
-    for (var i in aData) {
-        var dd = aData[i];
-        var exp = "[" + dd._i + ":" + dd._l + "]";
-        if (sText.indexOf(exp) > -1) {
-            sText = sText.split(exp).join(dd._v);
+    try {
+        var aData = formData.data;
+        for (var i in aData) {
+            var dd = aData[i];
+            var exp = "[" + dd._i + ":" + dd._l + "]";
+            if (sText.indexOf(exp) > -1) {
+                sText = sText.split(exp).join(dd._v);
+            }
         }
+    } catch (E) {
     }
     return sText;
 };
@@ -221,7 +224,7 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
     var ids = [];
     for (var i in aData) {
         var dd = aData[i];
-        if (dd._t == "audio_record" || dd._t == "video_record" || dd._t == "sign_input" || dd._t == "file_attach" || dd._t == "photo_attach") {
+        if (dd && (dd._t == "audio_record" || dd._t == "video_record" || dd._t == "sign_input" || dd._t == "file_attach" || dd._t == "photo_attach")) {
             if (dd._v) {
                 if (dd._v.indexOf("|") > -1) {
                     ids = ids.concat(dd._v.split("|"));
