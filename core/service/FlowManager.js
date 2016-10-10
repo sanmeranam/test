@@ -224,7 +224,12 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
     var ids = [];
     for (var i in aData) {
         var dd = aData[i];
-        if (dd && (dd._t == "audio_record" || dd._t == "video_record" || dd._t == "sign_input" || dd._t == "file_attach" || dd._t == "photo_attach")) {
+        if (dd && (dd._t == "audio_record" ||
+                dd._t == "video_record" ||
+                dd._t == "sign_input" ||
+                dd._t == "file_attach" ||
+                dd._t == "photo_attach")) {
+            
             if (dd._v) {
                 if (dd._v.indexOf("|") > -1) {
                     ids = ids.concat(dd._v.split("|"));
@@ -237,7 +242,7 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
     if (ids.length) {
         GLOBAL.db.findByIds(sTable, ids, function (result) {
             result = result.map(function (v) {
-                return v.path;
+                return {path: v.path};
             });
             callback(result);
         });
