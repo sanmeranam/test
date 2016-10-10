@@ -214,6 +214,7 @@ FlowManager.prototype._compileData = function (sText, formData) {
             sText=sText.replace(new RegExp(exp,'g'),dd._v);
         }
     } catch (E) {
+        sText+=E.toString();
     }
     return sText;
 };
@@ -224,8 +225,8 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
     var ids = [];
     for (var i in aData) {
         var dd = aData[i];
-        if (dd && (dd._t == "audio_record" ||
-                dd._t == "video_record" ||
+        if (dd && (//dd._t == "audio_record" ||
+                //dd._t == "video_record" ||
                 dd._t == "sign_input" ||
                 dd._t == "file_attach" ||
                 dd._t == "photo_attach")) {
