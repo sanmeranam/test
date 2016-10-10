@@ -210,7 +210,7 @@ FlowManager.prototype._compileData = function (sText, formData) {
             var dd = aData[i];
             var label=dd._l?dd._l.toLowerCase().replace(/\s+/,'_'):'';
             var exp = "[" + label + "]";
-            exp=exp.replace("[","\\\\[").replace("[","\\\\]");
+            exp = exp.replace("[", "\\[").replace("]", "\\]");
             sText=sText.replace(new RegExp(exp,'g'),dd._v);
         }
     } catch (E) {
