@@ -167,7 +167,10 @@ core.createController('TemplateController', function ($scope, GlobalVar, Templat
     $scope.onElementDrag = function (ev, source) {
         var id = jQuery(source).attr("sid");
         var label = jQuery(source).attr("sname");
-        ev.dataTransfer.setData("text", "[" + id + ":" + label + "]");
+        
+        label=label.toLowerCase().replace(/\s+/,'_');
+        
+        ev.dataTransfer.setData("text", "["+ label + "]");
     };
 
     $scope.currentForm = null;

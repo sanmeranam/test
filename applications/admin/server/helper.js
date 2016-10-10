@@ -315,7 +315,6 @@ var helper = {
         });
     },
     restGetAll: function (req, res, next) {
-        console.log(GLOBAL.Config);
         var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         req.db.find(sTable, {}, function (result) {
             res.json(helper.restAccountsHook(req.params.table, result));

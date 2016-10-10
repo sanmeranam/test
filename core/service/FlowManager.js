@@ -208,7 +208,8 @@ FlowManager.prototype._compileData = function (sText, formData) {
         var aData = formData.data;
         for (var i in aData) {
             var dd = aData[i];
-            var exp = "[" + dd._i + ":" + dd._l + "]";
+            var label=dd._l?dd._l.toLowerCase().replace(/\s+/,'_'):'';
+            var exp = "[" + label + "]";
             if (sText.indexOf(exp) > -1) {
                 sText = sText.split(exp).join(dd._v);
             }
