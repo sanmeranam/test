@@ -118,13 +118,27 @@ var helper = {
         createForm: function (req, res, next) {
             var tenant = req.tenant;
             var body = req.body;
-            var sTable = tenant.dbname + ".form_data";
 
-            oFormFactory.createForm(tenant,body,function(repo){
+            oFormFactory.createForm(tenant, body, function (repo) {
                 res.json(helper.services._createSuccessPacket(repo, false));
             });
         },
         updateForm: function (req, res, next) {
+            var tenant = req.tenant;
+            var body = req.body;
+
+            oFormFactory.updateForm(tenant, body, function (repo) {
+                res.json(helper.services._createSuccessPacket(repo, false));
+            });
+        },
+        getInboxForUser: function (req, res, next) {
+            var tenant = req.tenant;
+            var userId = req.query.user_id;
+            req.dn.find(tenant.dbname + ".form_data",{'next_stage._f.user.value':userId},function(result){
+                res.json(helper.services._createSuccessPacket(result, true));
+            });
+        },
+        lockForm: function (req, res, next) {
 
         },
         syncAccount: function (req, res) {
@@ -178,7 +192,7 @@ var helper = {
                         if (oData) {
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view,flow:v.flow};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view, flow: v.flow};
                                 });
                                 res.json(helper.services._createSuccessPacket(formsMeta, true));
                             });
@@ -212,7 +226,7 @@ var helper = {
 
                             oFormFactory.getAccessForms(req.db, tenant.dbname, oData._id.toString(), oData.group, function (formsMeta) {
                                 formsMeta = formsMeta.map(function (v) {
-                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view,flow:v.flow};
+                                    return {_id: v._id, form_name: v.form_name, display_title: v.display_title, version: v.version, model_view: v.model_view, flow: v.flow};
                                 });
 
                                 delete(oData.profile);

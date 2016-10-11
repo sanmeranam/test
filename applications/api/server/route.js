@@ -33,6 +33,7 @@ router.post("/service/config/onmessage", helper.services.onmessage);
 
 router.post("/service/form/create", helper.services.createForm);
 router.post("/service/form/update", helper.services.updateForm);
+router.get("/service/form/inbox", helper.services.getInboxForUser);
 
 router.post("/service/file/upload", helper.services.fileUpload);
 router.get("/service/file/download", helper.services.fileDownload);
