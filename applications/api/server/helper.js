@@ -134,7 +134,7 @@ var helper = {
         getInboxForUser: function (req, res, next) {
             var tenant = req.tenant;
             var userId = req.query.user_id;
-            req.dn.find(tenant.dbname + ".form_data",{'next_stage._f.user.value':userId},function(result){
+            req.db.find(tenant.dbname + ".form_data",{'next_stage._f.user.value':userId},function(result){
                 res.json(helper.services._createSuccessPacket(result, true));
             });
         },
