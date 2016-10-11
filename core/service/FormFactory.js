@@ -1,12 +1,14 @@
 var FlowManager = require('./FlowManager');
-var GLOBAL=require('../GLOBAL');
+var GLOBAL = require('../GLOBAL');
 
 
 var FormFactory = {
-    createForm: function (tenant,FormData, callback) {
+    createForm: function (tenant, FormData, callback) {
         var sTable = tenant.dbname + ".form_data";
         GLOBAL.db.insertToTable(sTable, FormData, function (repo) {
-            callback(repo);
+            if (callback) {
+                callback(repo);
+            }
 
             var fm = new FlowManager(repo.ops[0], tenant);
             if (fm.hasNextFlow()) {
@@ -14,24 +16,18 @@ var FormFactory = {
             }
 
         });
-
-        //TODO
-        /**
-         * last_action
-         * current_action
-         * 
-         * 
-         * Check flow
-         * Create form structure
-         * create current_stage
-         * create flow entry
-         * Make db entry
-         * response entry
-         */
-
-
-
-        return {};
+    },
+    updateForm: function (tenant, FormData, callback) {
+        var sTable = tenant.dbname + ".form_data";
+        GLOBAL.db.updateById(sTable, FormData._id, FormData, function (repo) {
+            if (callback) {
+                callback(repo);
+            }
+            var fm = new FlowManager(FormData, tenant);
+            if (fm.hasNextFlow()) {
+                fm.processFlow();
+            }
+        });
     },
     getAccessForms: function (db, dbname, user, group, callback) {
 

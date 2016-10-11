@@ -40,7 +40,7 @@ emailSerice.prototype.sendRaw = function (options, callback) {
         console.log('Message sent: ' + info.response);
 
         if (callback) {
-            callback(error, info);
+            callback(error, info,options);
         }
     });
 };

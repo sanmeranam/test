@@ -5,74 +5,77 @@ var FlowManager = function (formData, tenant) {
     this.flow = formData.flow;
     this.tenant = tenant;
     this.tableName = tenant.dbname + ".form_data";
-    this.lastActiondata = formData.last_action;
 
-    for (var m in this.flow) {
-        var stage = this.flow[m];
-        if (this.lastActiondata.uid == stage.uid) {
-            this.lastAction = stage;
-            break;
+    if (formData.current_action && formData.current_action.hasOwnProperty('name') && formData.current_action.hasOwnProperty('uid')) {
+        this.currentActionData = formData.current_action;
+
+        for (var m in this.flow) {
+            var stage = this.flow[m];
+            if (this.currentActionData.uid == stage.uid) {
+                this.currentAction = stage;
+                break;
+            }
         }
-    }
 
+        if (this.currentAction && this.currentAction._a && this.currentAction._a[this.currentActionData.index]) {
+            var cAct = this.currentAction._a[this.currentActionData.index];
+            if (this.flow[cAct.r]) {
+                var nextAction = this.flow[cAct.r];
+                this.data.next_stage = nextAction;
+            }
+        }
+
+        GLOBAL.db.updateById(this.tableName, this.data._id.toString(), this.data, function (d) {});
+    }
 };
 
 
 FlowManager.prototype.hasNextFlow = function () {
-    try {
-        var cAct = this.lastAction._a[this.lastActiondata.index];
-        if (this.flow[cAct.r]) {
-            return true;
-        }
-    } catch (e) {
-    }
-    return false;
+    return this.data.hasOwnProperty("next_stage");
 };
 
 FlowManager.prototype.processFlow = function () {
-    if (this.lastAction && this.lastActiondata) {
-        var cAct = this.lastAction._a[this.lastActiondata.index];
-        if (this.flow[cAct.r]) {
-            var nextAction = this.flow[cAct.r];
-            this._processNext(nextAction);
-        }
+    if (this.data.hasOwnProperty("next_stage")) {
+        var nextAction = this.data.next_stage;
+        this._processNext(nextAction);
     }
 };
 
-FlowManager.prototype._processNext = function (oAction) {
-    delete(oAction._id);
-    this.data.current_action = oAction;
-    GLOBAL.db.updateById(this.tableName, this.data._id.toString(), this.data, function (data) {
+FlowManager.prototype._processNext = function (oNewAction) {
+    delete(oNewAction._id);
 
-    });
+//    this.data.last_action.push(this.data.current_action);
+//    this.data.current_action = {};
 
-    switch (oAction._t) {
+
+
+    switch (oNewAction._t) {
         case "SMS":
-            this._processSMSAction(oAction);
+            this._processSMSAction(oNewAction);
             break;
         case "USER":
-            this._processUserAction(oAction);
+            this._processUserAction(oNewAction);
             break;
         case "GROUP":
-            this._processGroupAction(oAction);
+            this._processGroupAction(oNewAction);
             break;
         case "API":
-            this._processAPIAction(oAction);
+            this._processAPIAction(oNewAction);
             break;
         case "FTP":
-            this._processFTPAction(oAction);
+            this._processFTPAction(oNewAction);
             break;
         case "NOTIF":
-            this._processNotifAction(oAction);
+            this._processNotifAction(oNewAction);
             break;
         case "EMAIL":
-            this._processEmailAction(oAction);
+            this._processEmailAction(oNewAction);
             break;
         case "WALL":
-            this._processWALLAction(oAction);
+            this._processWALLAction(oNewAction);
             break;
         default:
-            this._processCustomAction(oAction);
+            this._processCustomAction(oNewAction);
     }
 
 };
@@ -95,12 +98,32 @@ FlowManager.prototype._processEmailAction = function (oAction) {
     var oEmail = GLOBAL.EmailService.getInstance();
 
     var tableName = this.tenant.dbname + ".template_factory";
+    var tenant = that.tenant;
 
-    var fntaskDone = function () {
-
+    var fntaskDone = function (err, ok, options) {
+        var oFormData = JSON.parse(JSON.stringify(that.data));
+        oFormData.stage_history = oFormData.stage_history || [];
+        oFormData.stage_history.push({
+            type: oAction._t,
+            uid: oAction.uid,
+            user: 'NA',
+            date: Date.now(),
+            to: options.to,
+            subject: options.subject,
+            attach: options.attachments ? options.attachments.length : 0
+        });
+        oFormData.next_stage = null;
+        if (oAction._a && oAction._a.length) {         
+            oFormData.current_action = {
+                name: oAction._a[0].n,
+                uid: oAction.uid,
+                index: 0
+            };            
+        } else {
+            oFormData.current_action = {}; 
+        }
+        require('./FormFactory').updateForm(tenant, oFormData);
     };
-
-
 
     GLOBAL.db.findById(tableName, tempalte, function (data) {
         if (data) {
@@ -140,6 +163,8 @@ FlowManager.prototype._processEmailAction = function (oAction) {
 };
 
 FlowManager.prototype._processUserAction = function (oAction) {
+
+
     /**
      * collect template
      * fill template
@@ -208,13 +233,13 @@ FlowManager.prototype._compileData = function (sText, formData) {
         var aData = formData.data;
         for (var i in aData) {
             var dd = aData[i];
-            var label=dd._l?dd._l.toLowerCase().replace(/\s+/,'_'):'';
+            var label = dd._l ? dd._l.toLowerCase().replace(/\s+/, '_') : '';
             var exp = "[" + label + "]";
             exp = exp.replace("[", "\\[").replace("]", "\\]");
-            sText=sText.replace(new RegExp(exp,'g'),dd._v);
+            sText = sText.replace(new RegExp(exp, 'g'), dd._v);
         }
     } catch (E) {
-        sText+=E.toString();
+        sText += E.toString();
     }
     return sText;
 };
@@ -230,7 +255,7 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
                 dd._t == "sign_input" ||
                 dd._t == "file_attach" ||
                 dd._t == "photo_attach")) {
-            
+
             if (dd._v) {
                 if (dd._v.indexOf("|") > -1) {
                     ids = ids.concat(dd._v.split("|"));
