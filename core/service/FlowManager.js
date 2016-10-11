@@ -37,16 +37,14 @@ FlowManager.prototype.hasNextFlow = function () {
 FlowManager.prototype.processFlow = function () {
     if (this.data.hasOwnProperty("next_stage")) {
         var nextAction = this.data.next_stage;
-        this._processNext(nextAction);
+        if (nextAction)
+            this._processNext(nextAction);
     }
 };
 
 FlowManager.prototype._processNext = function (oNewAction) {
-    delete(oNewAction._id);
-
-//    this.data.last_action.push(this.data.current_action);
-//    this.data.current_action = {};
-
+    if (oNewAction._id)
+        delete(oNewAction._id);
 
 
     switch (oNewAction._t) {
@@ -113,14 +111,14 @@ FlowManager.prototype._processEmailAction = function (oAction) {
             attach: options.attachments ? options.attachments.length : 0
         });
         oFormData.next_stage = null;
-        if (oAction._a && oAction._a.length) {         
+        if (oAction._a && oAction._a.length) {
             oFormData.current_action = {
                 name: oAction._a[0].n,
                 uid: oAction.uid,
                 index: 0
-            };            
+            };
         } else {
-            oFormData.current_action = {}; 
+            oFormData.current_action = {};
         }
         require('./FormFactory').updateForm(tenant, oFormData);
     };
@@ -272,7 +270,7 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
             });
             callback(result);
         });
-    }else{
+    } else {
         callback([]);
     }
 };
