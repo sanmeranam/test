@@ -7,6 +7,7 @@ var busboy = require('connect-busboy');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 var oLiveEvents=require('./core/event/LiveEvents');
 var EmailService=require('./core/email/EmailService');
@@ -45,8 +46,11 @@ app.use(favicon(path.join(__dirname, 'public/fav/', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(cookieParser());
 
+
+var sURL=(isWin ? oConfig.db.url : oConfig.db.url_unix).replace(":dbname","c4f_master");
+
 app.use(session({
-    store: GLOBAL.sessionStore,
+    store:new MongoStore({ url: sURL }),
     secret: 'sssssssssssshhhh',
     resave: false,
     saveUninitialized: true
