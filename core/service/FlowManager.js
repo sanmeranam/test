@@ -272,6 +272,8 @@ FlowManager.prototype._collectAttachments = function (sTable, formData, callback
             });
             callback(result);
         });
+    }else{
+        callback([]);
     }
 };
 
