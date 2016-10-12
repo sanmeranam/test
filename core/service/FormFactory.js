@@ -20,8 +20,7 @@ var FormFactory = {
     updateForm: function (tenant, FormData, callback) {
         var sTable = tenant.dbname + ".form_data";
         var sId=FormData._id;
-        delete(FormData._id);
-        GLOBAL.db.updateById(sTable, FormData._id, FormData, function (repo) {
+        GLOBAL.db.updateById(sTable,sId, FormData, function (repo) {
             if (callback) {
                 callback(repo);
             }
