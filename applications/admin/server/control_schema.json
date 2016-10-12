@@ -413,7 +413,7 @@
                 "value": {
                     "type": "list",
                     "hidden":true,
-                    "value": []
+                    "value": {}
                 },
                 "columns": {
                     "type": "list",
