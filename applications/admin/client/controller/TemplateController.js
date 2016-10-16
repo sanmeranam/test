@@ -55,8 +55,7 @@ core.createController('TemplateController', function ($scope, GlobalVar, Templat
         return {
             name: "",
             type: "NOTIFY",
-            form_id: "",
-            to: "",
+            form_id: "",            
             body: ""
         };
     };

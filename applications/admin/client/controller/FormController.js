@@ -1,4 +1,4 @@
-core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig, CurrentFormMeta) {
+core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig, CurrentFormMeta, $http) {
     jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
     jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
@@ -13,7 +13,7 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
 
     $scope.CurrentFormView = $scope.sPages[0];
 
-    $scope.stageChange = function (stage,frm) {
+    $scope.stageChange = function (stage, frm) {
         $scope.onSelectForm(frm);
         switch (stage) {
             case "DATA":
@@ -71,8 +71,9 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
 
 
     $scope.changeStatus = function (frm, stat) {
+        var last = frm.state;
         frm.state = stat;
-        $scope.saveChanges(frm);
+        $scope.saveChanges(frm, false, last != 0);
     };
 
 
@@ -102,26 +103,63 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     };
     $scope.loadFormMeta();
 
-//    $scope.$watch("SelectedFormMeta", function () {
-//        if ($scope.SelectedFormMeta) {
-//            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
-//        } else {
-//            $scope.hashManager.setParams();
-//        }
-//    });
-//    $scope.$watch("SelectedFormView", function () {
-//        if ($scope.SelectedFormView && $scope.SelectedFormMeta) {
-//            $scope.hashManager.setParams($scope.SelectedFormMeta._id, $scope.SelectedFormView);
-//        } else if ($scope.SelectedFormMeta) {
-//            $scope.hashManager.setParams($scope.SelectedFormMeta._id);
-//        }
-//    });
+    $scope.form_usage = {};
+
 
     $scope.onSelectForm = function (item) {
         $scope.SelectedFormMeta = item;
         CurrentFormMeta.setFormMeta(item);
-//        $scope.$broadcast('FormItemSelected', item);
+
+        if (!$scope.form_usage[item._id]) {
+            $http.get("/service/forms/usage?id=" + item._id).then(function (resp) {
+                $scope.form_usage[item._id] = resp.data;
+                $scope.getFormaterData(resp.data);
+            });
+        }else{
+            $scope.getFormaterData($scope.form_usage[item._id]);
+        }
     };
+
+    $scope.form_usage_data = {};
+
+    $scope.getFormaterData = function (data) {
+        
+        var lbl = [];
+        var d = [];
+        if (data && data.daily) {
+            for (var i in data.daily) {
+                lbl.push(i);
+                d.push(data.daily[i]);
+            }
+        }
+
+        $scope.form_usage_data.labels = lbl;
+        $scope.form_usage_data.data = [d];
+        $scope.form_usage_data.series = ["Created Forms"];
+        $scope.form_usage_data.options = {
+            scales: {
+                yAxes: [
+                    {
+                        id: 'y-axis-1',
+                        type: 'linear',
+                        display: true,
+                        position: 'left'
+                    },
+                    {
+                        id: 'y-axis-2',
+                        type: 'linear',
+                        display: true,
+                        position: 'right'
+                    }
+                ]
+            }
+        };
+
+    };
+
+
+
+
     $scope.onCloneForm = function () {
         if ($scope.SelectedFormMeta) {
             var oCloned = angular.copy($scope.SelectedFormMeta);
@@ -206,17 +244,18 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
         });
     };
 
-    $scope.onUpdateForm = function (changeTitle, bRefresh) {
+    $scope.onUpdateForm = function (changeTitle, bRefresh, bChangeV) {
         if (changeTitle) {
             $scope.SelectedFormMeta.history.modified.push({
                 date: Date.now(),
-                user: (core && core.Profile && core.Profile.user?core.Profile.user.first_name:""),
+                user: (core && core.Profile && core.Profile.user ? core.Profile.user.first_name : ""),
                 action: changeTitle
             });
         }
         bRefresh = bRefresh || true;
+        if (bChangeV)
+            $scope.SelectedFormMeta.version++;
 
-        $scope.SelectedFormMeta.version++;
         FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function (result) {
             if (bRefresh) {
                 $scope.loadFormMeta();

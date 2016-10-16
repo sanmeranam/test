@@ -1,129 +1,215 @@
-<div class="col-md-12 col-xs-12">
-    <div class="box box-info">
-        <div class="box-header with-border">
-            <h3 class="box-title">Forms</h3>
+<div>
+    <div class="row no-margin">
+        <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+            <button type="button" class="btn btn-info dropdown-toggle text-uppercase" data-toggle="dropdown">All<span class="fa fa-caret-down"></span></button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">All</a></li>
+                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Active </a></li>
+                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Inactive</a></li>
+
+            </ul>
+            <div class="btn-group">
+                <button title="Add Form"  type="button" ng-click="onCreateForm()" class="btn btn-info"><i class="fa fa-plus"></i></button>
+            </div>
+            <button title="Refresh List" type="button" ng-click="loadFormMeta()" class="btn btn-info"><i class="fa fa-refresh"></i></button>
+
         </div>
-        <div class="box-body large_view">
-            <div class="row no-margin">
-                <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
-                    <button type="button" class="btn btn-default dropdown-toggle text-uppercase" data-toggle="dropdown">All<span class="fa fa-caret-down"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">All</a></li>
-                        <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Active </a></li>
-                        <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Inactive</a></li>
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 col-xs-offset-1 no-padding">
+            <div  class="number_view_sm">
+                <label>Count</label>
+                <label class="text-info" ng-bind="FormMetaList.length || 0"></label>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8">
+            <div class="has-feedback">
+                <input type="text" ng-model="formFilterText" class="form-control input-sm" placeholder="Filter...">
+                <span class="glyphicon glyphicon-filter form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
 
-                    </ul>
-                    <div class="btn-group">
-                        <button title="Add Form"  type="button" ng-click="onCreateForm()" class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
-                    </div>
-                    <button title="Refresh List" type="button" ng-click="loadFormMeta()" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+    <div class="row no-margin">
+
+        <div class="col-lg-3 col-md-4 col-sm-6" ng-show="NewFormMeta">
+            <div class="box box-widget widget-user">
+
+                <div  class="widget-user-header bg-aqua-gradient pointer">                            
+                    <h3 class="widget-user-username">
+                        Form Name:
+                        <input type="text" ng-model="NewFormMeta.form_name" class="form-control">
+                    </h3>
+                    <h5 class="widget-user-desc">
+                        Choose a name for you form and press create. Once form created, you can design and activate for use.
+                    </h5>
 
                 </div>
-                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 col-xs-offset-1 no-padding">
-                    <div  class="number_view_sm">
-                        <label>Count</label>
-                        <label class="text-info" ng-bind="FormMetaList.length || 0"></label>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-4 border-right">
+                            <div class="description-block">
+
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4 border-right">
+                            <div class="description-block">
+                                <button class="btn btn-success" ng-click="onSaveNewForm()">CREATE</button>
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4">
+                            <div class="description-block">
+                                <button class="btn btn-warning" ng-click="NewFormMeta = null">CANCEL</button>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}">
+            <div class="box box-widget widget-user">
+
+                <div ng-click="onSelectForm(frm)" style="height: auto" class="widget-user-header pointer" ng-class="SelectedFormMeta == frm ? 'bg-yellow-gradient' : 'bg-blue-gradient'">                            
+                    <div class="pull-right">
+                        <a ng-click="stageChange('PREV', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Preview"><i class="fa fa-eye"></i></a>
+                        <a ng-click="stageChange('DEG', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Form Model"><i class="fa fa-pencil"></i></a>
+                        <a ng-click="stageChange('FLOW', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Data Flow"><i class="fa fa-sitemap"></i></a>
+                    </div>
+                    <h3 class="widget-user-username"><strong>{{frm.form_name|uppercase}}</strong></h3>
+                    <h5 class="widget-user-desc">v{{frm.version}}</h5>
+
+                </div>
+                <div class="box-footer" style="padding-top: 10px">
+                    <div class="row">
+                        <div class="col-sm-4 border-right">
+                            <div class="description-block">
+                                <h5 class="description-header">STATUS</h5>
+                                <span class="description-text" ng-switch="frm.state">
+                                    <span ng-switch-when="0" class="badge bg-orange">NEW</span>
+                                    <span ng-switch-when="1" class="badge bg-green">ACTIVE</span>
+                                    <span ng-switch-when="2" class="badge bg-red">INACTIVE</span>
+                                </span>
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4 border-right">
+                            <div class="description-block">
+                                <button class="btn btn-sm btn-flat bg-olive" ng-show="frm.state != 1" ng-click="changeStatus(frm, 1)" >ACTIVATE</button>
+                                <button class="btn btn-sm btn-flat bg-orange" ng-show="frm.state == 1" ng-click="changeStatus(frm, 2)">DEACTIVATE</button>
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4"  style="cursor: pointer">
+                            <div class="description-block">
+                                <button class="btn btn-sm btn-flat bg-navy" ng-click="stageChange('DATA', frm)" >RECORDS</button>
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row no-margin" ng-show="SelectedFormMeta">
+        <div class="col-sm-12">
+            <div class="box box-widget">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form Details- <strong class="text-uppercase">{{SelectedFormMeta.form_name}}</strong></h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" ng-click="SelectedFormMeta = null" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8">
-                    <div class="has-feedback">
-                        <input type="text" ng-model="formFilterText" class="form-control input-sm" placeholder="Filter...">
-                        <span class="glyphicon glyphicon-filter form-control-feedback"></span>
+                <div class="box-body">
+                    <div class="col-sm-4 no-padding">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Details</h3>
+                            </div>
+                            <div class="box-body" style="height:300px;overflow: auto">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>NAME</strong></td>
+                                        <td>{{SelectedFormMeta.form_name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VERSION</strong></td>
+                                        <td>{{SelectedFormMeta.version}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CREATED DATE</strong></td>
+                                        <td>{{SelectedFormMeta.history.created.date|date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CREATED BY</strong></td>
+                                        <td>{{SelectedFormMeta.history.created.user}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>STATE</strong></td>
+                                        <td>{{SelectedFormMeta.state==0?'NEW':(SelectedFormMeta.state==1?'ACTIVE':'INACTIVE')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ENTRIES</strong></td>
+                                        <td>{{form_usage[SelectedFormMeta._id].total}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 no-padding">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Usage</h3>
+                            </div>
+                            <div class="box-body" style="height:300px;">
+                                <div ng-show="form_usage_data.data[0].length==0" class="text-center"><strong>-- No Data --</strong></div>
+                                <canvas ng-show="form_usage_data.data[0].length" id="line" class="chart chart-line" chart-data="form_usage_data.data"
+                                        chart-labels="form_usage_data.labels" chart-series="form_usage_data.series" chart-options="form_usage_data.options">                                        
+                                </canvas>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 no-padding">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Actions History</h3>
+                            </div>
+                            <div class="box-body" style="height:300px;overflow: auto">
+                                <ul class="timeline">
+                                    <!-- timeline item -->
+                                    <li ng-repeat="tim in SelectedFormMeta.history.modified">
+                                        <!-- timeline icon -->
+                                        <i class="fa fa-clock-o bg-blue"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="fa fa-clock-o"></i>{{tim.date|date}}</span>
+
+                                            <h3 class="timeline-header"><a href="#" ng-bind="tim.user || 'User Action'"></a></h3>
+                                            <div class="timeline-body" ng-bind="tim.action"></div>
+                                        </div>
+                                    </li>
+                                    <!-- END timeline item -->
+                                </ul>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
                     </div>
                 </div>
             </div>
-
-
-            <div class="col-lg-3 col-md-4 col-sm-6" ng-show="NewFormMeta">
-                <div class="box box-widget widget-user">
-
-                    <div ng-click="" class="widget-user-header bg-aqua-gradient pointer">                            
-                        <h3 class="widget-user-username">
-                            Form Name:
-                            <input type="text" ng-model="NewFormMeta.form_name" class="form-control">
-                        </h3>
-                        <h5 class="widget-user-desc">
-                            Choose a name for you form and press create. Once form created, you can design and activate for use.
-                        </h5>
-
-                    </div>
-                    <div class="box-footer">
-                        <div class="row">
-                            <div class="col-sm-4 border-right">
-                                <div class="description-block">
-
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-4 border-right">
-                                <div class="description-block">
-                                    <button class="btn btn-success" ng-click="onSaveNewForm()">CREATE</button>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-4">
-                                <div class="description-block">
-                                    <button class="btn btn-warning" ng-click="NewFormMeta = null">CANCEL</button>
-                                </div>
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}">
-                <div class="box box-widget widget-user">
-
-                    <div ng-click="" class="widget-user-header bg-blue-gradient pointer">                            
-                        <div class="pull-right">
-                            <a ng-click="stageChange('PREV',frm)" class="btn btn-sm btn-link" style="color: #fff" title="Preview"><i class="fa fa-eye"></i></a>
-                            <a ng-click="stageChange('DEG',frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Form Model"><i class="fa fa-pencil"></i></a>
-                            <a ng-click="stageChange('FLOW',frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Data Flow"><i class="fa fa-sitemap"></i></a>
-                        </div>
-                        <h3 class="widget-user-username"><strong>{{frm.form_name|uppercase}}</strong></h3>
-                        <h5 class="widget-user-desc">v{{frm.version}}</h5>
-
-                    </div>
-                    <div class="box-footer">
-                        <div class="row">
-                            <div class="col-sm-4 border-right">
-                                <div class="description-block">
-                                    <h5 class="description-header">STATUS</h5>
-                                    <span class="description-text" ng-switch="frm.state">
-                                        <span ng-switch-when="0" class="badge bg-orange">NEW</span>
-                                        <span ng-switch-when="1" class="badge bg-green">ACTIVE</span>
-                                        <span ng-switch-when="2" class="badge bg-red">INACTIVE</span>
-                                    </span>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-4 border-right">
-                                <div class="description-block">
-                                    <button class="btn btn-default" ng-show="frm.state!=1" ng-click="changeStatus(frm,1)" >ACTIVATE</button>
-                                    <button class="btn btn-warning" ng-show="frm.state==1" ng-click="changeStatus(frm,2)">DEACTIVATE</button>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-4" ng-click="stageChange('DATA',frm)" style="cursor: pointer">
-                                <div class="description-block">
-                                    <h5 class="description-header">0</h5>
-                                    <span class="description-text">RECORDS</span>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>

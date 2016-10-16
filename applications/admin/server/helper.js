@@ -2,7 +2,7 @@ var util = require('./util');
 var fs = require('fs');
 var mongoAPI = require('mongodb');
 var Jimp = require("jimp");
-var GLOBAL=require('../../../core/GLOBAL');
+var GLOBAL = require('../../../core/GLOBAL');
 
 
 var tableNameFormat = function (text) {
@@ -137,7 +137,7 @@ var helper = {
                 var oData = result.length ? result[0] : null;
                 if (oData) {
                     oData.user_group = req.body;
-                    req.db.updateById(req.tenant.dbname +'.accounts', oData._id, oData, function (data) {
+                    req.db.updateById(req.tenant.dbname + '.accounts', oData._id, oData, function (data) {
                         res.json(data);
                     });
                 }
@@ -281,6 +281,29 @@ var helper = {
             } else {
                 res.end("File not found !!");
             }
+        });
+    }
+    ,
+    getFormUsage: function (req, res, next) {
+        req.db.find(req.tenant.dbname + ".form_data", {meta_id: req.query.id}, function (result) {
+            var data={
+              total:  result.length,
+              daily:{}
+            };
+            
+            if (result && result.length) {
+                result=result.map(function(v){
+                   var m=v.create_date.split(" ");
+                   var key=m[1]+" "+m[2]+" "+m[5];
+                   
+                    if(!data.daily[key]){
+                        data.daily[key]=0;
+                    }
+                    data.daily[key]+=1;                    
+                    return v;
+                });
+            }
+            res.json(data);
         });
     },
     restAccountsHook: function (table, data) {

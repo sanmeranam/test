@@ -1,5 +1,5 @@
 <div class="col-md-12 col-xs-12" ng-controller="FormFlowController">
-    <div class="box box-info">
+    <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title">Form [{{flowMeta.form_name}}]-Document Flow</h3>
             <div class="box-tools pull-right">
@@ -11,7 +11,7 @@
         </div>
         <div class="box-body large_view">
             <div class="col-sm-2 no-padding" >
-                <div class="box">
+                <div class="box box-solid">
                     <div class="box-header with-border">
                         <h3 class="box-title">Stage Pallet</h3>
                     </div>
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="col-sm-7">
-                <div class="box">
+                <div class="box box-solid">
                     <div class="box-header with-border">
                         <h3 class="box-title">Stage Pallet</h3>
                     </div>
@@ -42,7 +42,7 @@
 
             </div>
             <div class="col-sm-3" >
-                <div class="box" ng-show="SelectedNode">
+                <div class="box box-solid" ng-show="SelectedNode">
                     <div class="box-header">
                         <div class="box-title">
                             <div class="title">Flow Action: ({{SelectedNode._t}})  <button class="btn btn-sm btn-link" title="Delete Stage" ng-click="deleteNode()"><i class="fa fa-trash"></i></button></div>

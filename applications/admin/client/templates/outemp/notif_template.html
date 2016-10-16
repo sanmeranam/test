@@ -1,16 +1,59 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
-</html>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Template Editor</h3>
+            <div class="box-tools pull-right">
+                <div class="box-tools pull-right">
+                    <button type="button"  ng-click="closeWindow()" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                </div>                  
+            </div><!-- /.box-tools -->
+        </div>
+        <div class="box-body small_view" style="background-color: #f6f6f6">
+
+            <div class="col-md-3" >
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <div class="col-xs-6">
+                            <h3 class="box-title">Form Fields</h3>
+                        </div>
+                        <div class="col-xs-6">
+                            <select ng-model="currentForm" ng-options="frm as frm.name for frm in formMeta track by frm.value" class="form-control">
+                                <option value="">--Select Form--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding">                        
+                        <ul class="nav nav-pills nav-stacked">
+                            <li ng-repeat="(k,f) in currentForm.fields"><a draggable="true" sid="{{f.id}}" sname="{{f.label}}" ondragstart="angular.element(this).scope().onElementDrag(event,this)" title="test"><i class="fa fa-chain"></i>{{f.label}}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4 col-md-5 col-sm-6">
+                <div class="box box-widget widget-user">
+                    <div class="widget-user-header bg-aqua-gradient">
+                        <h3 class="widget-user-username"><strong>Notification Template</strong></h3>
+                        <h5 class="widget-user-desc" style="color: yellow" ng-bind="error_message"></h5>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>Template Name</label>
+                            <input type="tel" ng-model="createObject.name" class="form-control" placeholder="Enter template name">
+                            <input type="hidden" id="currentFormId" ng-value="currentForm.value" class="form-control" placeholder="Enter template name">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea ng-model="createObject.body" class="form-control drappable_text" placeholder="Enter your text or drag field parametes."></textarea>
+                        </div>
+                    </div>
+                    <div class="box box-footer">
+                        <button ng-show="createObject._id" class="btn btn-info" ng-click="updateObject()">Save</button>
+                        <button ng-show="!createObject._id" class="btn btn-info" ng-click="saveObject()">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
