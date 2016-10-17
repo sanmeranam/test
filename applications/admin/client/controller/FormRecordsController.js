@@ -1,13 +1,25 @@
-core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData,CurrentFormMeta) {
+core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData, CurrentFormMeta, Users) {
     jQuery("#recordsViewContainer").height(window.innerHeight * 0.68).css("overflow", "auto");
+    jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
+
+    jQuery(".small_view2").height(window.innerHeight * 0.65).css("overflow", "auto");
+
     $scope.DivTimeLineStyle = {
         height: (window.innerHeight * 0.6) + "px",
         overflow: "auto"
     };
     $scope.currentPage = "";
+    $scope._fields = [];
+    $scope.map = null;
+    $scope._chartitems = {};
+    $scope.CurrentForm = CurrentFormMeta.getFormMeta();    
+    $scope.charts = $scope.CurrentForm.charts;
+    $scope.BaseData = [];
+    $scope.UserMap = {};
+
     uiGmapIsReady.promise().then(function (inastance) {
         var map = inastance[0].map;
-
+        $scope.map = map;
         google.maps.event.addListener(map, "idle", function () {
             google.maps.event.trigger(map, 'resize');
         });
@@ -15,17 +27,33 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         google.maps.event.trigger(map, 'resize');
         map.setZoom(map.getZoom());
     });
-    $scope._chartitems = {};
-    $scope.charts = $scope.$parent.SelectedFormMeta ? $scope.$parent.SelectedFormMeta.charts : [];
 
-    $scope.CurrentForm=CurrentFormMeta.getFormMeta();
-    $scope.charts = $scope.CurrentForm.charts;
-    
 
-    $scope.BaseData = [];
+    $scope.getUser = function (userId) {
+        if (!$scope.UserMap[userId]) {
+            Users.get({id: userId}, function (data) {
+                $scope.UserMap[userId] = data;
+            });
+        }
 
-    FormData.getAll({meta_id:$scope.CurrentForm._id}, function (oData) {
+
+    };
+
+
+    FormData.getAll({meta_id: $scope.CurrentForm._id}, function (oData) {
         $scope.BaseData = oData;
+
+        var oneRecord = $scope.BaseData[0];
+        
+        var arr=[];
+        for (var n in oneRecord.data) {
+            var d = oneRecord.data[n];
+            arr.push({
+                key: d._i,
+                value: d._l
+            });
+        }
+        $scope._fields=arr;
     });
 
 
@@ -47,23 +75,23 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             var html = data._v;
             switch (data._t) {
                 case "audio_record":
-                    html = "<a href='/service/file/audio?id="+data._v+"' target='_blank' ><i class='fa fa-music'></i></a>";
+                    html = "<a href='/service/file/audio?id=" + data._v + "' target='_blank' ><i class='fa fa-music'></i></a>";
                     break;
                 case "video_record":
-                    html = "<a  href='/service/file/video?id="+data._v+"' target='_blank'><i class='fa fa-play-circle'></i></a>";
+                    html = "<a  href='/service/file/video?id=" + data._v + "' target='_blank'><i class='fa fa-play-circle'></i></a>";
                     break;
                 case "sign_input":
-                    html = "<a  href='/service/file/image?id="+data._v+"' target='_blank'><i class='fa fa-pencil-square-o'></i></a>";
+                    html = "<a  href='/service/file/image?id=" + data._v + "' target='_blank'><i class='fa fa-pencil-square-o'></i></a>";
                     break;
                 case "file_attach":
-                    html = "<a  href='/service/file/pdf?id="+data._v+"' target='_blank'><i class='fa fa-file-pdf-o'></i></a>";
+                    html = "<a  href='/service/file/pdf?id=" + data._v + "' target='_blank'><i class='fa fa-file-pdf-o'></i></a>";
                     break;
                 case "photo_attach":
-                    html = "<a  href='/service/file/image?id="+data._v+"' target='_blank'><i class='fa fa-picture-o'></i></a>";
+                    html = "<a  href='/service/file/image?id=" + data._v + "' target='_blank'><i class='fa fa-picture-o'></i></a>";
                     break;
                 case "location":
-                    var val=JSON.parse(data._v);
-                    html = "<a  href='http://maps.google.com/?q="+val.lat+","+val.lng+"' target='_blank'><i class='fa fa-map-marker'></i></a>";
+                    var val = JSON.parse(data._v);
+                    html = "<a  href='http://maps.google.com/?q=" + val.lat + "," + val.lng + "' target='_blank'><i class='fa fa-map-marker'></i></a>";
                     break;
                 case "date_picker":
                     html = data._v.split("T")[0];
@@ -81,10 +109,51 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                 longitude: 77.7006514
             },
             zoom: 12,
-            control: {}
+            control: {},
+            markers: [],
+            events: {
+                click: function (map, eventName, originalEventArgs) {
+                    var e = originalEventArgs[0];
+                    var lat = e.latLng.lat(), lon = e.latLng.lng();
+                    var marker = {
+                        id: Date.now(),
+                        coords: {
+                            latitude: lat,
+                            longitude: lon
+                        }
+                    };
+                    $scope.MapViewConfig.config.markers.push(marker);
+
+                    $scope.$apply();
+                }
+            }
         },
         init: function () {
+            for (var m in $scope.BaseData) {
+                var d = $scope.BaseData[m];
 
+                if (d && d.stage_history && d.stage_history.length) {
+                    this.config.markers.push({
+                        id: d.internal_id,
+                        coords: {
+                            latitude: d.stage_history[0].lat,
+                            longitude: d.stage_history[0].lng
+                        }
+                    });
+                    $scope.getUser(d.stage_history[0].user);
+                }
+
+            }
+        },
+        selected: function (item) {
+            this.selectedfrm = item;
+            if (item && item.stage_history && item.stage_history.length) {
+                this.moveToLocation(item.stage_history[0].lat, item.stage_history[0].lng);
+            }
+        },
+        moveToLocation: function (lat, lng) {
+            var center = new google.maps.LatLng(lat, lng);
+            $scope.map.panTo(center);
         }
     };
 
@@ -95,20 +164,23 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         },
         getFilterParam: function () {
             var flterText = jQuery("#formSearchText").val();
-            if (flterText.indexOf(":") > -1) {
-                flterText = flterText.split(":");
-                var m = {};
-                m[flterText[0]] = flterText[1];
-                return m;
-            }
+//            if (flterText.indexOf(":") > -1) {
+//                flterText = flterText.split(":");
+//                var m = {};
+//                m[flterText[0]] = flterText[1];
+//                return m;
+//            }
             return flterText;
         }
     };
+
+
 
     $scope.ChartViewConfig = {
         page: "/_self/templates/forms/records_chart_view.html",
         init: function () {
             Chart.defaults.global.legend.display = false;
+
         },
         saveField: function (item) {
             if (item) {
@@ -135,28 +207,36 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             };
         },
         getFields: function () {
-            return $scope.BaseData.headers;
+
         },
         _filterDataForChart: function (oNode) {
-            var baseData = $scope.BaseData.elements;
-            var map = {};
-            for (var i = 0; i < baseData.length; i++) {
-                var dd = baseData[i];
-                var value = dd[oNode.field];
-                if (!map[value]) {
-                    map[value] = 1;
-                }
-                map[value] = map[value] + 1;
-            }
+            var baseData = $scope.BaseData;
+            var map = {},label="";
+            
+            
+            baseData.map(function(row){
+                var cell=row.data.filter(function(v){
+                    label=v._i==oNode.field?v._l:label;
+                    return v._i==oNode.field;
+                });
+                var value=cell[0]._v;
+                
+                map[value]=map[value]?map[value]+1:1;
+                
+                return row;
+            });
+
             var data = Object.keys(map).map(function (v) {
                 return map[v];
             });
             var headers = Object.keys(map);
+            
             if (oNode.limit > 0 && headers.length > oNode.limit) {
                 headers.length = oNode.limit;
                 data.length = oNode.limit;
             }
-            return {header: headers, data: data, label: oNode.field};
+            
+            return {header: headers, data: data, label: label};
         },
         _drawDelayNode: function () {
             var context = this;
@@ -173,7 +253,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                                 datasets: [{
                                         label: context.data.label,
                                         backgroundColor: "#26B99A",
-                                        data: [51, 30, 40, 28, 92, 50, 45]
+                                        data: context.data.data
                                     }]
                             },
                             options: {
@@ -312,10 +392,6 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
 
     $scope._selectedView = "TABLE";
     $scope.switchView = function (view) {
-        if ($scope.table) {
-            $scope.table.destroy();
-            $scope.table = null;
-        }
         $scope._selectedView = view;
         switch (view) {
             case "TABLE":

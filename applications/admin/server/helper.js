@@ -104,7 +104,7 @@ var helper = {
                 }
 
             } else {
-                res.json(helper.services._createErrorPacket("user not found"));
+                res.end("");
             }
         });
     },

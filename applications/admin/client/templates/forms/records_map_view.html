@@ -1,8 +1,22 @@
 <div class="row">
-    <div class="col-sm-4">
-        list here
+    <div class="col-sm-4 small_view2">
+        <div class="info-box" ng-repeat="fd in BaseData" style="cursor: pointer" ng-click="MapViewConfig.selected(fd)">
+            <span class="info-box-icon" ng-class="MapViewConfig.selectedfrm==fd?'bg-aqua':'bg-gray'" ><i class="fa fa-map-marker"></i></span>
+
+            <div class="info-box-content">
+                <small ng-if="fd.next_stage" class="label label-danger pull-right">In Progress</small>
+                <small ng-if="!fd.next_stage" class="label label-success pull-right">Completed</small>
+                <span class="info-box-number">{{fd.internal_id|uppercase}}</span>
+                <span class="info-box-text">v{{fd.version}}</span>
+                <span class="info-box-text">{{fd.create_date}}</span>
+                <span class="info-box-text">By: <strong>{{UserMap[fd.stage_history[0].user].first_name}}</strong></span>                
+            </div>
+            
+        </div>        
     </div>
     <div  class="col-sm-8">
-        <ui-gmap-google-map center="MapViewConfig.config.center" zoom="MapViewConfig.config.zoom" refresh="true"></ui-gmap-google-map>
+        <ui-gmap-google-map center="MapViewConfig.config.center" zoom="MapViewConfig.config.zoom" refresh="true" events="MapViewConfig.config.events">
+            <ui-gmap-marker ng-repeat="m in MapViewConfig.config.markers" coords="m.coords" icon="m.icon" idkey="m.id"></ui-gmap-marker>
+        </ui-gmap-google-map>
     </div>
 </div>

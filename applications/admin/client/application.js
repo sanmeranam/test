@@ -64,6 +64,7 @@ window.core = {
             var obj = {
                 alertcb: null,
                 confirmcb: null,
+                loadingcb:null,
                 alert: function (text) {
                     if (this.alertcb) {
                         this.alertcb(text);
@@ -72,6 +73,11 @@ window.core = {
                 confirm: function (text, fnResult) {
                     if (this.confirmcb) {
                         this.confirmcb(text, fnResult);
+                    }
+                },
+                loading:function(b){
+                    if (this.loadingcb) {
+                        this.loadingcb(b);
                     }
                 }
             };

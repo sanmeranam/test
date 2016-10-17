@@ -23,7 +23,7 @@
                         <label for="field">Field:</label>
                         <select class="form-control" ng-model="data.field">
                             <option value="">---Select Field---</option> <!-- not selected / blank option -->
-                            <option ng-value="op" ng-repeat="op in ChartViewConfig.getFields()">{{op}}</option>
+                            <option value="{{op.key}}" ng-repeat="op in _fields">{{op.value}}</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -78,7 +78,7 @@
                         <label for="field">Field:</label>
                         <select class="form-control" ng-model="ChartViewConfig._newField.field">
                             <option value="">---Select Field---</option> <!-- not selected / blank option -->
-                            <option ng-value="op" ng-repeat="op in ChartViewConfig.getFields()">{{op}}</option>
+                            <option ng-value="op.key" ng-repeat="op in _fields">{{op.value}}</option>
                         </select>
                     </div>
                     <div class="form-group">

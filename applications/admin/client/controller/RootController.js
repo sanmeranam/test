@@ -43,7 +43,11 @@ core.createController('RootController', function ($scope, Session, Message) {
         $scope._confirm.callback = callback;
         $scope._confirm.text = text;
     };
+    Message.loadingcb=function(b){
+        $scope.loading=b;
+    };
 
+    Message.loading(false);
 
     $scope.checkPageSwitch = function () {
         return true;
@@ -70,6 +74,7 @@ core.createController('RootController', function ($scope, Session, Message) {
             }
         },
         _switch: function (toPage, org) {
+//            Message.loading(true);
             if ($scope.checkPageSwitch()) {
                 if (toPage.indexOf("::") > -1)
                     toPage = toPage.substr(0, toPage.indexOf("::"));

@@ -1,4 +1,5 @@
 core.createController('TemplateController', function ($scope, GlobalVar, TemplateFactory, Message,$q, $timeout) {
+    Message.loading(false);
     $scope.templates = {
         "sms": "/_self/templates/outemp/sms_template.html",
         "excel": "/_self/templates/outemp/excel_template.html",
