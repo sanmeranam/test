@@ -126,7 +126,12 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
             text: data.message,
             time: Date.now()
         });
-
+        
+        setTimeout(function () {
+            var objDiv = document.getElementById(from + "_content");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 100);
+        
         $scope.$apply();
     });
 
