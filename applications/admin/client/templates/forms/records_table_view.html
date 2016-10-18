@@ -1,13 +1,19 @@
 <div class="col-sm-12" ng-controller="FormRecordsController">
-    <table id="datatable-buttons" class="table table-striped table-bordered">
+    <table id="datatable-buttons" class="table table-bordered table-hover table-fixedheader table-condensed">
         <thead>
             <tr>
-                <th ng-repeat="hdr in BaseData[0].data">{{hdr._l}}</th>
+                <th align="center" class="text-upper text-center" ng-repeat="h in ['Id','Form','Version','Created Date','Created By','Stage','Status']">{{h}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="row in BaseData">
-                <td ng-repeat="col in row.data" align="center" ng-bind-html="TableViewConfig.parseCol(col)"></td>
+            <tr ng-repeat="row in BaseData|filter:$parent.formFilterText">
+                <td align="center" ng-bind="row.internal_id"></td>
+                <td align="center" ng-bind="row.form_name"></td>
+                <td align="center" ng-bind="row.version"></td>
+                <td align="center" ng-bind="row.create_date"></td>
+                <td align="center" ng-bind="UserMap[row.stage_history[0].user].name"></td>
+                <td align="center" ng-bind="row.next_stage?row.next_stage._t+' PENDING':'FINISHED'"></td>
+                <td align="center" ng-bind="row.next_stage?'IN PROGRESS':'COMPLETED'"></td>                
             </tr>            
         </tbody>
     </table>

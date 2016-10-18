@@ -48,9 +48,9 @@ window.core = {
         this.ngApp.service('CloudMessage', function () {
             var res = {
                 es: new EventSource("/heartbeat"),
-                onmessagecb:function(){},
-                onmessage:function(cb){
-                    this.onmessagecb=cb;
+                onmessagecb: function () {},
+                onmessage: function (cb) {
+                    this.onmessagecb = cb;
                 },
                 incoming: function (event) {
                     var data = JSON.parse(event.data);
@@ -254,6 +254,28 @@ window.core = {
             });
             return data;
         });
+
+        this.ngApp.service('UserList', function (GlobalVar) {
+            var resource = {
+                cb: function () {},
+                init: function () {
+                    GlobalVar.get({context: "$users"}, function (list) {
+                        resource._list = list;
+                        resource.cb(list);
+                    });
+                },
+                load: function (ncb) {
+                    if (this._list) {
+                        ncb(this._list);
+                    } else {
+                        resource.cb = ncb;
+                        resource.init();
+                    }
+                }
+            };
+
+            return resource;
+        });
     },
     mapInit: function () {
 
@@ -278,6 +300,18 @@ window.core = {
                     });
                 }
             };
+        });
+
+        this.ngApp.directive("knob", function () {
+            return {
+                restrict: "C",
+                scope: {
+                    val: '='
+                },
+                link: function (scope, element, attrs) {
+                    $(element[0]).val(scope.val).knob();
+                }
+            }
         });
 
         this.ngApp.directive("contenteditable", function () {

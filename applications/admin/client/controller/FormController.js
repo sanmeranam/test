@@ -109,6 +109,8 @@ core.createController('FormController', function ($scope, FormMeta, Message, Glo
     $scope.onSelectForm = function (item) {
         $scope.SelectedFormMeta = item;
         CurrentFormMeta.setFormMeta(item);
+        if(!item)
+            return;
 
         if (!$scope.form_usage[item._id]) {
             $http.get("/service/forms/usage?id=" + item._id).then(function (resp) {

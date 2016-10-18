@@ -1,4 +1,4 @@
-core.createController('RootController', function ($scope, Session, Message,CloudMessage) {
+core.createController('RootController', function ($scope, Session, Message,CloudMessage,UserList) {
     $scope.Profile = {};
 
 

@@ -1,4 +1,4 @@
-core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar) {
+core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar,UserList) {
     $scope.UserList = {};
 
 
@@ -8,8 +8,8 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
     $scope.updateId();
 
     $scope.ActiveSessions = {};
-
-    GlobalVar.get({context: '$users'}, function (result) {
+    
+    UserList.load(function(result){
         for (var i = 0; i < result.length; i++) {
             var u = result[i];
             $scope.UserList[u.value] = u;
@@ -43,6 +43,41 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
             }
         });
     });
+
+//    GlobalVar.get({context: '$users'}, function (result) {
+//        for (var i = 0; i < result.length; i++) {
+//            var u = result[i];
+//            $scope.UserList[u.value] = u;
+//
+//            $scope.ActiveSessions[u.value] = {
+//                name: u.name,
+//                message: []
+//            };
+//        }
+//        GlobalVar.get({context: '$message'}, function (res) {
+//            for (var i = 0; i < res.length; i++) {
+//                var ur = res[i];
+//
+//                if ($scope.ActiveSessions[ur.from]) {
+//                    $scope.ActiveSessions[ur.from].message.push({
+//                        type: "IN",
+//                        text: ur.message,
+//                        time: ur.time
+//                    });
+//                    $scope.meId=$scope.meId||ur.to;
+//                }
+//
+//                if ($scope.ActiveSessions[ur.to]) {
+//                    $scope.ActiveSessions[ur.to].message.push({
+//                        type: "OUT",
+//                        text: ur.message,
+//                        time: ur.time
+//                    });
+//                    $scope.meId=$scope.meId||ur.from;
+//                }
+//            }
+//        });
+//    });
 
 
 

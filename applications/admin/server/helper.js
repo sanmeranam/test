@@ -352,7 +352,7 @@ var helper = {
     },
     restGetAll: function (req, res, next) {
         var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
-        req.db.find(sTable, {}, function (result) {
+        req.db.find(sTable, req.query, function (result) {
             res.json(helper.restAccountsHook(req.params.table, result));
         });
     },

@@ -1,4 +1,4 @@
-core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData, CurrentFormMeta, Users) {
+core.createController('FormRecordsController', function ($scope, uiGmapIsReady, Message, FormData, CurrentFormMeta, UserList) {
     jQuery("#recordsViewContainer").height(window.innerHeight * 0.68).css("overflow", "auto");
     jQuery(".small_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
 
@@ -12,7 +12,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
     $scope._fields = [];
     $scope.map = null;
     $scope._chartitems = {};
-    $scope.CurrentForm = CurrentFormMeta.getFormMeta();    
+    $scope.CurrentForm = CurrentFormMeta.getFormMeta();
     $scope.charts = $scope.CurrentForm.charts;
     $scope.BaseData = [];
     $scope.UserMap = {};
@@ -27,33 +27,41 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         google.maps.event.trigger(map, 'resize');
         map.setZoom(map.getZoom());
     });
-
-
-    $scope.getUser = function (userId) {
-        if (!$scope.UserMap[userId]) {
-            Users.get({id: userId}, function (data) {
-                $scope.UserMap[userId] = data;
-            });
+    
+    UserList.load(function(list){
+        for(var i=0;i<list.length;i++){
+            var data=list[i];
+            $scope.UserMap[data._id] = data;
         }
+    });
 
-
+    var fnFilterAcceptFields = function (type) {
+        return (type == "text_input" 
+                || type == "date_picker" 
+                || type == "time_picker"
+                || type == "switch"
+                || type == "single_option"
+                || type == "multi_options"
+                || type == "barcode_scan"                
+                || type == "rating");
     };
-
 
     FormData.getAll({meta_id: $scope.CurrentForm._id}, function (oData) {
         $scope.BaseData = oData;
 
         var oneRecord = $scope.BaseData[0];
-        
-        var arr=[];
+
+        var arr = [];
         for (var n in oneRecord.data) {
             var d = oneRecord.data[n];
-            arr.push({
-                key: d._i,
-                value: d._l
-            });
+            if (fnFilterAcceptFields(d._t)) {
+                arr.push({
+                    key: d._i,
+                    value: d._l
+                });
+            }
         }
-        $scope._fields=arr;
+        $scope._fields = arr;
     });
 
 
@@ -113,18 +121,18 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             markers: [],
             events: {
                 click: function (map, eventName, originalEventArgs) {
-                    var e = originalEventArgs[0];
-                    var lat = e.latLng.lat(), lon = e.latLng.lng();
-                    var marker = {
-                        id: Date.now(),
-                        coords: {
-                            latitude: lat,
-                            longitude: lon
-                        }
-                    };
-                    $scope.MapViewConfig.config.markers.push(marker);
-
-                    $scope.$apply();
+//                    var e = originalEventArgs[0];
+//                    var lat = e.latLng.lat(), lon = e.latLng.lng();
+//                    var marker = {
+//                        id: Date.now(),
+//                        coords: {
+//                            latitude: lat,
+//                            longitude: lon
+//                        }
+//                    };
+//                    $scope.MapViewConfig.config.markers.push(marker);
+//
+//                    $scope.$apply();
                 }
             }
         },
@@ -140,7 +148,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
                             longitude: d.stage_history[0].lng
                         }
                     });
-                    $scope.getUser(d.stage_history[0].user);
+                    
                 }
 
             }
@@ -211,32 +219,45 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
         },
         _filterDataForChart: function (oNode) {
             var baseData = $scope.BaseData;
-            var map = {},label="";
+            var map = {}, label = "";
             
-            
-            baseData.map(function(row){
-                var cell=row.data.filter(function(v){
-                    label=v._i==oNode.field?v._l:label;
-                    return v._i==oNode.field;
+            var total=0,avg=0,showing=0;
+
+            baseData.map(function (row) {
+                var cell = row.data.filter(function (v) {
+                    label = v._i == oNode.field ? v._l : label;
+                    return v._i == oNode.field;
                 });
-                var value=cell[0]._v;
-                
-                map[value]=map[value]?map[value]+1:1;
-                
+                var value = cell[0]._v;
+
+                map[value] = map[value] ? map[value] + 1 : 1;
+
                 return row;
             });
-
+            
+            
             var data = Object.keys(map).map(function (v) {
+                
                 return map[v];
             });
             var headers = Object.keys(map);
+
             
             if (oNode.limit > 0 && headers.length > oNode.limit) {
                 headers.length = oNode.limit;
                 data.length = oNode.limit;
             }
+            var sum=0;
             
-            return {header: headers, data: data, label: label};
+            data=data.map(function(v){
+                sum+=v;
+                return v; 
+            });
+            
+            total=data.length;
+            avg=sum/total;
+            
+            return {header: headers, data: data, label: label,sum:sum,total:total,avg:avg};
         },
         _drawDelayNode: function () {
             var context = this;
@@ -381,7 +402,7 @@ core.createController('FormRecordsController', function ($scope, uiGmapIsReady, 
             }
         },
         drawCustomData: function (oNode, sId) {
-            jQuery("#chartViewContaintId").height(window.innerHeight * 0.6).css("overflow", "auto");
+            jQuery("#chartViewContaintId").height(window.innerHeight * 0.69).css("overflow", "auto");
             var result = this._filterDataForChart(oNode);
 
             setTimeout(jQuery.proxy(this._drawDelayNode, {node: oNode, id: sId, data: result}), 500);

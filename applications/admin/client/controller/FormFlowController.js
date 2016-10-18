@@ -1,4 +1,4 @@
-core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util, FlowFactory, CurrentFormMeta) {
+core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util, FlowFactory, CurrentFormMeta,UserList) {
     jQuery(".small_view").height(window.innerHeight * 0.72).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".small_viewx").height(window.innerHeight * 0.72).css("overflow-x", "auto");
     jQuery(".large_view").height(window.innerHeight * 0.79).css("overflow", "hidden");
@@ -111,6 +111,11 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     $scope._loadFlowFactory();
 
     $scope.loadGlobalVar = function (sVar) {
+        if(sVar=="$users"){
+            UserList.load(function(res){
+                $scope._gv[sVar] = res;
+            });
+        }else
         if (!$scope._gv[sVar]) {
             GlobalVar.get({context: sVar, account: core.Profile.account}, function (res) {
                 $scope._gv[sVar] = res;

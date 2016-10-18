@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-4 small_view2">
-        <div class="info-box" ng-repeat="fd in BaseData" style="cursor: pointer" ng-click="MapViewConfig.selected(fd)">
+        <div class="info-box" ng-repeat="fd in BaseData|filter:$parent.formFilterText" style="cursor: pointer" ng-click="MapViewConfig.selected(fd)">
             <span class="info-box-icon" ng-class="MapViewConfig.selectedfrm==fd?'bg-aqua':'bg-gray'" ><i class="fa fa-map-marker"></i></span>
 
             <div class="info-box-content">

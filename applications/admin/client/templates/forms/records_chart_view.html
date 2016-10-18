@@ -43,14 +43,37 @@
                     </div>                    
                 </div>
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer" ng-class="(data.edit?'text-right':'no-padding')" style="max-height: 150px;overflow-y: auto">
-                <ul class="nav nav-pills nav-stacked" ng-hide="data.edit">
-                    <li  ng-repeat="d in result.header"><a href="javascript:void(0)">{{d}} <span class="pull-right text-green">{{result.data[$index]}}</span></a></li>                    
-                </ul>
+            <div class="box-footer no-border">
+                <div class="row" ng-hide="data.edit">
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" val="result.total" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                        <div class="knob-label">Total</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" val="result.sum" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                        <div class="knob-label">Sum</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" val="result.avg" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                        <div class="knob-label">Average</div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <!-- /.row -->
                 <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
-                <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit=false"><i class="fa fa-trash"></i> Cancel</button>
+                <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit = false"><i class="fa fa-trash"></i> Cancel</button>
+
             </div>
+            <!-- /.box-body -->
+            <!--            <div class="box-footer" ng-class="(data.edit?'text-right':'no-padding')" style="max-height: 150px;overflow-y: auto">
+                            <ul class="nav nav-pills nav-stacked" ng-hide="data.edit">
+                                <li  ng-repeat="d in result.header"><a href="javascript:void(0)">{{d}} <span class="pull-right text-green">{{result.data[$index]}}</span></a></li>                    
+                            </ul>
+                            <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
+                            <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit=false"><i class="fa fa-trash"></i> Cancel</button>
+                        </div>-->
             <!-- /.footer -->
         </div>
     </div>
