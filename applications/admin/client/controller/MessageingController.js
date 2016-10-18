@@ -1,6 +1,8 @@
 core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar) {
     $scope.UserList = {};
-
+    $scope.me = core.Profile;
+    
+    
     GlobalVar.get({context: '$users'}, function (result) {
         for (var i = 0; i < result.length; i++) {
             var u = result[i];

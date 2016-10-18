@@ -174,7 +174,8 @@
                                 <span ng-if="msg.type == 'OUT'" class="direct-chat-timestamp pull-left">{{msg.time|date}}</span>
                             </div>
                             <!-- /.direct-chat-info -->
-                            <!--<img class="direct-chat-img" src="../dist/img/user1-128x128.jpg" alt="Message User Image"> /.direct-chat-img -->
+                            <img ng-if="msg.type == 'IN'" class="direct-chat-img" ng-src="/service/avtar?_s=100&_u={{k}}" alt="Message User Image"> 
+                            <img ng-if="msg.type == 'OUT'" class="direct-chat-img" ng-src="/service/avtar?_s=100&_u={{me._id}}" alt="Message User Image"> 
                             <div class="direct-chat-text">
                                 {{msg.text}}
                             </div>
