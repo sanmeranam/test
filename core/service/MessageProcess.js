@@ -66,6 +66,8 @@ var MessageProcess = {
         this.db.findById(this.dbname + ".accounts", sId, function (user) {
             if(user){                
                 callback(user.cgm_token||null,user.web_token||null);
+            }else{
+                callback(null,null);
             }
         });
     }

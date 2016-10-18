@@ -33,10 +33,7 @@ window.core = {
         });
 
 
-        var es = new EventSource("/heartbeat");
-        es.onmessage = function (event) {
-            console.log(event.data);
-        };
+
     },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
@@ -47,6 +44,45 @@ window.core = {
         return [];
     },
     _initRestful: function () {
+
+        this.ngApp.service('CloudMessage', function () {
+            var res = {
+                es: new EventSource("/heartbeat"),
+                onmessagecb:function(){},
+                onmessage:function(cb){
+                    this.onmessagecb=cb;
+                },
+                incoming: function (event) {
+                    var data = JSON.parse(event.data);
+
+                    if (data.event == "SYS_EVENT") {
+                        switch (data.action) {
+                            case "CONNECTED":
+                                break;
+                            case "FORM_META_UPDATE":
+                                break;
+                            case "BASE_SETTING_UPDATE":
+                                break;
+                            case "FORM_DATA_UPDATE":
+                                break;
+                        }
+
+                    } else if (data.event == "USER_EVENT") {
+                        switch (data.action) {
+                            case "USER_MESSAGE":
+                                res.onmessagecb(data);
+                                break;
+                            case "USER_LIST":
+                                break;
+                        }
+                    } else if (data.event == "FEEDS_TOPIC") {
+
+                    }
+                }
+            };
+            res.es.onmessage = res.incoming;
+            return res;
+        });
 
         this.ngApp.service('CurrentFormMeta', function () {
             var currentForm = null;

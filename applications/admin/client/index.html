@@ -142,118 +142,85 @@
     <!-- /.content-wrapper -->
 </div>
 
-<div class="row" style="position: fixed;bottom: 0px;right: 0px;display: none">
-    <div class="col-sm-2 pull-right" ng-repeat="v in [1, 2, 3]">
-        <div class="box box-primary direct-chat direct-chat-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Direct Chat</h3>
+<div ng-controller="MessageingController">
 
-                <div class="box-tools pull-right">
-                    <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span>
-                    <!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>-->
-                    <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
-                        <i class="fa fa-comments"></i></button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body" style="display: block;">
-                <!-- Conversations are loaded here -->
-                <div class="direct-chat-messages">
-                    <!-- Message. Default to the left -->
-                    <div class="direct-chat-msg">
-                        <div class="direct-chat-info clearfix">
-                            <span class="direct-chat-name pull-left">Alexander Pierce</span>
-                            <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-                        </div>
-                        <!-- /.direct-chat-info -->
-                        <img class="direct-chat-img" src="../dist/img/user1-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
-                        <div class="direct-chat-text">
-                            Is this template really for free? That's unbelievable!
-                        </div>
-                        <!-- /.direct-chat-text -->
+    <div class="row" style="position: fixed;bottom: 0px;right: 0px;" >
+        <div class="col-sm-2 pull-right" ng-repeat="(k,v) in ActiveSessions">
+            <div class="box box-primary direct-chat direct-chat-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{v.name}}</h3>
+
+                    <div class="box-tools pull-right">
+                        <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span>
+                        <!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>-->
+                        <!--                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                                    <i class="fa fa-comments"></i></button>-->
+                        <button type="button" ng-click="onChatClose(k)" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                     </div>
-                    <!-- /.direct-chat-msg -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <!-- Conversations are loaded here -->
+                    <div class="direct-chat-messages">
+                        <!-- Message. Default to the left -->
+                        <div class="direct-chat-msg" ng-repeat="msg in v.message" ng-class="msg.type == 'IN' ? '' : 'right'">
+                            <div class="direct-chat-info clearfix">
 
-                    <!-- Message to the right -->
-                    <div class="direct-chat-msg right">
-                        <div class="direct-chat-info clearfix">
-                            <span class="direct-chat-name pull-right">Sarah Bullock</span>
-                            <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                                <span ng-if="msg.type == 'IN'" class="direct-chat-name pull-left">{{v.name}}</span>
+                                <span ng-if="msg.type == 'OUT'" class="direct-chat-name pull-right">Me</span>                                
+
+                                <span ng-if="msg.type == 'IN'" class="direct-chat-timestamp pull-right">{{msg.time|date}}</span>
+                                <span ng-if="msg.type == 'OUT'" class="direct-chat-timestamp pull-left">{{msg.time|date}}</span>
+                            </div>
+                            <!-- /.direct-chat-info -->
+                            <!--<img class="direct-chat-img" src="../dist/img/user1-128x128.jpg" alt="Message User Image"> /.direct-chat-img -->
+                            <div class="direct-chat-text">
+                                {{msg.text}}
+                            </div>
+                            <!-- /.direct-chat-text -->
                         </div>
-                        <!-- /.direct-chat-info -->
-                        <img class="direct-chat-img" src="../dist/img/user3-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
-                        <div class="direct-chat-text">
-                            You better believe it!
-                        </div>
-                        <!-- /.direct-chat-text -->
+                        <!-- /.direct-chat-msg -->
                     </div>
-                    <!-- /.direct-chat-msg -->
+                    <!--/.direct-chat-messages-->
                 </div>
-                <!--/.direct-chat-messages-->
-
-                <!-- Contacts are loaded here -->
-                <div class="direct-chat-contacts">
-                    <ul class="contacts-list">
-                        <li>
-                            <a href="#">
-                                <img class="contacts-list-img" src="../dist/img/user1-128x128.jpg" alt="User Image">
-
-                                <div class="contacts-list-info">
-                                    <span class="contacts-list-name">
-                                        Count Dracula
-                                        <small class="contacts-list-date pull-right">2/28/2015</small>
-                                    </span>
-                                    <span class="contacts-list-msg">How have you been? I was...</span>
-                                </div>
-                                <!-- /.contacts-list-info -->
-                            </a>
-                        </li>
-                        <!-- End Contact Item -->
-                    </ul>
-                    <!-- /.contatcts-list -->
-                </div>
-                <!-- /.direct-chat-pane -->
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer" style="display: block;">
-                <form action="#" method="post">
+                <!-- /.box-body -->
+                <div class="box-footer" style="display: block;">
                     <div class="input-group">
-                        <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                        <input type="text" name="message" autocomplete="off" ng-keydown="onTextKeyPress($event,k)" id="{{k}}_text" placeholder="Type Message ..." class="form-control">
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary btn-flat">Send</button>
+                            <button type="submit" class="btn btn-primary btn-flat" ng-click="sendMessage(k)">Send</button>
                         </span>
                     </div>
-                </form>
+                </div>
+                <!-- /.box-footer-->
             </div>
-            <!-- /.box-footer-->
         </div>
     </div>
+
+    <aside class="control-sidebar control-sidebar-light" style="bottom: 0px">
+        <div class="col-sm-12 no-padding">
+            <ul class="nav nav-stacked">
+                <li class="" style="background-color: #fff;border: #f6f6f6 solid 1px;cursor: pointer">
+                    <table class="table no-margin">
+                        <tr>
+                            <td style="width: 60px;vertical-align: middle;text-align: center">
+                                <img style="width: 30px" class="img-circle" src="/service/avtar?_s=100&_u=57a9a94f75fbf2690c0efd16" alt="User Avatar">
+                            </td>
+                            <td>
+                                <div><strong>Name</strong></div>
+                                <div>Group</div>
+                            </td>
+                        </tr>
+                    </table>               
+                </li>
+            </ul>
+
+
+        </div>
+    </aside>
+
 </div>
-
-<aside class="control-sidebar control-sidebar-light" style="bottom: 0px">
-    <div class="col-sm-12 no-padding">
-        <ul class="nav nav-stacked">
-            <li class="" style="background-color: #fff;border: #f6f6f6 solid 1px;cursor: pointer">
-                <table class="table no-margin">
-                    <tr>
-                        <td style="width: 60px;vertical-align: middle;text-align: center">
-                            <img style="width: 30px" class="img-circle" src="/service/avtar?_s=100&_u=57a9a94f75fbf2690c0efd16" alt="User Avatar">
-                        </td>
-                        <td>
-                            <div><strong>Name</strong></div>
-                            <div>Group</div>
-                        </td>
-                    </tr>
-                </table>               
-            </li>
-        </ul>
-
-
-    </div>
-</aside>
-
 <div class="dialog_modal_overlay" ng-show="_confirm.text">
     <div class="col-sm-4 col-sm-offset-4" style="top: 100px">
         <div class="box box-info box-solid">

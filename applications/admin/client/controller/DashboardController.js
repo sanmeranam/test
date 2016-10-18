@@ -1,3 +1,3 @@
-core.createController('DashboardController', function ($scope, Page) {
+core.createController('DashboardController', function ($scope,CloudMessage) {
     
 });

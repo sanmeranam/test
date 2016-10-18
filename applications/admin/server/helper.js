@@ -3,7 +3,7 @@ var fs = require('fs');
 var mongoAPI = require('mongodb');
 var Jimp = require("jimp");
 var GLOBAL = require('../../../core/GLOBAL');
-
+var oMessager = require('../../../core/service/MessageProcess');
 
 var tableNameFormat = function (text) {
     return text.replace(/\.?([A-Z]+)/g, function (x, y) {
@@ -287,20 +287,20 @@ var helper = {
     ,
     getFormUsage: function (req, res, next) {
         req.db.find(req.tenant.dbname + ".form_data", {meta_id: req.query.id}, function (result) {
-            var data={
-              total:  result.length,
-              daily:{}
+            var data = {
+                total: result.length,
+                daily: {}
             };
-            
+
             if (result && result.length) {
-                result=result.map(function(v){
-                   var m=v.create_date.split(" ");
-                   var key=m[1]+" "+m[2]+" "+m[5];
-                   
-                    if(!data.daily[key]){
-                        data.daily[key]=0;
+                result = result.map(function (v) {
+                    var m = v.create_date.split(" ");
+                    var key = m[1] + " " + m[2] + " " + m[5];
+
+                    if (!data.daily[key]) {
+                        data.daily[key] = 0;
                     }
-                    data.daily[key]+=1;                    
+                    data.daily[key] += 1;
                     return v;
                 });
             }
@@ -365,6 +365,22 @@ var helper = {
         req.db.removeById(sTable, sId, function (result) {
             res.json(result);
         });
+    },
+    sendSingleMessage: function (req, res, next) {
+        var system_key = GLOBAL.Config.gcm.system_key;
+        var tenant = req.tenant;
+        oMessager.setSystemKey(system_key, req.db, tenant.dbname);
+
+        oMessager.onMessage(req.body, function (err, response) {
+            if (err) {
+                res.json({type:"ERROR",body:err});
+            } else {
+                res.json({type:"SUCCESS",body:response});
+            }
+        });
+    },
+    sendGroupMessage: function (req, res, next) {
+
     }
 };
 

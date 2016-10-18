@@ -70,6 +70,9 @@ router.get('/service/data_factory/list', helper.getGlobalConfig);
 router.get('/service/global/:context', helper.getGlobalConfig);
 router.get('/service/var/:context', helper.getGlobalVariables);
 
+router.post('/service/message/single', helper.sendSingleMessage);
+router.post('/service/message/group', helper.sendSingleMessage);
+
 router.get('/service/forms/usage', helper.getFormUsage);
 
 
