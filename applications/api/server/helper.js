@@ -338,10 +338,12 @@ var helper = {
         onmessage: function (req, res) {
             var system_key = req.GLOBAL.Config.gcm.system_key;
             var tenant = req.tenant;
-
+            console.log("DEBUG============="+system_key);
             oMessager.setSystemKey(system_key, req.db, tenant.dbname);
 
             oMessager.onMessage(req.body, function (err, response) {
+                console.log("DEBUG===end=========="+err);
+                console.log("DEBUG===end=========="+response);
                 if (err) {
                     res.json(helper.services._createErrorPacket(err));
                 } else {
