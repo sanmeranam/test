@@ -16,7 +16,8 @@ ExternalEvent.prototype.verifyRequest = function () {
 ExternalEvent.prototype.onConnection = function (client) {
     var cookie=client.req.headers.cookie;
     var sesion=cookie.replace("connect.sid=s%3A","");
-    var sKey=sesion.split(".")[0];    
+    var sKey=sesion.split(".")[0];  
+    
     GLOBAL.web_sessions[sKey]=client;
     
     GLOBAL.db.find('c4f_master.sessions',{_id:sKey},function(oResult){

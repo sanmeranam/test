@@ -64,12 +64,8 @@ var MessageProcess = {
     },
     _getuserDeviceToken: function (sId, callback) {
         this.db.findById(this.dbname + ".accounts", sId, function (user) {
-            if (user && user.cgm_token) {
-                callback(user.cgm_token,null);
-            } else  if (user && user.web_token){
-                callback(null, user.web_token);
-            }else{
-                callback(null,null);
+            if(user){                
+                callback(user.cgm_token||null,user.web_token||null);
             }
         });
     }
