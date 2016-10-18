@@ -98,6 +98,7 @@ var helper = {
     },
     services: {
         _createErrorPacket: function (msg) {
+            console.log(msg);
             return {
                 error: 1,
                 success: 0,
