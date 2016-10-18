@@ -3,6 +3,7 @@ var Jimp = require("jimp");
 var path = require("path");
 var oFormFactory = require('../../../core/service/FormFactory');
 var oMessager = require('../../../core/service/MessageProcess');
+var GLOBAL = require('../../../core/GLOBAL');
 
 var helper = {
     _local: {
@@ -336,14 +337,13 @@ var helper = {
             });
         },
         onmessage: function (req, res) {
-            var system_key = req.GLOBAL.Config.gcm.system_key;
+            var system_key = GLOBAL.Config.gcm.system_key;
             var tenant = req.tenant;
-            console.log("DEBUG============="+system_key);
+            
             oMessager.setSystemKey(system_key, req.db, tenant.dbname);
 
             oMessager.onMessage(req.body, function (err, response) {
-                console.log("DEBUG===end=========="+err);
-                console.log("DEBUG===end=========="+response);
+                
                 if (err) {
                     res.json(helper.services._createErrorPacket(err));
                 } else {
