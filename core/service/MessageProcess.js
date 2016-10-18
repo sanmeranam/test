@@ -9,7 +9,7 @@ var MessageProcess = {
     },
     onMessage: function (oPack, callback) {
         var sType = oPack.TYPE;
-        console.log("DEBUG===type=========="+sType);
+        
         switch (sType) {
             case "SINGLE_MESSAGE":
                 this.singleForward(oPack.TO, oPack.FROM, oPack.MESSAGE, callback);
@@ -33,11 +33,10 @@ var MessageProcess = {
             time: Date.now()
         };
         var that = this;
-        console.log("DEBUG===before insert=========="+oMessagePack);
         //Save to db first
         this.db.insertToTable(this.dbname + ".message_queue", oMessagePack, function (mResult) {
             var oMessage = mResult.ops[0];
-            console.log("DEBUG===after instert=========="+oMessage);
+            
             MessageProcess._getuserDeviceToken(to, function (gToken, wToken) {
                 
                 if (gToken) {
@@ -55,7 +54,9 @@ var MessageProcess = {
                     if (GLOBAL.web_sessions && GLOBAL.web_sessions[wToken]) {
                         GLOBAL.web_sessions[wToken].send(JSON.stringify({message: msg, from: from, event: 'USER_EVENT', action: 'USER_MESSAGE'}));
                     }
-                } else {
+                }
+                
+                if(!gToken && !wToken){
                     callback("Device not available.", null);
                 }
             });
