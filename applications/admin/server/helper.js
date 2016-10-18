@@ -57,6 +57,7 @@ var helper = {
             var oData = result.length ? result[0] : null;
             if (oData && oData.secret === password) {
                 oData.profile = "";
+                oData.tenant = req.tenant;
                 req.session.user = oData;
                 res.redirect("/");
             } else {

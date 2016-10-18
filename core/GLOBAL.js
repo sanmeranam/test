@@ -3,5 +3,6 @@ module.exports={
     ServerEvent:null,
     db:null,
     email:null,
-    config:null
+    config:null,
+    web_sessions:{}
 };

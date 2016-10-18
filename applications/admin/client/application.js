@@ -31,6 +31,12 @@ window.core = {
         $(document).ajaxStart(function () {
             Pace.restart();
         });
+
+
+        var es = new EventSource("/heartbeat");
+        es.onmessage = function (event) {
+            console.log(event.data);
+        };
     },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
@@ -64,7 +70,7 @@ window.core = {
             var obj = {
                 alertcb: null,
                 confirmcb: null,
-                loadingcb:null,
+                loadingcb: null,
                 alert: function (text) {
                     if (this.alertcb) {
                         this.alertcb(text);
@@ -75,7 +81,7 @@ window.core = {
                         this.confirmcb(text, fnResult);
                     }
                 },
-                loading:function(b){
+                loading: function (b) {
                     if (this.loadingcb) {
                         this.loadingcb(b);
                     }

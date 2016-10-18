@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var util = require('./util');
 var helper = require('./helper');
+var fs = require('fs');
 
 
 
@@ -14,6 +15,12 @@ router.get('/', function (req, res, next) {
     } else {
         res.redirect("/login");
     }
+});
+
+
+router.get('/manifest.json', function (req, res, next) {    
+    var text=fs.readFileSync('./admin/client/manifest.json');
+    res.send(text);
 });
 
 router.get('/index.html', function (req, res, next) {
