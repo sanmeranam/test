@@ -144,25 +144,20 @@
 
 <div ng-controller="MessageingController">
 
-    <div class="row" style="position: fixed;bottom: 0px;right: 0px;" >
-        <div class="col-sm-2 pull-right" ng-repeat="(k,v) in ActiveSessions">
+    <div class="row" style="position: fixed;bottom: -20px;right: 30px;z-index: 9000" >
+        <div class="col-sm-2 pull-right" style="padding: 2px" ng-repeat="(k,v) in ActiveSessions" ng-show="v.show">
             <div class="box box-primary direct-chat direct-chat-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{v.name}}</h3>
 
                     <div class="box-tools pull-right">
-                        <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span>
-                        <!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                            </button>-->
-                        <!--                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
-                                                    <i class="fa fa-comments"></i></button>-->
-                        <button type="button" ng-click="onChatClose(k)" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        <button type="button" ng-click="onChatClose(k)" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body" style="display: block;">
                     <!-- Conversations are loaded here -->
-                    <div class="direct-chat-messages">
+                    <div class="direct-chat-messages" id="{{k}}_content">
                         <!-- Message. Default to the left -->
                         <div class="direct-chat-msg" ng-repeat="msg in v.message" ng-class="msg.type == 'IN' ? '' : 'right'">
                             <div class="direct-chat-info clearfix">
@@ -170,12 +165,12 @@
                                 <span ng-if="msg.type == 'IN'" class="direct-chat-name pull-left">{{v.name}}</span>
                                 <span ng-if="msg.type == 'OUT'" class="direct-chat-name pull-right">Me</span>                                
 
-                                <span ng-if="msg.type == 'IN'" class="direct-chat-timestamp pull-right">{{msg.time|date}}</span>
-                                <span ng-if="msg.type == 'OUT'" class="direct-chat-timestamp pull-left">{{msg.time|date}}</span>
+                                <span ng-if="msg.type == 'IN'" class="direct-chat-timestamp pull-right">{{msg.time|date:'MMM d, y h:mm a'}}</span>
+                                <span ng-if="msg.type == 'OUT'" class="direct-chat-timestamp pull-left">{{msg.time|date:'MMM d, y h:mm a'}}</span>
                             </div>
                             <!-- /.direct-chat-info -->
                             <img ng-if="msg.type == 'IN'" class="direct-chat-img" ng-src="/service/avtar?_s=100&_u={{k}}" alt="Message User Image"> 
-                            <img ng-if="msg.type == 'OUT'" class="direct-chat-img" ng-src="/service/avtar?_s=100&_u={{me._id}}" alt="Message User Image"> 
+                            <img ng-if="msg.type == 'OUT'" class="direct-chat-img" ng-src="/service/avtar?_s=100&_u={{meId}}" alt="Message User Image"> 
                             <div class="direct-chat-text">
                                 {{msg.text}}
                             </div>
@@ -202,15 +197,15 @@
     <aside class="control-sidebar control-sidebar-light" style="bottom: 0px">
         <div class="col-sm-12 no-padding">
             <ul class="nav nav-stacked">
-                <li class="" style="background-color: #fff;border: #f6f6f6 solid 1px;cursor: pointer">
+                <li ng-click="startChart(u._id)" ng-repeat="u in UserList" style="background-color: #fff;border: #f6f6f6 solid 1px;cursor: pointer">
                     <table class="table no-margin">
                         <tr>
                             <td style="width: 60px;vertical-align: middle;text-align: center">
-                                <img style="width: 30px" class="img-circle" src="/service/avtar?_s=100&_u=57a9a94f75fbf2690c0efd16" alt="User Avatar">
+                                <img style="width: 30px" class="img-circle" ng-src="/service/avtar?_s=100&_u={{u._id}}" alt="User Avatar">
                             </td>
                             <td>
-                                <div><strong>Name</strong></div>
-                                <div>Group</div>
+                                <div><strong>{{u.name}}</strong></div>
+                                <div>{{u.email}}</div>
                             </td>
                         </tr>
                     </table>               

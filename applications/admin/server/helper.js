@@ -149,6 +149,7 @@ var helper = {
     },
     getGlobalVariables: function (req, res, next) {
         var type = req.params.context;
+        var user = req.session.user;
         switch (type) {
             case '$users':
                 var sTable = req.tenant.dbname + ".accounts";
@@ -160,8 +161,14 @@ var helper = {
                         delete(v.profile);
                         v.name = v.first_name + " " + v.last_name;
                         v.value = v._id;
+
                         return v;
                     });
+
+                    users = users.filter(function (v) {
+                        return user._id != v._id;
+                    });
+
                     res.json(users);
                 });
                 break;
@@ -197,6 +204,11 @@ var helper = {
                 break;
             case '$forms':
                 helper.getFormDetails(req, res);
+                break;
+            case '$message':                
+                req.db.find(req.tenant.dbname + '.message_queue', {'$or':[{"to": user._id},{"from": user._id}]}, function (ug) {                    
+                    res.json(ug);
+                });
                 break;
             case '$user_group':
                 req.db.find(req.tenant.dbname + '.global_config', {"key": 'user_group'}, function (ug) {
@@ -373,9 +385,9 @@ var helper = {
 
         oMessager.onMessage(req.body, function (err, response) {
             if (err) {
-                res.json({type:"ERROR",body:err});
+                res.json({type: "ERROR", body: err});
             } else {
-                res.json({type:"SUCCESS",body:response});
+                res.json({type: "SUCCESS", body: response});
             }
         });
     },

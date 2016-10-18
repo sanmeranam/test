@@ -55,7 +55,7 @@ window.core = {
                 incoming: function (event) {
                     var data = JSON.parse(event.data);
 
-                    if (data.event == "SYS_EVENT") {
+                    if (data.event === "SYS_EVENT") {
                         switch (data.action) {
                             case "CONNECTED":
                                 break;
@@ -67,7 +67,7 @@ window.core = {
                                 break;
                         }
 
-                    } else if (data.event == "USER_EVENT") {
+                    } else if (data.event === "USER_EVENT") {
                         switch (data.action) {
                             case "USER_MESSAGE":
                                 res.onmessagecb(data);
@@ -75,7 +75,7 @@ window.core = {
                             case "USER_LIST":
                                 break;
                         }
-                    } else if (data.event == "FEEDS_TOPIC") {
+                    } else if (data.event === "FEEDS_TOPIC") {
 
                     }
                 }
