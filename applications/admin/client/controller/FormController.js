@@ -1,267 +1,170 @@
-core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig, CurrentFormMeta, $http) {
-    jQuery(".small_view").height(window.innerHeight * 0.78).css("overflow-y", "auto").css("overflow-x", "hidden");
-    jQuery(".large_view").height(window.innerHeight * 0.8).css("overflow", "hidden");
-    jQuery("#historyContainerId").height(window.innerHeight * 0.25).css("overflow", "auto");
+core.createController('FormController', function ($scope, FormMeta, Message, GlobalConfig, UserList, $http, FormData) {
+    $scope.FormMap = {};
 
-
-    $scope.sPages = [
-        "/_self/templates/form_views/form_tile_view.html",
-        "/_self/templates/form_views/form_data_view.html",
-        "/_self/templates/form_views/form_design_view.html",
-        "/_self/templates/form_views/form_flow_view.html"
-    ];
-
-    $scope.CurrentFormView = $scope.sPages[0];
-
-    $scope.stageChange = function (stage, frm) {
-        $scope.onSelectForm(frm);
-        switch (stage) {
-            case "DATA":
-                $scope.CurrentFormView = $scope.sPages[1];
-                break;
-            case "FLOW":
-                $scope.CurrentFormView = $scope.sPages[3];
-                break;
-            case "DEG":
-                $scope.CurrentFormView = $scope.sPages[2];
-                break;
-            case "TILE":
-            default:
-                $scope.CurrentFormView = $scope.sPages[0];
+    $scope.UserMap={};
+    UserList.load(function (res) {
+        for(var m in res){
+            $scope.UserMap[res[m].value]=res[m];
         }
-    };
+        
+    });
 
-    $scope.FormMetaList = [];
-    $scope.SelectedFormMeta = null;
-    $scope.SelectedFormView = 0;
-    $scope.NewFormMeta = null;
-
-    $scope.hashManager = {
+    $scope.FormMetaConfig = {
+        busy: false,
+        list: [],
+        selected: null,
+        newform: null,
+        _newFormMetaStruct: {},
         init: function () {
-            var ps = core.getHashParams();
-            for (var i = 0; i < ps.length; i++) {
-                this["p" + i] = ps[i];
+            this.reload();
+            this.busy = true;
+            GlobalConfig.load({context: 'db_new_form'}, function (data) {
+                $scope.FormMetaConfig._newFormMetaStruct = data[0].value;
+                $scope.FormMetaConfig.busy = false;
+            });
+        },
+        select: function (item) {
+            this.selected = item;
+
+
+            $scope.FormDataConfig.init(item);
+            $scope.FormDasbordConfig.showusage(item._id);
+            $scope.FormChart.init(item._id);
+        },
+        save: function (frm, bRefresh) {
+            this.busy = true;
+            this.selected = frm || this.selected;
+            FormMeta.save({id: this.selected._id}, this.selected, function (result) {
+                if (bRefresh) {
+                    $scope.FormMetaConfig.reload();
+                } else {
+                    $scope.FormMetaConfig.busy = false;
+                }
+            });
+        },
+        reload: function () {
+            this.busy = true;
+            FormMeta.getAll({}, function (aResult) {
+                $scope.FormMetaConfig.list = aResult;
+                $scope.FormMetaConfig.busy = false;
+            });
+        },
+        remove: function (fId) {
+
+        },
+        createForm: function () {
+
+            var newForm = JSON.stringify(this._newFormMetaStruct);
+
+            newForm = newForm.replace("{{flow_id}}", Math.floor(Math.random() * 9999999));
+            newForm = newForm.replace("{{date}}", Date.now());
+            newForm = newForm.replace("{{u_id}}", core.Profile._id);
+            newForm = newForm.replace("{{u_name}}", core.Profile.first_name + " " + core.Profile.last_name);
+
+            this.newform = JSON.parse(newForm);
+        },
+        saveCreated: function () {
+            if (this.newform) {
+                if (this.newform && jQuery.trim(this.newform.form_name)) {
+                    this.busy = true;
+                    FormMeta.create(angular.copy(this.newform), function () {
+                        $scope.FormMetaConfig.newform = null;
+                        $scope.FormMetaConfig.reload();
+                        $scope.FormMetaConfig.busy = false;
+                        Message.alert("Form has been created successfully.");
+                    });
+                }
             }
         },
-        setParams: function () {
-            if (arguments && arguments.length) {
-                var mh = "Forms:";
-                for (var i = 0; i < arguments.length; i++) {
-                    mh = mh + ":" + arguments[i];
+        statusChange: function (frm, stat) {
+            frm.state = stat;
+            $scope.FormMetaConfig.save(frm, true);
+        }
+    };
+
+    $scope.FormChart = {
+        list: {},
+        init: function (sId, bForce) {
+            if (bForce || !$scope.FormChart.list[sId]) {
+                $http.get("/service/forms/analytics?id=" + sId).then(function (resp) {
+                    if (!$scope.FormChart.list[sId]) {
+                        $scope.FormChart.list[sId] = [];
+                        $scope.FormChart.list[sId] = resp.data;
+                    }
+
+                });
+            }
+        }
+    };
+
+
+    $scope.FormDataConfig = {
+        busy: false,
+        me: null,
+        init: function (frm) {
+            this.me = frm;
+            if (!$scope.FormMap[frm._id] || !$scope.FormMap[frm._id].data) {
+                this.load();
+            }
+        },
+        load: function () {
+            this.busy = true;
+            FormData.getAll({meta_id: this.me._id}, function (oData) {
+                $scope.FormDataConfig.busy = true;
+                $scope.FormMap[$scope.FormDataConfig.me._id] = $scope.FormMap[$scope.FormDataConfig.me._id] || {data: []};
+                $scope.FormMap[$scope.FormDataConfig.me._id].data = oData;
+            });
+        }
+    };
+
+    $scope.FormDasbordConfig = {
+        busy: false,
+        me: null,
+        init: function (frm) {
+            this.me = frm;
+            if (!$scope.FormMap[frm._id] || !$scope.FormMap[frm._id].usage) {
+                this.load();
+            }
+        },
+        load: function () {
+            this.busy = true;
+            $http.get("/service/forms/usage?id=" + this.me._id).then(function (resp) {
+                var oData = resp.data;
+                $scope.FormDasbordConfig.busy = false;
+                $scope.FormMap[oData.id] = $scope.FormMap[oData.id] || {usage: {}};
+                $scope.FormMap[oData.id].usage = resp.data;
+            });
+        },
+        showusage: function (sId) {
+            var data = $scope.FormMap[sId].usage;
+            var lbl = [];
+            var d = [];
+            if (data && data.daily) {
+                for (var i in data.daily) {
+                    lbl.push(i);
+                    d.push(data.daily[i]);
                 }
-                window.location.hash = mh;
-            } else {
-                window.location.hash = "Forms";
             }
-        }
-    };
-    $scope.hashManager.init();
 
-    $(".sparkline").each(function () {
-        var $this = $(this);
-        $this.sparkline('html', $this.data());
-    });
-
-    GlobalConfig.load({context: 'db_new_form'}, function (data) {
-        $scope._newFormMetaStruct = data[0].value;
-    });
-
-//    $scope.sCurrentStage = null;
-
-
-
-    $scope.changeStatus = function (frm, stat) {
-        var last = frm.state;
-        frm.state = stat;
-        $scope.saveChanges(frm, false, last != 0);
-    };
-
-
-    $scope.loadFormMeta = function () {
-        $scope._loadingForms = true;
-        $scope.hashManager.init();
-
-        FormMeta.getAll({}, function (data) {
-            $scope.FormMetaList = data;
-
-            $scope.hashManager.init();
-            if ($scope.hashManager.p0) {
-                var oExist = $scope.FormMetaList.filter(function (v) {
-                    return v._id === $scope.hashManager.p0;
-                });
-                if (oExist && oExist.length) {
-                    $scope.onSelectForm(oExist[0]);
-
-                    if ($scope.hashManager.p1) {
-                        $scope.SelectedFormView = $scope.hashManager.p1;
-                    }
+            this.labels = lbl;
+            this.data = [d];
+            this.series = ["Created Forms"];
+            this.colors = ['#FD1F5E', '#1EF9A1', '#7FFD1F', '#68F000'];
+            this.options = {
+                scales: {
+                    yAxes: [
+                        {
+                            id: 'y-axis-1',
+                            type: 'linear',
+                            display: true,
+                            position: 'left'
+                        }
+                    ]
                 }
-
-            }
-            $scope._loadingForms = false;
-        });
-    };
-    $scope.loadFormMeta();
-
-    $scope.form_usage = {};
-
-
-    $scope.onSelectForm = function (item) {
-        $scope.SelectedFormMeta = item;
-        CurrentFormMeta.setFormMeta(item);
-        if(!item)
-            return;
-
-        if (!$scope.form_usage[item._id]) {
-            $http.get("/service/forms/usage?id=" + item._id).then(function (resp) {
-                $scope.form_usage[item._id] = resp.data;
-                $scope.getFormaterData(resp.data);
-            });
-        }else{
-            $scope.getFormaterData($scope.form_usage[item._id]);
-        }
-    };
-
-    $scope.form_usage_data = {};
-
-    $scope.getFormaterData = function (data) {
-        
-        var lbl = [];
-        var d = [];
-        if (data && data.daily) {
-            for (var i in data.daily) {
-                lbl.push(i);
-                d.push(data.daily[i]);
-            }
-        }
-
-        $scope.form_usage_data.labels = lbl;
-        $scope.form_usage_data.data = [d];
-        $scope.form_usage_data.series = ["Created Forms"];
-        $scope.form_usage_data.options = {
-            scales: {
-                yAxes: [
-                    {
-                        id: 'y-axis-1',
-                        type: 'linear',
-                        display: true,
-                        position: 'left'
-                    },
-                    {
-                        id: 'y-axis-2',
-                        type: 'linear',
-                        display: true,
-                        position: 'right'
-                    }
-                ]
-            }
-        };
-
-    };
-
-
-
-
-    $scope.onCloneForm = function () {
-        if ($scope.SelectedFormMeta) {
-            var oCloned = angular.copy($scope.SelectedFormMeta);
-            delete(oCloned._id);
-            oCloned.form_name += "_copy";
-            oCloned.state = 0;
-            oCloned.history.modified.length = 0;
-            oCloned.history.created.user = core.Profile.user.first_name;
-            oCloned.history.created.date = Date.now();
-
-            FormMeta.create(oCloned, function () {
-                $scope.loadFormMeta();
-            });
-
-            Message.alert("Form cloned and saved.");
-        }
-    };
-    $scope.onDeleteForm = function () {
-        Message.confirm("By deleting this form, data will not be deleted, only the form will suspend. Later you can delete permanently. Are you sure want to suspend this form?", function (result) {
-            if (result) {
-                $scope.SelectedFormMeta.state = 3;
-                $scope.onUpdateForm("Form suspended permanently.", true);
-            }
-        });
-    };
-
-    $scope.onInlineAction = function (type) {
-        if ($scope.SelectedFormMeta) {
-            if (type === -1) {
-                $scope._loadingForms = true;
-                FormMeta.delete({id: $scope.SelectedFormMeta._id}, function () {
-                    $scope.SelectedFormMeta = null;
-                    $scope.loadFormMeta();
-                });
-            } else {
-                Message.confirm("Are you sure want to change?", function (v) {
-                    if (v) {
-                        $scope.SelectedFormMeta.state = type;
-                        $scope.onUpdateForm("Form activation mode changed.", true);
-                    }
-                });
-            }
+            };
         }
     };
 
 
-    $scope.onCreateForm = function () {
-        $scope.SelectedFormMeta = null;
-        $scope.SelectedFormView = 0;
-
-        $scope.sCurrentStage = "NEW";
-
-        var newForm = JSON.stringify($scope._newFormMetaStruct);
-
-        newForm = newForm.replace("{{flow_id}}", Math.floor(Math.random() * 9999999));
-        newForm = newForm.replace("{{date}}", Date.now());
-        newForm = newForm.replace("{{u_id}}", core.Profile._id);
-        newForm = newForm.replace("{{u_name}}", core.Profile.first_name + " " + core.Profile.last_name);
-
-        $scope.NewFormMeta = JSON.parse(newForm);
-    };
-    $scope.onSaveNewForm = function (oNewForm) {
-        if (oNewForm) {
-            FormMeta.create(oNewForm, function () {
-                $scope.loadFormMeta();
-            });
-        } else if ($scope.NewFormMeta && jQuery.trim($scope.NewFormMeta.form_name)) {
-            FormMeta.create(angular.copy($scope.NewFormMeta), function () {
-                $scope.NewFormMeta = null;
-                $scope.loadFormMeta();
-            });
-        }
-        $scope.stageChange("");
-    };
-
-    $scope.saveChanges = function (frm, bRefresh) {
-
-        FormMeta.save({id: frm._id}, frm, function (result) {
-            if (bRefresh) {
-                $scope.loadFormMeta();
-            }
-        });
-    };
-
-    $scope.onUpdateForm = function (changeTitle, bRefresh, bChangeV) {
-        if (changeTitle) {
-            $scope.SelectedFormMeta.history.modified.push({
-                date: Date.now(),
-                user: (core && core.Profile && core.Profile.user ? core.Profile.user.first_name : ""),
-                action: changeTitle
-            });
-        }
-        bRefresh = bRefresh || true;
-        if (bChangeV)
-            $scope.SelectedFormMeta.version++;
-
-        FormMeta.save({id: $scope.SelectedFormMeta._id}, $scope.SelectedFormMeta, function (result) {
-            if (bRefresh) {
-                $scope.loadFormMeta();
-            }
-        });
-    };
+    $scope.FormMetaConfig.init();
 });

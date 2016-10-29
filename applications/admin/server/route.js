@@ -74,6 +74,8 @@ router.post('/service/message/single', helper.sendSingleMessage);
 router.post('/service/message/group', helper.sendSingleMessage);
 
 router.get('/service/forms/usage', helper.getFormUsage);
+router.get('/service/forms/analytics', helper.getFormAnalytics);
+router.post('/service/forms/analytics', helper.addFormAnalytics);
 
 
 

@@ -1,6 +1,12 @@
-core.createController('RootController', function ($scope, Session, Message,CloudMessage,UserList) {
+core.createController('RootController', function ($scope, Session, Message, CloudMessage, CurrentFormMeta, GlobalVar) {
     $scope.Profile = {};
 
+    $scope.forms = [];
+
+
+    GlobalVar.get({context: "$forms"}, function (res) {
+        $scope.forms = res;
+    });
 
     Session.getData({}, function (data) {
         if (data.status === "OK") {
@@ -43,8 +49,8 @@ core.createController('RootController', function ($scope, Session, Message,Cloud
         $scope._confirm.callback = callback;
         $scope._confirm.text = text;
     };
-    Message.loadingcb=function(b){
-        $scope.loading=b;
+    Message.loadingcb = function (b) {
+        $scope.loading = b;
     };
 
     Message.loading(false);
@@ -73,8 +79,11 @@ core.createController('RootController', function ($scope, Session, Message,Cloud
                 this._switch("Dashboard", "Dashboard");
             }
         },
-        _switch: function (toPage, org) {
-//            Message.loading(true);
+        _switch: function (toPage, org, formData) {
+            if (formData) {
+                CurrentFormMeta.setFormMeta(formData);
+            }
+
             if ($scope.checkPageSwitch()) {
                 if (toPage.indexOf("::") > -1)
                     toPage = toPage.substr(0, toPage.indexOf("::"));
@@ -84,6 +93,9 @@ core.createController('RootController', function ($scope, Session, Message,Cloud
                     window.location.hash = org.split(" ").join("_");
                     this._page = this[toPage].path;
                     this._title = toPage;
+
+
+
                     jQuery(".menu_section").find(".active").removeClass("active");
                     jQuery("[menu='" + toPage + "']").addClass("active");
                 } else {
@@ -108,6 +120,9 @@ core.createController('RootController', function ($scope, Session, Message,Cloud
         },
         "Settings": {
             path: "/_self/templates/settings.html"
+        },
+        "Form": {
+            path: "/_self/templates/form_data.html"
         }
     };
     $scope.PageConfig._checkHash();

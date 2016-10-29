@@ -5,8 +5,8 @@
 
 .message-item {
     margin-bottom: 25px;
-    margin-left: 40px;
-    position: relative;
+    margin-left: 0px;
+    position: absolute;
 }
 .message-item .message-inner {
     background: #fff;
@@ -41,7 +41,7 @@
     top: 6px;
     width: 0;
 }
-.message-item:before {
+/*.message-item:before {
     background: #fff;
     border-radius: 2px;
     bottom: -30px;
@@ -51,8 +51,8 @@
     left: -30px;
     position: absolute;
     width: 3px;
-}
-.message-item:after {
+}*/
+/*.message-item:after {
     background: #fff;
     border: 2px solid #ccc;
     border-radius: 50%;
@@ -63,7 +63,7 @@
     position: absolute;
     top: 10px;
     width: 15px;
-}
+}*/
 .clearfix:before, .clearfix:after {
     content: " ";
     display: table;

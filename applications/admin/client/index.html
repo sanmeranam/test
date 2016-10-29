@@ -118,10 +118,21 @@
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu menu_section">
                 <li class="active" menu="Dashboard"><a ng-click="PageConfig._switch('Dashboard')"><i class="fa fa-home"></i><span> Home</span></a></li>
-                <li menu="Forms"><a ng-click="PageConfig._switch('Forms')"><i class="fa fa-file"></i><span> Forms</span></a></li>
+                <li menu="Forms"  class="treeview">
+                    <a ng-click="PageConfig._switch('Forms')">
+                        <i class="fa fa-file"></i><span> Forms</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                     <ul class="treeview-menu">
+                         <li menu="Form" ng-repeat="f in forms"><a ng-click="PageConfig._switch('Form','Form::'+f.value,f)" class="text-uppercase"><i class="fa fa-file"></i> {{f.name}}</a></li>
+                    </ul>
+                </li>
+                
+                
                 <li menu="Data Factory"><a ng-click="PageConfig._switch('Data Factory')"><i class="fa fa-database"></i><span> Data Factory</span></a></li>
                 <li menu="Doc Output"><a ng-click="PageConfig._switch('Doc Output')"><i class="fa fa-file-pdf-o"></i><span> Doc Output</span></a></li>
-                <!--<li menu="Flow Factory"><a ng-click="PageConfig._switch('Flow Factory')"><i class="fa fa-money"></i><span> Flow Factory</span></a></li>-->
                 <li menu="Users"><a ng-click="PageConfig._switch('Users')"><i class="fa fa-users"></i><span> Users</span></a></li>
                 <li menu="Settings"><a ng-click="PageConfig._switch('Settings')"><i class="fa fa-cogs"></i><span> Settings</span></a></li>
             </ul>
@@ -183,7 +194,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer" style="display: block;">
                     <div class="input-group">
-                        <input type="text" name="message" autocomplete="off" ng-keydown="onTextKeyPress($event,k)" id="{{k}}_text" placeholder="Type Message ..." class="form-control">
+                        <input type="text" name="message" autocomplete="off" ng-keydown="onTextKeyPress($event, k)" id="{{k}}_text" placeholder="Type Message ..." class="form-control">
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-primary btn-flat" ng-click="sendMessage(k)">Send</button>
                         </span>

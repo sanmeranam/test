@@ -4,6 +4,7 @@ var mongoAPI = require('mongodb');
 var Jimp = require("jimp");
 var GLOBAL = require('../../../core/GLOBAL');
 var oMessager = require('../../../core/service/MessageProcess');
+var oAnalytics = require('./analytics');
 
 var tableNameFormat = function (text) {
     return text.replace(/\.?([A-Z]+)/g, function (x, y) {
@@ -34,7 +35,11 @@ var helper = {
         return resData;
     },
     getFormDetails: function (req, res) {
-        req.db.find(req.tenant.dbname + ".form_meta", {}, function (result) {
+        var sIs = req.query.fid;
+
+        var qury = sIs ? {_id: sIs} : {};
+
+        req.db.find(req.tenant.dbname + ".form_meta", qury, function (result) {
             if (result) {
                 result = result.map(function (f) {
                     return {
@@ -58,6 +63,10 @@ var helper = {
             if (oData && oData.secret === password) {
                 oData.profile = "";
                 oData.tenant = req.tenant;
+                delete(oData.secret);
+                delete(oData.cgm_token);
+                delete(oData.web_token);
+
                 req.session.user = oData;
                 res.redirect("/");
             } else {
@@ -165,9 +174,9 @@ var helper = {
                         return v;
                     });
 
-                    users = users.filter(function (v) {
-                        return user._id != v._id;
-                    });
+//                    users = users.filter(function (v) {
+//                        return user._id != v._id;
+//                    });
 
                     res.json(users);
                 });
@@ -205,8 +214,8 @@ var helper = {
             case '$forms':
                 helper.getFormDetails(req, res);
                 break;
-            case '$message':                
-                req.db.find(req.tenant.dbname + '.message_queue', {'$or':[{"to": user._id},{"from": user._id}]}, function (ug) {                    
+            case '$message':
+                req.db.find(req.tenant.dbname + '.message_queue', {'$or': [{"to": user._id}, {"from": user._id}]}, function (ug) {
                     res.json(ug);
                 });
                 break;
@@ -316,7 +325,28 @@ var helper = {
                     return v;
                 });
             }
+            data.id = req.query.id;
             res.json(data);
+        });
+    },
+    getFormAnalytics: function (req, res, next) {
+        var aPro = new oAnalytics(req.query.id,req.tenant.dbname);
+        aPro.process(res);
+    },
+    addFormAnalytics: function (req, res) {
+        var oBody = req.body;
+        var data = oBody.data;
+        var fid = oBody.id;
+
+        req.db.findById(req.tenant.dbname + ".form_meta", fid, function (metaData) {
+            if (metaData) {
+                metaData.charts = metaData.charts || [];
+                metaData.charts.push(data);
+
+                req.db.updateById(req.tenant.dbname + ".form_meta", fid, metaData, function (o) {
+                    res.json(o);
+                });
+            }
         });
     },
     restAccountsHook: function (table, data) {

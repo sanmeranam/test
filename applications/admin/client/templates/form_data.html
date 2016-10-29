@@ -1,0 +1,220 @@
+<div class="container-fluid" ng-controller="FormDataController">
+    <div class="side-body padding-top">
+        <div class="row">
+            <div class="col-sm-12 no-padding" ng-init="tabSelect = 0">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <!--<li class="pull-left" style="padding-left: 30px;padding-right: 20px"><button style="margin-top: 4px" class="btn btn-sm">New</button></li>-->
+                        <li ng-class="tabSelect == 0 ? 'active' : ''"><a ng-click="tabSelect = 0" href="javascript:void(0);" data-toggle="tab">Analytics</a></li>
+                        <li ng-class="tabSelect == 1 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 1" data-toggle="tab">Records</a></li>
+                        <li ng-class="tabSelect == 2 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 2;MapViewConfig.init()" data-toggle="tab">Map View</a></li>
+                    </ul>
+                    <div class="tab-content small_view">
+                        <div class="tab-pane active" ng-show="tabSelect == 0">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-sm btn-info" ng-click="FormChart.createNewChart()">New</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4" ng-repeat="chart in FormChart.list">
+                                    <div class="box box-solid">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title" ng-bind="chart.title"></h3>
+
+                                            <div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool" data-toggle="dropdown"><i class="fa fa-pie-chart"></i></button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:void(0)" ng-click="chart.type = 'pie'">PIE</a></li>
+                                                    <li><a href="javascript:void(0)" ng-click="chart.type = 'bar'">BAR</a></li>
+                                                    <li><a href="javascript:void(0)" ng-click="chart.type = 'polarArea'">POLAR AREA</a></li>
+                                                    <li><a href="javascript:void(0)" ng-click="chart.type = 'radar'">RADAR</a></li>
+                                                    <li><a href="javascript:void(0)" ng-click="chart.type = 'doughnut'">DOUGHNUT</a></li>
+                                                </ul>
+                                                <button type="button" data-toggle="tooltip" title="Print" class="btn btn-box-tool"><i class="fa fa-print"></i></button>
+                                                <button type="button" data-toggle="tooltip" title="Delete" class="btn btn-box-tool"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                            <!-- /.box-tools -->
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <canvas id="line" class="chart-base" chart-type="chart.type" chart-data="chart.data" colors="chart.colors" chart-labels="chart.labels">                                        
+                                            </canvas>
+                                        </div>
+
+                                        <div class="box-footer no-border">
+                                            <div class="row" ng-hide="data.edit">
+                                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                                    <input type="text" class="knob" data-readonly="true" val="chart.total" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                                    <div class="knob-label">Total</div>
+                                                </div>
+                                                <!-- ./col -->
+                                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                                    <input type="text" class="knob" data-readonly="true" val="chart.sum" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                                    <div class="knob-label">Sum</div>
+                                                </div>
+                                                <!-- ./col -->
+                                                <div class="col-xs-4 text-center">
+                                                    <input type="text" class="knob" data-readonly="true" val="chart.avg" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                                    <div class="knob-label">Average</div>
+                                                </div>
+                                                <!-- ./col -->
+                                            </div>
+                                            <!-- /.row -->
+                                            <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
+                                            <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit = false"><i class="fa fa-trash"></i> Cancel</button>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane active"  ng-show="tabSelect == 1">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="datatable-buttons" class="table table-bordered table-hover table-fixedheader table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th align="center" class="text-upper text-center" ng-repeat="h in ['Id', 'Form', 'Version', 'Created Date', 'Created By', 'Stage', 'Status']">{{h}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="row in FormData.list|filter:$parent.formFilterText">
+                                                <td align="center" ng-bind="row.internal_id"></td>
+                                                <td align="center" ng-bind="row.form_name"></td>
+                                                <td align="center" ng-bind="row.version"></td>
+                                                <td align="center" ng-bind="row.create_date"></td>
+                                                <td align="center" ng-bind="UserMap[row.stage_history[0].user].name"></td>
+                                                <td align="center" ng-bind="row.next_stage ? row.next_stage._t + ' PENDING' : 'FINISHED'"></td>
+                                                <td align="center" ng-bind="row.next_stage ? 'IN PROGRESS' : 'COMPLETED'"></td>                
+                                            </tr>            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane active"  ng-show="tabSelect == 2">
+                            <div class="row" style="padding-left: 40px">
+                                <div class="col-sm-2">
+                                    <div class="has-feedback">
+                                        <input type="text" ng-model="formMapText" class="form-control input-sm" placeholder="Search...">
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div  class="btn-group number_view_sm" role="group">
+                                        <label>Count</label>
+                                        <label class="text-info" ng-bind="FormData.list.length"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 scroll_view">
+
+                                    <ul class="timeline">
+                                        <li ng-repeat="fd in FormData.list|filter:formMapText">
+                                            <i class="fa fa-map-marker bg-blue"></i>
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="fa fa-clock-o"></i> {{fd.create_date|date}}</span>
+
+                                                <h3 class="timeline-header" ng-click="MapViewConfig.selected(fd)"><a href="javascript:void(0)">{{fd.internal_id|uppercase}}</a></h3>
+
+                                                <div class="timeline-body">
+                                                    <small ng-if="fd.next_stage" class="label label-danger pull-right">In Progress</small>
+                                                    <small ng-if="!fd.next_stage" class="label label-success pull-right">Completed</small>
+                                                    <p>v{{fd.version}}</p>
+                                                    <p>Stage: <strong ng-bind="fd.next_stage ? fd.next_stage._t + ' PENDING' : 'FINISHED'"></strong></p>
+                                                </div>
+
+                                                <div class="timeline-footer">
+                                                    <div class="user-block">
+                                                        <img class="img-circle" ng-src="/service/avtar?_s=100&_u={{UserMap[fd.stage_history[0].user]._id}}" alt="User Image">
+                                                        <span class="username"><a href="#">{{UserMap[fd.stage_history[0].user].first_name}}</a></span>
+                                                        <span class="description">Uploaded publicly</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div  class="col-sm-8">
+                                    <ui-gmap-google-map center="MapViewConfig.config.center" zoom="MapViewConfig.config.zoom" refresh="true" events="MapViewConfig.config.events">
+                                        <ui-gmap-marker ng-repeat="m in MapViewConfig.config.markers" coords="m.coords" icon="m.icon" idkey="m.id"></ui-gmap-marker>
+                                    </ui-gmap-google-map>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalNewAnalytics" aria-hidden="true" data-backdrop="static"  data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">        
+                    <h4 class="modal-title">New Analytics</h4>
+                </div>
+                <div class="modal-body">
+                    <p ng-show="FormChart.error" class="bg-red text-white text-center">Some values are missing or incorrect.</p>
+                    <div class="row">
+                        <div class="col-md-6 no-margin">
+                            <div class="form-group">
+                                <label for="usr">Name:</label>
+                                <input type="text" ng-model="FormChart.newChart.name" class="form-control" id="usr">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Field Name:</label>
+                                <select class="form-control" ng-model="FormChart.newChart.field">
+                                    <option value="">---Select Field---</option>
+                                    <option value="{{op.id}}" ng-repeat="op in FormFields.map[oCurrenctFormMeta.value]">{{op.label}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 no-margin">
+                            <div class="form-group">
+                                <label for="usr">Chart Type:</label>
+                                <select class="form-control" ng-model="FormChart.newChart.type">
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="radar">Radar Chart</option>
+                                    <option value="doughnut">Doughnut</option>
+                                    <option value="polarArea">Polar Area</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <p>Provide require details here to create new analytics for fields.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <label for="usr"><button class="btn btn-sm btn-info" ng-click="FormChart.addCondition()"><i class="fa fa-plus"></i></button> Filters</label>
+                    <div class="row" ng-repeat="cond in FormChart.newChart.conditions" style="margin-bottom: 5px">
+                        <div class="col-sm-4">
+                            <select class="form-control" ng-model="cond.type">
+                                <option value="gt">Greater Than (>)</option>
+                                <option value="lt">Greater Than (<)</option>
+                                <option value="eq">Equal To (=)</option>
+                                <option value="nq">Not Equal TO (<&gt;)</option>
+                                <option value="cnt">Contains</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text"  ng-model="cond.value" placeholder="Value" class="form-control">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-sm btn-danger" ng-click="FormChart.removeCondition($index)"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="FormChart.cancelCreate()">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="FormChart.saveNewAnalytics()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
