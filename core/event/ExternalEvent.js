@@ -30,7 +30,6 @@ ExternalEvent.prototype.onConnection = function (client) {
                 if (user) {
                     user.web_token = sKey;
                     GLOBAL.db.updateById(oUser.tenant.dbname + ".accounts", user._id, user, function () {
-                        console.log("Session = updated.");
                     });
                 }
             });

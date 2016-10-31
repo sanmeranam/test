@@ -39,5 +39,9 @@
         "jid":"24779186807@gcm.googleapis.com",
         "host":"gcm-preprod.googleapis.com",
         "port":5236
+    },
+    "file_download":{
+        "url":"http://api.localhost/{domain}/service/file/download?id=",
+        "url_unix":"http://api.egform.com/{domain}/service/file/download?id="
     }
 }

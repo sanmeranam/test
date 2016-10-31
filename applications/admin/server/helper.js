@@ -5,6 +5,8 @@ var Jimp = require("jimp");
 var GLOBAL = require('../../../core/GLOBAL');
 var oMessager = require('../../../core/service/MessageProcess');
 var oAnalytics = require('./analytics');
+var oDashBoard = require('./dashboard');
+var oExcelExpo = require('./export_excel');
 
 var tableNameFormat = function (text) {
     return text.replace(/\.?([A-Z]+)/g, function (x, y) {
@@ -330,8 +332,30 @@ var helper = {
         });
     },
     getFormAnalytics: function (req, res, next) {
-        var aPro = new oAnalytics(req.query.id,req.tenant.dbname);
-        aPro.process(res);
+
+        if (req.query.delete) {
+            req.db.findById(req.tenant.dbname + ".form_meta", req.query.id, function (metaData) {
+
+
+                var aCharts = metaData.charts;
+                metaData.charts = aCharts.filter(function (v) {
+                    return v.created != req.query.delete;
+                });
+
+                req.db.updateById(req.tenant.dbname + ".form_meta", req.query.id, metaData, function (o) {
+                    res.json(o);
+                });
+            });
+        } else {
+            var aPro = new oAnalytics(req.query.id, req.tenant.dbname);
+            aPro.process(res);
+        }
+    },
+    exportForm:function(req, res, next){
+        var ee=new oExcelExpo(req.query.id,res,req.tenant.dbname,req.tenant.domain);
+    },
+    getDashboardData: function (req, res) {
+        oDashBoard.data(req.tenant.dbname, res);
     },
     addFormAnalytics: function (req, res) {
         var oBody = req.body;

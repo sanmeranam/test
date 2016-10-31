@@ -16,6 +16,7 @@ core.createController('RootController', function ($scope, Session, Message, Clou
     });
 
 
+
     $scope._alerts = null;
     $scope._confirm = {
         callback: null,
@@ -61,7 +62,7 @@ core.createController('RootController', function ($scope, Session, Message, Clou
 
     $scope.toPagehash = function (hash) {
         window.location.hash = hash;
-        $scope.PageConfig._checkHash();
+        window.location.reload();
     };
 
     $scope.PageConfig = {
@@ -127,10 +128,20 @@ core.createController('RootController', function ($scope, Session, Message, Clou
     };
     $scope.PageConfig._checkHash();
 
+//    $scope.onHashChange = function (event) {
+//        $scope.PageConfig._checkHash();
+//    };
+
+//    window.addEventListener("hashchange", $scope.onHashChange.bind(this), false);
+
     jQuery("#GlobalAlertInit").show();
 
     jQuery(function () {
         $scope.loadedEverything = true;
         $scope.$apply();
     });
+    
+    $scope.reload=function(){
+      window.location.reload();  
+    };
 });

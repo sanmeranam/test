@@ -75,7 +75,11 @@ router.post('/service/message/group', helper.sendSingleMessage);
 
 router.get('/service/forms/usage', helper.getFormUsage);
 router.get('/service/forms/analytics', helper.getFormAnalytics);
+router.get('/service/forms/excelexport', helper.exportForm);
 router.post('/service/forms/analytics', helper.addFormAnalytics);
+
+
+router.get('/service/dashboard/data', helper.getDashboardData);
 
 
 

@@ -56,6 +56,7 @@ module.exports.prototype.insertToTable = function (sTable, oData, callback) {
             callback([]);
         }
     });
+    return this;
 };
 
 /**
@@ -93,6 +94,7 @@ module.exports.prototype.findById = function (sTable, sId, callback) {
             callback([]);
         }
     });
+    return this;
 };
 
 module.exports.prototype.findByIds = function (sTable, aId, callback) {
@@ -126,6 +128,7 @@ module.exports.prototype.findByIds = function (sTable, aId, callback) {
             callback([]);
         }
     });
+    return this;
 };
 
 /**
@@ -143,7 +146,7 @@ module.exports.prototype.find = function (sTable, oFilter, callback) {
         try{
             oFilter._id=new mongoAPI.ObjectId(oFilter._id);
         }catch (e){}
-    }
+        }
 
     this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {
@@ -163,6 +166,7 @@ module.exports.prototype.find = function (sTable, oFilter, callback) {
             callback([]);
         }
     });
+    return this;
 };
 
 /**
@@ -191,6 +195,7 @@ module.exports.prototype.updateById = function (sTable, sId, oNewData, callback)
             callback(err);
         }
     });
+    return this;
 };
 
 
@@ -218,4 +223,5 @@ module.exports.prototype.removeById = function (sTable, sId, callback) {
             callback(null);
         }
     });
+    return this;
 };

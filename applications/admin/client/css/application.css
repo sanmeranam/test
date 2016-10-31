@@ -211,3 +211,19 @@ input:checked + .slider:before {
 .menu_section>li{
     cursor: pointer
 }
+
+.textView{
+    padding: 5px;
+    position: relative;
+}
+.textView > label{
+    font-size: 14px !important;
+    color: #00C0EF;
+}
+
+.textView > span{
+    font-size: 15px !important;
+    display: block;
+    margin-left: 20px;
+    font-weight: bold;
+}

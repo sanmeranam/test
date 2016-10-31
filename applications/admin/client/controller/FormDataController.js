@@ -1,4 +1,4 @@
-core.createController('FormDataController', function ($scope, FormMeta, Message, uiGmapIsReady, UserList, $http, FormData, GlobalVar) {
+core.createController('FormDataController', function ($scope, FormMeta, Message, uiGmapIsReady, UserList, $http, FormData, GlobalVar, NgTableParams) {
 
     jQuery(".small_view").height(window.innerHeight * 0.79).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".scroll_view").height(window.innerHeight * 0.70).css("overflow-y", "auto").css("overflow-x", "hidden");
@@ -11,15 +11,81 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
 
     });
 
+    $scope.FormDataView = {
+        selected: null,
+        currentPage: 0,
+        pages: [],
+        model: null,
+        data: null,
+        init: function (item) {
+            this.selected = item;
+            this.model = item.model;
+            this.data ={};
+            for(var m in item.data){
+                this.data[item.data[m]._i]=item.data[m]._v;
+            }
+            
+            this.pages = Object.keys(item.model);
+
+            for (var iPage in this.model) {
+                $scope.FormDataView._setData(this.model[iPage]);
+            }
+
+            jQuery("#viewFormModal").modal("show");
+        },
+        _setData: function (ins) {
+            if (ins._n && ins._a.value && this.data[ins._d]) {
+                var val = this.data[ins._d];
+                if (val && (val.indexOf("[") > -1 && val.indexOf("]") > -1) || (val.indexOf("{") > -1 && val.indexOf(":") > -1)) {
+                    val = JSON.parse(val);
+                }
+                ins._a.value.value = val;
+            }
+            if (ins._c && ins._c.length) {
+                for (var m in ins._c) {
+                    $scope.FormDataView._setData(ins._c[m]);
+                }
+            }
+        },
+        nextPage: function () {
+
+        },
+        prevPage: function () {
+
+        },
+        getPageModel: function () {
+            if (this.model && this.pages)
+                return this.model[this.pages[this.currentPage]];
+            return null;
+        }
+    };
+
+
     $scope.FormData = {
+        selected: null,
         list: [],
+        table: new NgTableParams({count: Math.floor(jQuery(".small_view").height() / 35)}),
         init: function () {
             $scope.$parent.PageConfig._title = "Form [" + $scope.oCurrenctFormMeta.name + "]";
             FormData.getAll({meta_id: $scope.oCurrenctFormMeta.value}, function (oData) {
                 $scope.FormData.list = oData;
+                $scope.FormData.table.settings({
+                    dataset: oData
+                });
             });
+        },
+        search: function () {
+            $scope.FormData.table.filter({$: $scope.formDataFilterText});
+        },
+        select: function (item) {
+            this.selected = item;
+            $scope.FormDataView.init(item);
         }
     };
+
+    $scope.$watch("formDataFilterText", function () {
+        $scope.FormData.table.filter({$: $scope.formDataFilterText});
+    });
 
     $scope.FormFields = {
         map: {},
@@ -37,14 +103,53 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
     $scope.FormChart = {
         newChart: null,
         list: [],
+        flow: [],
         init: function () {
             $http.get("/service/forms/analytics?id=" + $scope.oCurrenctFormMeta.value).then(function (resp) {
                 $scope.FormChart.list = resp.data;
             });
+
+
+        },
+        options: {
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: 'rgb(255, 99, 132)'
+                }
+            }
+        },
+        removeChart: function (item) {
+            Message.confirm("Are you sure want to delete this chart?", function (v) {
+                if (v) {
+                    $http.get("/service/forms/analytics?delete=" + item.created + "&id=" + $scope.oCurrenctFormMeta.value).then(function (resp) {
+                        Message.alert("Deleted Successfully.");
+                        $scope.FormChart.init();
+                    });
+                }
+            });
+
+        },
+        download: function (sId) {
+            var tmp_canvas = document.getElementById(sId);
+            var dataURL = tmp_canvas.toDataURL("image/png");
+            var dlink = document.createElement('a');
+            dlink.download = name;
+            dlink.href = dataURL;
+            dlink.onclick = function (e) {
+                // revokeObjectURL needs a delay to work properly
+                var that = this;
+                setTimeout(function () {
+                    window.URL.revokeObjectURL(that.href);
+                }, 1500);
+            };
+
+            dlink.click();
+
         },
         createNewChart: function () {
             this.newChart = {
-                created:Date.now(),
+                created: Date.now(),
                 name: "",
                 field: "",
                 type: "",
@@ -87,8 +192,12 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         }
     };
 
-
+    $scope.$watch('MapViewConfig.curStage', function () {
+        $scope.MapViewConfig.init();
+    });
     $scope.MapViewConfig = {
+        flow: [],
+        curStage: "1",
         config: {
             center: {
                 latitude: 12.9375312,
@@ -102,37 +211,64 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
                 }
             }
         },
-        init: function () {
+        init: function (bInit) {
+            this.config.markers = [];
             for (var m in $scope.FormData.list) {
                 var d = $scope.FormData.list[m];
 
                 if (d && d.stage_history && d.stage_history.length) {
-                    this.config.markers.push({
-                        id: d.internal_id,
-                        coords: {
-                            latitude: d.stage_history[0].lat,
-                            longitude: d.stage_history[0].lng
-                        }
-                    });
+                    try {
+                        this.config.markers.push({
+                            id: d.internal_id,
+                            coords: {
+                                latitude: d.stage_history[this.curStage - 1].lat,
+                                longitude: d.stage_history[this.curStage - 1].lng
+                            }
+                        });
+                    } catch (e) {
+
+                    }
 
                 }
 
             }
 
+            if (bInit) {
+                this.flow = [];
+                for (var i in $scope.oCurrenctFormMeta.flow) {
+                    var f = $scope.oCurrenctFormMeta.flow[i];
+                    this.flow.push({
+                        key: i,
+                        value: f._t
+                    })
+                }
+            }
         },
         selected: function (item) {
             this.selectedfrm = item;
             if (item && item.stage_history && item.stage_history.length) {
-                this.moveToLocation(item.stage_history[0].lat, item.stage_history[0].lng);
+                this.moveToLocation(item.stage_history[this.curStage - 1].lat, item.stage_history[this.curStage - 1].lng);
             }
         },
         moveToLocation: function (lat, lng) {
             var center = new google.maps.LatLng(lat, lng);
-            $scope._map.panTo(center);
+            if ($scope._map) {
+                $scope._map.panTo(center);
+            }
         }
     };
 
+    uiGmapIsReady.promise().then(function (inastance) {
+        var map = inastance[0].map;
+        $scope._map = map;
 
+        google.maps.event.addListener(map, "idle", function () {
+            google.maps.event.trigger(map, 'resize');
+        });
+
+        google.maps.event.trigger(map, 'resize');
+        map.setZoom(map.getZoom());
+    });
 
 
 
@@ -158,15 +294,5 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         });
     }
 
-    uiGmapIsReady.promise().then(function (inastance) {
-        var map = inastance[0].map;
-        $scope._map = map;
 
-        google.maps.event.addListener(map, "idle", function () {
-            google.maps.event.trigger(map, 'resize');
-        });
-
-        google.maps.event.trigger(map, 'resize');
-        map.setZoom(map.getZoom());
-    });
 });

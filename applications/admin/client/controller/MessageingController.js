@@ -1,4 +1,4 @@
-core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar,UserList) {
+core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar, UserList) {
     $scope.UserList = {};
 
 
@@ -8,10 +8,18 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
     $scope.updateId();
 
     $scope.ActiveSessions = {};
-    
-    UserList.load(function(result){
+
+    UserList.load(function (result) {
         for (var i = 0; i < result.length; i++) {
             var u = result[i];
+
+            try {
+                if (u._id == core.Profile._id) {
+                    continue;
+                }
+            } catch (e) {
+            }
+
             $scope.UserList[u.value] = u;
 
             $scope.ActiveSessions[u.value] = {
@@ -29,7 +37,7 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
                         text: ur.message,
                         time: ur.time
                     });
-                    $scope.meId=$scope.meId||ur.to;
+                    $scope.meId = $scope.meId || ur.to;
                 }
 
                 if ($scope.ActiveSessions[ur.to]) {
@@ -38,50 +46,11 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
                         text: ur.message,
                         time: ur.time
                     });
-                    $scope.meId=$scope.meId||ur.from;
+                    $scope.meId = $scope.meId || ur.from;
                 }
             }
         });
     });
-
-//    GlobalVar.get({context: '$users'}, function (result) {
-//        for (var i = 0; i < result.length; i++) {
-//            var u = result[i];
-//            $scope.UserList[u.value] = u;
-//
-//            $scope.ActiveSessions[u.value] = {
-//                name: u.name,
-//                message: []
-//            };
-//        }
-//        GlobalVar.get({context: '$message'}, function (res) {
-//            for (var i = 0; i < res.length; i++) {
-//                var ur = res[i];
-//
-//                if ($scope.ActiveSessions[ur.from]) {
-//                    $scope.ActiveSessions[ur.from].message.push({
-//                        type: "IN",
-//                        text: ur.message,
-//                        time: ur.time
-//                    });
-//                    $scope.meId=$scope.meId||ur.to;
-//                }
-//
-//                if ($scope.ActiveSessions[ur.to]) {
-//                    $scope.ActiveSessions[ur.to].message.push({
-//                        type: "OUT",
-//                        text: ur.message,
-//                        time: ur.time
-//                    });
-//                    $scope.meId=$scope.meId||ur.from;
-//                }
-//            }
-//        });
-//    });
-
-
-
-
 
 
     $scope.onChatClose = function (id) {
@@ -161,12 +130,12 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
             text: data.message,
             time: Date.now()
         });
-        
+
         setTimeout(function () {
             var objDiv = document.getElementById(from + "_content");
             objDiv.scrollTop = objDiv.scrollHeight;
         }, 100);
-        
+
         $scope.$apply();
     });
 

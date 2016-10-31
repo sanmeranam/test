@@ -1,7 +1,7 @@
 <div class="" ng-controller="UserGroupController">
     <div class="row">
         <!--User Group-->
-        <div class="col-md-12 col-xs-12">
+        <div class="col-md-8 col-xs-12">
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title">Users</h3>
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <h4 ng-show="!Users.length" class="text-center">-Empty-</h4>
-                    <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="user in Users| filter:filterUser(userGrpFilterText)">
+                    <div class="col-lg-4 col-md-4 col-sm-6" ng-repeat="user in Users| filter:filterUser(userGrpFilterText)">
                         <div class="box box-widget widget-user">
                             <!-- Add the bg color to the header using any of the bg-* classes -->
                             <div ng-click="onSelectUser(user)" class="widget-user-header bg-aqua-active pointer">
@@ -82,99 +82,7 @@
                     </div>
                 </div>
                 <div class="overlay" style="padding-top: 100px" ng-show="SelectedUser || NewGroup || NewUser">
-                    <div class="col-sm-5 col-sm-offset-3" ng-show="SelectedUser">
-                        <div class="box box-danger box-solid">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Profile [{{SelectedUser.first_name + " " + SelectedUser.last_name}}]</h3>
-                                <div class="box-tools pull-right">
-                                    <div class="box-tools pull-right">
-                                        <button type="button" ng-click="onCancelSelectUser()" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
-                                    </div>                  
-                                </div>
-                            </div>
-                            <div class="box-body">
-                                <div class="box box-widget widget-user-2">
-                                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                                    <div class="widget-user-header bg-yellow">
-                                        <div class="widget-user-image">
-                                            <img class="img-circle" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
-                                        </div>
-                                        <!-- /.widget-user-image -->
-                                        <h3 class="widget-user-username">{{SelectedUser.first_name + " " + SelectedUser.last_name}}</h3>
-                                        <h5 class="widget-user-desc">{{SelectedUser.email}}</h5>
-                                        <button title="Edit Details" class="btn btn-success btn-sm pull-right" ng-show="!SelectedUser.edit && !SelectedUser.delete" ng-click="SelectedUser.edit = true"><i class="fa fa-pencil"></i></button>
-                                        <button title="Save" class="btn btn-success btn-sm pull-right" ng-show="SelectedUser.edit && !SelectedUser.delete" ng-click="onUpdateUserDetails()"><i class="fa fa-floppy-o"></i></button>
-                                        <button title="Delete" ng-hide="SelectedUser.delete" class="btn btn-danger btn-sm pull-right" ng-click="SelectedUser.delete = true"><i class="fa fa-trash"></i></button>
-                                    </div>
-                                    <div class="box-footer no-padding" ng-show="SelectedUser.delete">
-                                        <div class="callout callout-info" >
-                                            <h4>Delete User</h4>
-                                            <p>Are you sure want to delete?</p>
-                                            <button ng-click="onDeleteUser()" class="btn btn-sm btn-danger pull-right">YES</button>
-                                            <button ng-click="SelectedUser.delete = false" class="btn btn-sm btn-success pull-right">NO</button>
-                                        </div>
-                                    </div>
-                                    <div class="box-footer no-padding" ng-show="SelectedUser.edit">                                        
 
-                                        <h4 ng-show="SelectedUser.error" class="text-danger text-center">{{SelectedUser.error}}</h4>
-                                        <div class="col-sm-2">
-                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
-                                            <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                        <div class="col-sm-10">                                            
-                                            <div class="form-group">
-                                                <label>Profile Image</label>
-                                                <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChange(this)" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <input type="text" class="form-control" ng-model="SelectedUser.email" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>First Name</label>
-                                                <input type="text" class="form-control" ng-model="SelectedUser.first_name" placeholder="First Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Last Name</label>
-                                                <input type="text" class="form-control" ng-model="SelectedUser.last_name" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Password</label>
-                                                <input type="password" class="form-control" ng-model="SelectedUser.secret" placeholder="Password">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Re-Password</label>
-                                                <input type="password" class="form-control" ng-model="SelectedUser.secret2" placeholder="Re-Password">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>User Group</label>
-                                                <select class="form-control" ng-model="SelectedUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Role</label>
-                                                <input type="checkbox" class="checkbox" ng-model="SelectedUser.admin">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4 col-sm-offset-4" ng-show="NewGroup">
                         <div class="box box-success box-solid">
@@ -198,94 +106,196 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-5 col-sm-offset-3" ng-show="NewUser">
-                        <div class="box box-danger box-solid">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Profile [{{NewUser.first_name + " " + NewUser.last_name}}]</h3>
-                                <div class="box-tools pull-right">
-                                    <div class="box-tools pull-right">
-                                        <button type="button" ng-click="NewUser = null" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
-                                    </div>                  
+
+
+                </div>
+
+                <div ng-show="_loadingUsers" class="overlay">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-xs-12" ng-show="SelectedUser">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Profile [{{SelectedUser.first_name + " " + SelectedUser.last_name}}]</h3>
+                    <div class="box-tools pull-right">
+                        <div class="box-tools pull-right">
+                            <button type="button" ng-click="onCancelSelectUser()" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                        </div>                  
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-aqua-active">
+                            <div class="widget-user-image">
+                                <img class="img-circle" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">{{SelectedUser.first_name + " " + SelectedUser.last_name}}</h3>
+                            <h5 class="widget-user-desc">{{SelectedUser.email}}</h5>                            
+                            <button title="Edit Details" class="btn btn-success btn-sm pull-right" ng-show="!SelectedUser.edit && !SelectedUser.delete" ng-click="SelectedUser.edit = true"><i class="fa fa-pencil"></i></button>
+                            <button title="Save" class="btn btn-success btn-sm pull-right" ng-show="SelectedUser.edit && !SelectedUser.delete" ng-click="onUpdateUserDetails()"><i class="fa fa-floppy-o"></i></button>
+                            <button title="Delete" ng-hide="SelectedUser.delete" class="btn btn-danger btn-sm pull-right" ng-click="SelectedUser.delete = true"><i class="fa fa-trash"></i></button>
+                        </div>
+                        <div class="box-footer no-padding" ng-show="SelectedUser.delete">
+                            <div class="callout callout-info" >
+                                <h4>Delete User</h4>
+                                <p>Are you sure want to delete?</p>
+                                <button ng-click="onDeleteUser()" class="btn btn-sm btn-danger pull-right">YES</button>
+                                <button ng-click="SelectedUser.delete = false" class="btn btn-sm btn-success pull-right">NO</button>
+                            </div>
+                        </div>
+                        <div class="box-footer no-padding" ng-show="SelectedUser.edit">                                        
+
+                            <h4 ng-show="SelectedUser.error" class="text-danger text-center">{{SelectedUser.error}}</h4>
+                            <div class="col-sm-2">
+                                <img class="img-circle" style="width: 50px;margin: 10px" ng-src="/service/avtar?_s=100&_u={{SelectedUser._id}}" alt="User Avatar">
+                                <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
+                            </div>
+                            <div class="col-sm-10">                                            
+                                <div class="form-group">
+                                    <label>Profile Image</label>
+                                    <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChange(this)" class="form-control">
                                 </div>
                             </div>
-                            <div class="box-body">
-                                <div class="box box-widget widget-user-2">
-                                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                                    <div class="widget-user-header bg-yellow">
-                                        <div class="widget-user-image">
-                                            <img class="img-circle" ng-src="{{NewUser.profile}}" alt="User Avatar">
-                                        </div>
-                                        <!-- /.widget-user-image -->
-                                        <h3 class="widget-user-username">{{NewUser.first_name + " " + NewUser.last_name}}</h3>
-                                        <h5 class="widget-user-desc">{{NewUser.email}}</h5>                                        
-                                        <button title="Save" class="btn btn-success btn-sm pull-right" ng-click="onSaveUser()"><i class="fa fa-floppy-o"></i></button>
-                                    </div>
-                                    <div class="box-footer no-padding">
-                                        <h4 ng-show="NewUser.error" class="text-danger text-center">{{NewUser.error}}</h4>
-                                        <div class="col-sm-2">
-                                            <img class="img-circle" style="width: 50px;margin: 10px" ng-src="{{NewUser.profile}}" alt="User Avatar">
-                                            <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                        <div class="col-sm-10">                                            
-                                            <div class="form-group">
-                                                <label>Profile Image</label>
-                                                <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChangeNew(this)" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <input type="text" class="form-control" ng-model="NewUser.email" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>First Name</label>
-                                                <input type="text" class="form-control" ng-model="NewUser.first_name" placeholder="First Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Last Name</label>
-                                                <input type="text" class="form-control" ng-model="NewUser.last_name" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Password</label>
-                                                <input type="password" class="form-control" ng-model="NewUser.secret" placeholder="Password">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Re-Password</label>
-                                                <input type="password" class="form-control" ng-model="NewUser.secret2" placeholder="Re-Password">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>User Group</label>
-                                                <select class="form-control" ng-model="NewUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Role</label>
-                                                <input type="checkbox" class="checkbox" ng-model="NewUser.admin">
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" ng-model="SelectedUser.email" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" class="form-control" ng-model="SelectedUser.first_name" placeholder="First Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" class="form-control" ng-model="SelectedUser.last_name" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" ng-model="SelectedUser.secret" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Re-Password</label>
+                                    <input type="password" class="form-control" ng-model="SelectedUser.secret2" placeholder="Re-Password">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>User Group</label>
+                                    <select class="form-control" ng-model="SelectedUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Administrator Access</label>
+                                    <label class="switch pull-right">
+                                        <input type="checkbox" ng-model="SelectedUser.admin">
+                                        <div class="slider round"></div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                
-                <div ng-show="_loadingUsers" class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
             </div>
+        </div>
+
+        <div class="col-md-4 col-xs-12" ng-show="NewUser">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Profile [{{NewUser.first_name + " " + NewUser.last_name}}]</h3>
+                    <div class="box-tools pull-right">
+                        <div class="box-tools pull-right">
+                            <button type="button" ng-click="NewUser = null" title="Cancel/Close" class="btn btn-box-tool"><i class="fa fa-remove"></i></button>
+                        </div>                  
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-yellow">
+                            <div class="widget-user-image">
+                                <img class="img-circle" ng-src="{{NewUser.profile}}" alt="User Avatar">
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">{{NewUser.first_name + " " + NewUser.last_name}}</h3>
+                            <h5 class="widget-user-desc">{{NewUser.email}}</h5>                                        
+                            <button title="Save" class="btn btn-success btn-sm pull-right" ng-click="onSaveUser()"><i class="fa fa-floppy-o"></i></button>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <h4 ng-show="NewUser.error" class="text-danger text-center">{{NewUser.error}}</h4>
+                            <div class="col-sm-2">
+                                <img class="img-circle" style="width: 50px;margin: 10px" ng-src="{{NewUser.profile}}" alt="User Avatar">
+                                <button title="Clear" ng-click="clearProfileImage()" class="btn btn-link" style="position: absolute;top:0;right: 0"><i class="fa fa-trash"></i></button>
+                            </div>
+                            <div class="col-sm-10">                                            
+                                <div class="form-group">
+                                    <label>Profile Image</label>
+                                    <input type="file" accept="image/*" onchange="angular.element(this).scope().onFileImageChangeNew(this)" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" ng-model="NewUser.email" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" class="form-control" ng-model="NewUser.first_name" placeholder="First Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" class="form-control" ng-model="NewUser.last_name" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" ng-model="NewUser.secret" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Re-Password</label>
+                                    <input type="password" class="form-control" ng-model="NewUser.secret2" placeholder="Re-Password">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>User Group</label>
+                                    <select class="form-control" ng-model="NewUser.group" ng-options="item._id as item.value for (k,item) in UserGroup">                                                    
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Administrator Access</label>
+                                    <label class="switch pull-right">
+                                        <input type="checkbox" ng-model="NewUser.admin">
+                                        <div class="slider round"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

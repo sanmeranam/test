@@ -1,401 +1,262 @@
-<div>
-    <div class="row no-margin">
-        <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
-            <button type="button" class="btn btn-info dropdown-toggle text-uppercase" data-toggle="dropdown">All<span class="fa fa-caret-down"></span></button>
-            <ul class="dropdown-menu">
-                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">All</a></li>
-                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Active </a></li>
-                <li><a href="javascript:void(0)" ng-click="onSelectGroup(null)">Inactive</a></li>
-
-            </ul>
-            <div class="btn-group">
-                <button title="Add Form"  type="button" ng-click="onCreateForm()" class="btn btn-info"><i class="fa fa-plus"></i></button>
-            </div>
-            <button title="Refresh List" type="button" ng-click="loadFormMeta()" class="btn btn-info"><i class="fa fa-refresh"></i></button>
-
+<div class="row no-margin">
+    <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+        <div class="btn-group">
+            <button title="Add Form"  type="button" ng-click="FormMetaConfig.createForm()" class="btn btn-info"><i class="fa fa-plus"></i></button>
         </div>
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 col-xs-offset-1 no-padding">
-            <div  class="number_view_sm">
-                <label>Count</label>
-                <label class="text-info" ng-bind="FormMetaList.length || 0"></label>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8">
-            <div class="has-feedback">
-                <input type="text" ng-model="formFilterText" class="form-control input-sm" placeholder="Filter...">
-                <span class="glyphicon glyphicon-filter form-control-feedback"></span>
-            </div>
+        <button title="Refresh List" type="button" ng-click="FormMetaConfig.reload()" class="btn btn-info"><i class="fa fa-refresh" ng-class="FormMetaConfig.busy ? 'fa-spin' : ''"></i></button>
+
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 col-xs-offset-1 no-padding">
+        <div  class="number_view_sm">
+            <label>Count</label>
+            <label class="text-info" ng-bind="FormMetaConfig.list.length || 0"></label>
         </div>
     </div>
+    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8">
+        <div class="has-feedback">
+            <input type="text" ng-model="formFilterText" class="form-control input-sm" placeholder="Filter...">
+            <span class="glyphicon glyphicon-filter form-control-feedback"></span>
+        </div>
+    </div>
+</div>
 
-    <div class="row no-margin">
-        <div class="col-sm-2" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}" style="cursor: pointer" ng-init="initForm(frm)">
-            <div class="box box-solid" ng-class="(frm == SelectedFormMeta ? 'bg-blue-gradient' : '')">
-                <div class="box-body">
-                    <div class="row" style="margin-right: 0px" ng-click="onSelectForm(frm)">
-                        <div class="col-sm-6">
-                            <strong style="display: block;text-transform: uppercase" ng-bind="frm.form_name"></strong>
-                            v{{frm.version}}
-                        </div>
-                        <div class="col-sm-6 no-padding text-right">
-                            <span ng-switch="frm.state">
-                                <span ng-switch-when="0"  style="color: red">NEW</span>
-                                <span ng-switch-when="1"  style="color: green" >ACTIVE</span>
-                                <span ng-switch-when="2"  style="color: orange" >INACTIVE</span>
-                            </span>
-                        </div>  
-                    </div> 
-                    <div class="row" style="margin-right: 0px" ng-click="onSelectForm(frm)">
-                        <div class="col-sm-3" style="vertical-align: middle;min-height: 50px">
-                            <i class="fa fa-file fa-2x" style="margin-top: 10px;color: lightgray"></i>
-                        </div>
-                        <div class="col-sm-9 no-padding text-right">
-                            <h1 style="font-size: 40px;" ng-style="" class="no-margin text-white">{{form_usage[frm._id].total}}</h1>
-                        </div>  
-                    </div> 
-                    <div class="row" style="margin-right: 0px">
-                        <div class="col-sm-8">
-                            <a ng-click="stageChange('PREV', frm)" class="btn btn-sm btn-link" style="color: lightgray" title="Preview"><i class="fa fa-eye"></i></a>
-                            <a ng-click="stageChange('DEG', frm)" class="btn btn-sm btn-link" style="color: lightgray" title="Change Form Model"><i class="fa fa-pencil"></i></a>
-                            <a ng-click="stageChange('FLOW', frm)" class="btn btn-sm btn-link" style="color: lightgray" title="Change Data Flow"><i class="fa fa-sitemap"></i></a>
-                        </div>
-                        <div class="col-sm-4 no-padding text-right">
-                            <span ng-bind="frm.history.created.date | date"></span>
-                        </div>  
-                    </div> 
-                </div>
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6" ng-repeat="frm in FormMetaConfig.list|filter:{form_name:formFilterText}" style="cursor: pointer;" ng-init="FormDasbordConfig.init(frm);">
+        <div class="box box-solid" ng-class="(frm == FormMetaConfig.selected ? 'bg-blue-gradient' : '')">
+            <div class="box-body">
+                <div class="row" style="margin-right: 0px" ng-click="FormMetaConfig.select(frm)">
+                    <div class="col-sm-6">
+                        <strong style="display: block;text-transform: uppercase" ng-bind="frm.form_name"></strong>
+                        v{{frm.version}}
+                    </div>
+                    <div class="col-sm-6 no-padding text-right">
+                        <span ng-switch="frm.state">
+                            <span ng-switch-when="0"  style="color: red">NEW</span>
+                            <span ng-switch-when="1"  style="color: green" >ACTIVE</span>
+                            <span ng-switch-when="2"  style="color: orange" >INACTIVE</span>
+                        </span>
+                    </div>  
+                </div> 
+                <div class="row" style="margin-right: 0px" ng-click="FormMetaConfig.select(frm)">
+                    <div class="col-sm-3" style="vertical-align: middle;min-height: 50px">
+                        <i class="fa fa-file-text fa-2x" style="margin-top: 10px;color: lightgray"></i>
+                    </div>
+                    <div class="col-sm-9 no-padding text-right">
+                        <h1 style="font-size: 40px;" ng-style="" class="no-margin text-white">{{FormMap[frm._id].usage.total}}</h1>
+                    </div>  
+                </div> 
+                <div class="row" style="margin-right: 0px">
+                    <div class="col-sm-12">
+
+                        <a ng-click="FormMetaConfig.statusChange(frm, 1)" ng-show="frm.state == 0 || frm.state == 2" class="btn btn-sm btn-link text-white"  data-toggle="tooltip" title="Activate"><i class="fa fa-toggle-off fa-2x"></i></a>
+                        <a ng-click="FormMetaConfig.statusChange(frm, 2)" ng-show="frm.state == 1" class="btn btn-sm btn-link text-white"  data-toggle="tooltip" title="Deactivate"><i class="fa fa-toggle-on fa-2x"></i></a>
+
+                        <a ng-click="stageChange(1, frm)" class="btn btn-sm btn-link" style="color: lightgray" data-toggle="tooltip" title="Change Form Model"><i class="fa fa-pencil"></i></a>
+                        <a ng-click="stageChange(2, frm)" class="btn btn-sm btn-link" style="color: lightgray" data-toggle="tooltip" title="Change Data Flow"><i class="fa fa-sitemap fa-rotate-270"></i></a>
+                    </div>
+
+                </div> 
             </div>
         </div>
+    </div>        
+</div>
 
-        <div class="col-lg-3 col-md-4 col-sm-6" ng-show="NewFormMeta">
-            <div class="box box-widget widget-user">
+<div class="message-item" ng-show="FormMetaConfig.newform" style="top: 65px;left: 117px;z-index: 990">
+    <div class="message-inner">                    
+        <div class="qa-message-content">
+            <h3>New Form</h3>
+            <table class="table no-margin">
+                <tr>
+                    <td>Form Name:</td>
+                    <td><input type="text" ng-model="FormMetaConfig.newform.form_name" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-right">
+                        <button class="btn btn-sm" ng-click="FormMetaConfig.saveCreated()">Create</button>
+                        <button class="btn btn-sm" ng-click="FormMetaConfig.newform = null;">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                <div  class="widget-user-header bg-aqua-gradient pointer">                            
-                    <h3 class="widget-user-username">
-                        Form Name:
-                        <input type="text" ng-model="NewFormMeta.form_name" class="form-control">
-                    </h3>
-                    <h5 class="widget-user-desc">
-                        Choose a name for you form and press create. Once form created, you can design and activate for use.
-                    </h5>
+    </div>
+</div>
 
-                </div>
-                <div class="box-footer">
+<div class="row" ng-show="FormMetaConfig.selected" ng-init="tabSelect = 0">
+    <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="pull-left header"><i class="fa fa-file"></i><strong class="text-uppercase">{{FormMetaConfig.selected.form_name}}</strong></li>
+                <li ng-class="tabSelect == 0 ? 'active' : ''"><a ng-click="tabSelect = 0" href="javascript:void(0);" data-toggle="tab">Basic</a></li>
+                <li ng-class="tabSelect == 1 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 1" data-toggle="tab">Analytics</a></li>
+                <li ng-class="tabSelect == 2 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 2" data-toggle="tab">Records</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        More <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation"><a role="menuitem" ng-click="stageChange(1,FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Design</a></li>
+                        <li role="presentation"><a role="menuitem" ng-click="stageChange(2,FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Flow</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" ng-click="FormMetaConfig.remove(FormMetaConfig.selected._id)">Delete Form</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" ng-show="tabSelect == 0">
                     <div class="row">
-                        <div class="col-sm-4 border-right">
-                            <div class="description-block">
-
+                        <div class="col-sm-4">
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Details</h3>
+                                </div>
+                                <div class="box-body" style="height:350px;overflow: auto">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>NAME</strong></td>
+                                            <td>{{FormMetaConfig.selected.form_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>VERSION</strong></td>
+                                            <td>{{FormMetaConfig.selected.version}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CREATED DATE</strong></td>
+                                            <td>{{FormMetaConfig.selected.history.created.date|date}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CREATED BY</strong></td>
+                                            <td>{{FormMetaConfig.selected.history.created.user}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>STATE</strong></td>
+                                            <td>{{FormMetaConfig.selected.state==0?'NEW':(FormMetaConfig.selected.state==1?'ACTIVE':'INACTIVE')}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ENTRIES</strong></td>
+                                            <td>{{FormMap[FormMetaConfig.selected._id].usage.total}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
                             </div>
-
-                        </div>
-
-                        <div class="col-sm-4 border-right">
-                            <div class="description-block">
-                                <button class="btn btn-success" ng-click="onSaveNewForm()">CREATE</button>
-                            </div>
-
                         </div>
 
                         <div class="col-sm-4">
-                            <div class="description-block">
-                                <button class="btn btn-warning" ng-click="NewFormMeta = null">CANCEL</button>
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Usage</h3>
+                                </div>
+                                <div class="box-body" style="height:350px;">
+
+                                    <canvas id="line" class="chart chart-bar" chart-data="FormDasbordConfig.data" colors="FormDasbordConfig.colors"
+                                            chart-labels="FormDasbordConfig.labels" chart-series="FormDasbordConfig.series" chart-options="FormDasbordConfig.options">                                        
+                                    </canvas>
+                                </div>
+                                <!-- /.box-body -->
                             </div>
                         </div>
 
-                    </div>
+                        <div class="col-sm-4">
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Actions History</h3>
+                                </div>
+                                <div class="box-body" style="height:350px;overflow: auto">
+                                    <ul class="timeline">
+                                        <!-- timeline item -->
+                                        <li ng-repeat="tim in FormMetaConfig.selected.history.modified">
+                                            <!-- timeline icon -->
+                                            <i class="fa fa-clock-o bg-blue"></i>
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="fa fa-clock-o"></i>{{tim.date|date}}</span>
 
+                                                <h3 class="timeline-header"><a href="#" ng-bind="tim.user || 'User Action'"></a></h3>
+                                                <div class="timeline-body" ng-bind="tim.action"></div>
+                                            </div>
+                                        </li>
+                                        <!-- END timeline item -->
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                <div class="tab-pane active"  ng-show="tabSelect == 1">
+                    <div class="row">
+                        <div class="col-sm-4" ng-repeat="chart in FormChart.list[FormMetaConfig.selected._id]">
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title" ng-bind="chart.title"></h3>
 
-        <!--        <div class="col-lg-3 col-md-4 col-sm-6" ng-repeat="frm in FormMetaList|filter:{form_name:formFilterText}">
-                    <div class="box box-widget widget-user">
-        
-                        <div ng-click="onSelectForm(frm)" style="height: auto" class="widget-user-header pointer">                            
-                            <div class="pull-right">
-                                <a ng-click="stageChange('PREV', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Preview"><i class="fa fa-eye"></i></a>
-                                <a ng-click="stageChange('DEG', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Form Model"><i class="fa fa-pencil"></i></a>
-                                <a ng-click="stageChange('FLOW', frm)" class="btn btn-sm btn-link" style="color: #fff" title="Change Data Flow"><i class="fa fa-sitemap"></i></a>
-                            </div>
-                            <h3 class="widget-user-username"><strong>{{frm.form_name|uppercase}}</strong></h3>
-                            <h5 class="widget-user-desc">v{{frm.version}}</h5>
-        
-                        </div>
-                        <div class="box-footer" style="padding-top: 10px">
-                            <div class="row">
-                                <div class="col-sm-4 border-right">
-                                    <div class="description-block">
-                                        <h5 class="description-header">STATUS</h5>
-                                        <span class="description-text" ng-switch="frm.state">
-                                            <span ng-switch-when="0" class="badge bg-orange">NEW</span>
-                                            <span ng-switch-when="1" class="badge bg-green">ACTIVE</span>
-                                            <span ng-switch-when="2" class="badge bg-red">INACTIVE</span>
-                                        </span>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                     </div>
-                                     /.description-block 
+                                    <!-- /.box-tools -->
                                 </div>
-                                 /.col 
-                                <div class="col-sm-4 border-right">
-                                    <div class="description-block">
-                                        <button class="btn btn-sm btn-flat bg-olive" ng-show="frm.state != 1" ng-click="changeStatus(frm, 1)" >ACTIVATE</button>
-                                        <button class="btn btn-sm btn-flat bg-orange" ng-show="frm.state == 1" ng-click="changeStatus(frm, 2)">DEACTIVATE</button>
-                                    </div>
-                                     /.description-block 
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <canvas id="line" class="chart-base" chart-type="chart.type"  chart-data="chart.data" chart-colors="chart.colors" chart-labels="chart.labels">                                        
+                                    </canvas>
                                 </div>
-                                 /.col 
-                                <div class="col-sm-4"  style="cursor: pointer">
-                                    <div class="description-block">
-                                        <button class="btn btn-sm btn-flat" ng-click="stageChange('DATA', frm)" >RECORDS</button>
-                                    </div>
-                                     /.description-block 
-                                </div>
-                                 /.col 
-                            </div>
-                             /.row 
-                        </div>
-                    </div>
-                </div>-->
 
-    </div>
-    <div class="row no-margin" ng-show="SelectedFormMeta">
-        <div class="col-sm-12">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="pull-left header"><i class="fa fa-file"></i><strong class="text-uppercase">{{SelectedFormMeta.form_name}}</strong></li>
-                    <li class="active"><a href="#form_details" data-toggle="tab">Basic</a></li>
-                    <li><a href="#form_analytics" data-toggle="tab">Analytics</a></li>
-                    <li><a href="#form_data" data-toggle="tab">Records</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            More <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Form Design</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Form Flow</a></li>
-                            <li role="presentation" class="divider"></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete Form</a></li>
-                        </ul>
-                    </li>
+                                <div class="box-footer no-border">
+                                    <div class="row" ng-hide="data.edit">
+                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                            <input type="text" class="knob" data-readonly="true" val="chart.total" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                            <div class="knob-label">Total</div>
+                                        </div>
+                                        <!-- ./col -->
+                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                            <input type="text" class="knob" data-readonly="true" val="chart.sum" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                            <div class="knob-label">Sum</div>
+                                        </div>
+                                        <!-- ./col -->
+                                        <div class="col-xs-4 text-center">
+                                            <input type="text" class="knob" data-readonly="true" val="chart.avg" data-width="60" data-height="60" data-fgColor="#39CCCC">
+                                            <div class="knob-label">Average</div>
+                                        </div>
+                                        <!-- ./col -->
+                                    </div>
+                                    <!-- /.row -->
+                                    <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
+                                    <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit = false"><i class="fa fa-trash"></i> Cancel</button>
 
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="form_details">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="box box-solid">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Details</h3>
-                                    </div>
-                                    <div class="box-body" style="height:350px;overflow: auto">
-                                        <table class="table table-borderless">
-                                            <tr>
-                                                <td><strong>NAME</strong></td>
-                                                <td>{{SelectedFormMeta.form_name}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>VERSION</strong></td>
-                                                <td>{{SelectedFormMeta.version}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>CREATED DATE</strong></td>
-                                                <td>{{SelectedFormMeta.history.created.date|date}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>CREATED BY</strong></td>
-                                                <td>{{SelectedFormMeta.history.created.user}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>STATE</strong></td>
-                                                <td>{{SelectedFormMeta.state==0?'NEW':(SelectedFormMeta.state==1?'ACTIVE':'INACTIVE')}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>ENTRIES</strong></td>
-                                                <td>{{form_usage[SelectedFormMeta._id].total}}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <!-- /.box-body -->
                                 </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <div class="box box-solid">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Usage</h3>
-                                    </div>
-                                    <div class="box-body" style="height:350px;">
-                                        <div ng-show="form_usage_data.data[0].length == 0" class="text-center"><strong>-- No Data --</strong></div>
-                                        <canvas ng-show="form_usage_data.data[0].length" id="line" class="chart chart-bar" chart-data="form_usage_data.data"
-                                                chart-labels="form_usage_data.labels" chart-series="form_usage_data.series" chart-options="form_usage_data.options">                                        
-                                        </canvas>
-                                    </div>
-                                    <!-- /.box-body -->
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <div class="box box-solid">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Actions History</h3>
-                                    </div>
-                                    <div class="box-body" style="height:350px;overflow: auto">
-                                        <ul class="timeline">
-                                            <!-- timeline item -->
-                                            <li ng-repeat="tim in SelectedFormMeta.history.modified">
-                                                <!-- timeline icon -->
-                                                <i class="fa fa-clock-o bg-blue"></i>
-                                                <div class="timeline-item">
-                                                    <span class="time"><i class="fa fa-clock-o"></i>{{tim.date|date}}</span>
-
-                                                    <h3 class="timeline-header"><a href="#" ng-bind="tim.user || 'User Action'"></a></h3>
-                                                    <div class="timeline-body" ng-bind="tim.action"></div>
-                                                </div>
-                                            </li>
-                                            <!-- END timeline item -->
-                                        </ul>
-                                    </div>
-                                    <!-- /.box-body -->
-                                </div>
+                                <!-- /.box-body -->
                             </div>
                         </div>
                     </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="form_analytics">
-                        <div class="row" id="chartViewContaintId">
-                            <div class="col-sm-6" ng-repeat="data in charts">
-                                <div class="box box-solid">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title" ng-bind="data.field + ' ' + (data.limit > 0 ? '(' + data.limit + ')' : '')"></h3>
-
-                                        <div class="box-tools pull-right">
-                                            <a href="javascript:void(0);" class="btn btn-box-tool" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><a ng-click="ChartViewConfig.removeField($index)">Remove</a></li>
-                                                <li><a ng-click="data.edit = true">Edit</a></li>
-                                                <li><a href="javascript:void(0)">Download</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- /.box-header -->
-                                    <div class="box-body">                
-                                        <div class="col-sm-12"  ng-hide="data.edit">
-                                            <canvas id="canvas_line_{{$index}}" ng-init="result = ChartViewConfig.drawCustomData(data, 'canvas_line_' + $index)" height="150"></canvas>
-                                        </div>
-                                        <div class="col-sm-12 no-margin" ng-show="data.edit">
-                                            <div class="form-group">
-                                                <label for="field">Field:</label>
-                                                <select class="form-control" ng-model="data.field">
-                                                    <option value="">---Select Field---</option> <!-- not selected / blank option -->
-                                                    <option value="{{op.key}}" ng-repeat="op in _fields">{{op.value}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Type:</label>
-                                                <select class="form-control" ng-model="data.type">
-                                                    <option value="">---Select Type---</option>
-                                                    <option value="PIE">Pie Chart</option>
-                                                    <option value="BAR">Bar Chart</option>
-                                                    <option value="RADAR">Radar</option>
-                                                    <option value="PIE_AREA">Polar Area</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Limit:</label>
-                                                <input type="number" min="-1" step="1" class="form-control" ng-model="data.limit">
-                                                <small class="text-muted">(-1 for all)</small>
-                                            </div>                    
-                                        </div>
-                                    </div>
-                                    <div class="box-footer no-border">
-                                        <div class="row" ng-hide="data.edit">
-                                            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                                <input type="text" class="knob" data-readonly="true" val="result.total" data-width="60" data-height="60" data-fgColor="#39CCCC">
-                                                <div class="knob-label">Total</div>
-                                            </div>
-                                            <!-- ./col -->
-                                            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                                <input type="text" class="knob" data-readonly="true" val="result.sum" data-width="60" data-height="60" data-fgColor="#39CCCC">
-                                                <div class="knob-label">Sum</div>
-                                            </div>
-                                            <!-- ./col -->
-                                            <div class="col-xs-4 text-center">
-                                                <input type="text" class="knob" data-readonly="true" val="result.avg" data-width="60" data-height="60" data-fgColor="#39CCCC">
-                                                <div class="knob-label">Average</div>
-                                            </div>
-                                            <!-- ./col -->
-                                        </div>
-                                        <!-- /.row -->
-                                        <button ng-show="data.edit" class="btn btn-success" ng-click="ChartViewConfig.saveField(data);"><i class="fa fa-floppy-o"></i> OK</button>
-                                        <button ng-show="data.edit" class="btn btn-danger" ng-click="data.edit = false"><i class="fa fa-trash"></i> Cancel</button>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-3">
-                                <div class="small-box bg-blue" ng-hide="ChartViewConfig._newField" ng-click="ChartViewConfig.createNew()">
-                                    <div class="inner">
-                                        <h3>New</h3>
-                                        <p>Analytics</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fa fa-bar-chart"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">
-                                        <i class="fa fa-plus"></i> Create
-                                    </a>
-                                </div>
-                                <div class="box box-info" ng-show="ChartViewConfig._newField">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">New Analytics</h3>                
-                                    </div>
-                                    <div class="box-body">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="field">Field:</label>
-                                                <select class="form-control" ng-model="ChartViewConfig._newField.field">
-                                                    <option value="">---Select Field---</option> <!-- not selected / blank option -->
-                                                    <option ng-value="op.key" ng-repeat="op in _fields">{{op.value}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Type:</label>
-                                                <select class="form-control" ng-model="ChartViewConfig._newField.type">
-                                                    <option value="">---Select Type---</option>
-                                                    <option value="PIE">Pie Chart</option>
-                                                    <option value="BAR">Bar Chart</option>
-                                                    <option value="RADAR">Radar</option>
-                                                    <option value="PIE_AREA">Polar Area</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Limit:</label>
-                                                <input type="number" min="-1" step="1" class="form-control" ng-model="ChartViewConfig._newField.limit">
-                                                <small class="text-muted">(-1 for all)</small>
-                                            </div>                    
-                                        </div>
-                                    </div>
-                                    <div class="box-footer text-right">
-                                        <button class="btn btn-success" ng-click="ChartViewConfig.saveField()"><i class="fa fa-floppy-o"></i> Save</button>
-                                        <button class="btn btn-danger" ng-click="ChartViewConfig._newField = null"><i class="fa fa-trash"></i> Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="form_data">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                        It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                        like Aldus PageMaker including versions of Lorem Ipsum.
-                    </div>
-                    <!-- /.tab-pane -->
                 </div>
-                <!-- /.tab-content -->
+                <div class="tab-pane active"  ng-show="tabSelect == 2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="datatable-buttons" class="table table-bordered table-hover table-fixedheader table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th align="center" class="text-upper text-center" ng-repeat="h in ['Id', 'Form', 'Version', 'Created Date', 'Created By', 'Stage', 'Status']">{{h}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="row in FormMap[FormDataConfig.me._id].data|limitTo:10">
+                                        <td align="center" ><a href="#" ng-bind="row.internal_id"></a></td>
+                                        <td align="center" ng-bind="row.form_name"></td>
+                                        <td align="center" ng-bind="row.version"></td>
+                                        <td align="center" ng-bind="row.create_date"></td>
+                                        <td align="center" ><a href="/#/Users::{{row.stage_history[0].user}}" ng-click="$parent.reload()" ng-bind="UserMap[row.stage_history[0].user].name"></a></td>
+                                        <td align="center" ng-bind="row.next_stage ? row.next_stage._t + ' PENDING' : 'FINISHED'"></td>
+                                        <td align="center" ng-bind="row.next_stage ? 'IN PROGRESS' : 'COMPLETED'"></td>                
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;" colspan="7"><a style="cursor: pointer" ng-click="$parent.PageConfig._switch('Form', 'Form::' + FormMetaConfig.selected._id, FormMetaConfig.selected)">More..</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

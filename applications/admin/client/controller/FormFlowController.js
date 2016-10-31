@@ -1,4 +1,4 @@
-core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util, FlowFactory, CurrentFormMeta,UserList) {
+core.createController('FormFlowController', function ($scope, GlobalConfig, GlobalVar, Message, Util, FlowFactory, CurrentFormMeta, UserList,FormMeta) {
     jQuery(".small_view").height(window.innerHeight * 0.72).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".small_viewx").height(window.innerHeight * 0.72).css("overflow-x", "auto");
     jQuery(".large_view").height(window.innerHeight * 0.79).css("overflow", "hidden");
@@ -38,29 +38,43 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
             Message.confirm("Changes are not saved. Are you sure want to close?", function (v) {
                 if (v) {
                     $scope.flowMeta.flow = $scope.flowDataBack;
-                    $scope.$parent.stageChange('TILE', $scope.flowMeta);
+                    $scope.$parent.stageChange(0, $scope.flowMeta);
                 }
             });
         } else {
-            $scope.$parent.stageChange('TILE', $scope.flowMeta);
+            $scope.$parent.stageChange(0, $scope.flowMeta);
         }
     };
 
     $scope.saveChanges = function () {
-        if(!$scope.stageValidation()){
-            Message.alert("Some stage action created without reference or without name. Save not possible.");            
+        if (!$scope.stageValidation()) {
+            Message.alert("Some stage action created without reference or without name. Save not possible.");
             return;
         }
-        
-        if(!$scope.nodeLinkValidation()){
-            Message.alert("Some stage created but not linked to any action. Save not possible.");            
+
+        if (!$scope.nodeLinkValidation()) {
+            Message.alert("Some stage created but not linked to any action. Save not possible.");
             return;
         }
-        
+
         $scope.durty = 1;
         $scope.$parent.onUpdateForm("Form model updated.", true);
-        
+
         Message.alert("Saved successfully!");
+    };
+
+    $scope.onUpdateForm = function () {
+
+        $scope.flowMeta.history.modified.push({
+            date: Date.now(),
+            user: (core && core.Profile && core.Profile.user ? core.Profile.user.first_name : ""),
+            action: "Document flow modified."
+        });
+
+
+        FormMeta.save({id: $scope.flowMeta._id},$scope.flowMeta, function (result) {
+            Message.alert("Form design updated.");
+        });
     };
 
 
@@ -111,11 +125,11 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
     $scope._loadFlowFactory();
 
     $scope.loadGlobalVar = function (sVar) {
-        if(sVar=="$users"){
-            UserList.load(function(res){
+        if (sVar == "$users") {
+            UserList.load(function (res) {
                 $scope._gv[sVar] = res;
             });
-        }else
+        } else
         if (!$scope._gv[sVar]) {
             GlobalVar.get({context: sVar, account: core.Profile.account}, function (res) {
                 $scope._gv[sVar] = res;
@@ -164,7 +178,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
         var i = aKeys[aKeys.length - 1];
         var m = parseInt(i) + 1;
         $scope.flowData[m] = angular.copy(oItem);
-        $scope.flowData[m].uid=Math.round(Math.random()*9999999);
+        $scope.flowData[m].uid = Math.round(Math.random() * 9999999);
         $scope._renderGraph();
 
     };
@@ -199,44 +213,44 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
             }
         });
     };
-    
-    $scope.nodeLinkValidation=function(){
-        
-        var uvals={};
-        
-        for(var m in $scope.flowData){
-            var node=$scope.flowData[m];
-            for(var i in node._a){
-                var nm=node._a[i];
-                if(jQuery.trim(nm.r)){
-                    uvals[nm.r]=0;
+
+    $scope.nodeLinkValidation = function () {
+
+        var uvals = {};
+
+        for (var m in $scope.flowData) {
+            var node = $scope.flowData[m];
+            for (var i in node._a) {
+                var nm = node._a[i];
+                if (jQuery.trim(nm.r)) {
+                    uvals[nm.r] = 0;
                 }
             }
-        }        
-        
-        
-        return Object.keys($scope.flowData).length-1<=Object.keys(uvals).length;
+        }
+
+
+        return Object.keys($scope.flowData).length - 1 <= Object.keys(uvals).length;
     };
-    
-    
-    $scope.stageValidation=function(){
-        var isValid=true;
-        for(var m in $scope.flowData){
-            var node=$scope.flowData[m];
-            for(var i in node._a){
-                var nm=node._a[i];
-                if(jQuery.trim(nm.n) && jQuery.trim(nm.r)){
-                    
-                }else{
-                    isValid=false;
+
+
+    $scope.stageValidation = function () {
+        var isValid = true;
+        for (var m in $scope.flowData) {
+            var node = $scope.flowData[m];
+            for (var i in node._a) {
+                var nm = node._a[i];
+                if (jQuery.trim(nm.n) && jQuery.trim(nm.r)) {
+
+                } else {
+                    isValid = false;
                     break;
                 }
             }
-            if(!isValid){
+            if (!isValid) {
                 break;
             }
-        }        
-        
+        }
+
         return isValid;
     };
 

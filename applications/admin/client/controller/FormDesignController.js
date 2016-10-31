@@ -14,28 +14,27 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
     $scope.keyPressed = function (e) {
         switch (e.which) {
-            case 46://delete
-//                $scope.DesignerConfig.evtRemove();
+            case 46:
                 break;
         }
     };
-    
-    window.onbeforeunload=function(){
-      if($scope.DesignerConfig.durty>1){
+
+    window.onbeforeunload = function () {
+        if ($scope.DesignerConfig.durty > 1) {
             return "Save your changes before close or reload window.";
-      }  
+        }
     };
-    
-    $scope.onCloseDesigner=function(){
-        if($scope.DesignerConfig.durty>1){
-            Message.confirm("Changes are not saved. Are you sure want to close?",function(v){
-                if(v){                     
-                    $scope.formMeta.model_view=$scope.DesignerConfig.modelBack;
-                    $scope.$parent.stageChange('TILE',$scope.formMeta);
+
+    $scope.onCloseDesigner = function () {
+        if ($scope.DesignerConfig.durty > 1) {
+            Message.confirm("Changes are not saved. Are you sure want to close?", function (v) {
+                if (v) {
+                    $scope.formMeta.model_view = $scope.DesignerConfig.modelBack;
+                    $scope.$parent.stageChange(0, $scope.formMeta);
                 }
             });
-        }else{
-            $scope.$parent.stageChange('TILE',$scope.flowMeta);
+        } else {
+            $scope.$parent.stageChange(0, $scope.flowMeta);
         }
     };
 
@@ -55,9 +54,9 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         _getRandomNumber: function (num) {
             return Math.round(Math.random() * num);
         },
-        saveChanges:function(){
-            this.durty=1;
-            $scope.$parent.onUpdateForm("Form model updated.",true);
+        saveChanges: function () {
+            this.durty = 1;
+            $scope.onUpdateForm();
             Message.alert("Saved successfully!");
         },
         addPage: function () {
@@ -214,7 +213,7 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
 
         },
         evtModelChange: function () {
-            this.durty +=1;
+            this.durty += 1;
         },
         visitModel: function (oBase, callback) {
             if (oBase && !oBase._c) {
@@ -274,6 +273,20 @@ core.createController('FormDesignController', function ($scope, FormMeta, Messag
         $scope.DesignerConfig.evtModelChange(model);
     }, true);
 
+
+    $scope.onUpdateForm = function () {
+
+        $scope.formMeta.history.modified.push({
+            date: Date.now(),
+            user: (core && core.Profile && core.Profile.user ? core.Profile.user.first_name : ""),
+            action: "Document flow modified."
+        });
+
+
+        FormMeta.save({id: $scope.formMeta._id}, $scope.formMeta, function (result) {
+            Message.alert("Form document flow updated.");
+        });
+    };
 
 //    if ($scope.$parent.SelectedFormMeta) {
 //        var data = $scope.$parent.SelectedFormMeta;

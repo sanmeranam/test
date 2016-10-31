@@ -6,23 +6,6 @@ var Analytics = function (formMetaId, dbName) {
     this.dbName = dbName;
 };
 
-Analytics.prototype.applyGT = function (sValue, aData) {
-
-};
-
-Analytics.prototype.applyLT = function (sValue, aData) {
-
-};
-Analytics.prototype.applyET = function (sValue, aData) {
-
-};
-Analytics.prototype.applyNET = function (sValue, aData) {
-
-};
-
-Analytics.prototype.applyContains = function (sValue, aData) {
-
-};
 
 Analytics.prototype._deepFilterData = function (cItem, aData) {
     var qvalue = {};
@@ -102,6 +85,7 @@ Analytics.prototype._filterData = function (oCharts, aData) {
 
         resChat.title = iChart.name;
         resChat.type = iChart.type;
+        resChat.created = iChart.created;
         finalResult.push(resChat);
     }
 

@@ -6,19 +6,22 @@ core.createController('UserGroupController', function ($scope, Users, GlobalConf
     jQuery("#profileScrillView").height(window.innerHeight * 0.67).css("overflow", "auto");
 
     $scope.hashManager = {
+        getCurrentUser: function () {
+            var ps = core.getHashParams();
+            if (ps.length) {
+                return ps[0];
+            }
+            return null;
+        },
         init: function () {
             var ps = core.getHashParams();
-            for (var i = 0; i < ps.length; i++) {
-                this["p" + i] = ps[i];
+            if (ps.length) {
+
             }
         },
-        setParams: function () {
-            if (arguments && arguments.length) {
-                var mh = "Users:";
-                for (var i = 0; i < arguments.length; i++) {
-                    mh = mh + ":" + arguments[i];
-                }
-                window.location.hash = mh;
+        setParams: function (sId) {
+            if (sId) {
+                window.location.hash = "Users::" + sId;
             } else {
                 window.location.hash = "Users";
             }
@@ -61,6 +64,8 @@ core.createController('UserGroupController', function ($scope, Users, GlobalConf
         user.secret2 = user.secret;
         $scope.SelectedUser = user;
         $scope.SelectedUserCopy = angular.copy(user);
+
+        $scope.hashManager.setParams(user._id);
     };
     $scope.onCreateUser = function () {
         $scope.NewUser = {
@@ -149,6 +154,7 @@ core.createController('UserGroupController', function ($scope, Users, GlobalConf
             $scope.SelectedUserCopy = null;
 
         }
+        $scope.hashManager.setParams();
         $scope.SelectedUser = null;
     };
 
@@ -157,6 +163,17 @@ core.createController('UserGroupController', function ($scope, Users, GlobalConf
         Users.getAll({}, function (aData) {
             $scope.Users = aData;
             $scope._loadingUsers = false;
+
+            var sel = $scope.hashManager.getCurrentUser();
+            if (sel) {
+                for (var i = 0; i < aData.length; i++) {
+                    if (aData[i]._id == sel) {
+                        $scope.onSelectUser(aData[i]);
+                        break;
+                    }
+                }
+            }
+
         });
     };
     $scope.loadUsers();
