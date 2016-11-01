@@ -1,7 +1,7 @@
 window.core = {
     Profile: null,
     init: function () {
-        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps', "dndLists", "ngSanitize", "ngWYSIWYG", 'chart.js','ngTable','ui_render_preview']);
+        this.ngApp = angular.module('ngAdmin', ['ngResource', 'uiGmapgoogle-maps', "dndLists", "ngSanitize", "ngWYSIWYG", 'chart.js', 'ngTable', 'ui_render_preview']);
         this.ngApp.config(
                 ['uiGmapGoogleMapApiProvider', function (GoogleMapApiProviders) {
                         GoogleMapApiProviders.configure({
@@ -257,18 +257,23 @@ window.core = {
 
         this.ngApp.service('UserList', function (GlobalVar) {
             var resource = {
-                cb: function () {},
+                cb: [],
                 init: function () {
-                    GlobalVar.get({context: "$users"}, function (list) {
-                        resource._list = list;
-                        resource.cb(list);
-                    });
+                    if (!this._list)
+                        GlobalVar.get({context: "$users"}, function (list) {
+
+                            resource._list = list;
+                            for (var i in resource.cb) {
+                                resource.cb[i](list);
+                            }
+                            resource.cb.length = 0;
+                        });
                 },
                 load: function (ncb) {
                     if (this._list) {
                         ncb(this._list);
                     } else {
-                        resource.cb = ncb;
+                        resource.cb.push(ncb);
                         resource.init();
                     }
                 }

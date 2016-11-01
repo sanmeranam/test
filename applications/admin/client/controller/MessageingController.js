@@ -1,5 +1,5 @@
 core.createController('MessageingController', function ($scope, CloudMessage, GlobalVar, UserList) {
-    $scope.UserList = {};
+    $scope.uList = {};
 
 
     $scope.updateId = function () {
@@ -8,7 +8,7 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
     $scope.updateId();
 
     $scope.ActiveSessions = {};
-
+    
     UserList.load(function (result) {
         for (var i = 0; i < result.length; i++) {
             var u = result[i];
@@ -20,7 +20,7 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
             } catch (e) {
             }
 
-            $scope.UserList[u.value] = u;
+            $scope.uList[u.value] = u;
 
             $scope.ActiveSessions[u.value] = {
                 name: u.name,
@@ -61,7 +61,7 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
         if (!$scope.ActiveSessions[id]) {
             $scope.ActiveSessions[id] = {
                 show: true,
-                name: $scope.UserList[id].name,
+                name: $scope.uList[id].name,
                 message: []
             };
         } else {
@@ -116,7 +116,7 @@ core.createController('MessageingController', function ($scope, CloudMessage, Gl
 
         if (!$scope.ActiveSessions[from]) {
 
-            var user = $scope.UserList[from];
+            var user = $scope.uList[from];
 
             $scope.ActiveSessions[from] = {
                 show: true,

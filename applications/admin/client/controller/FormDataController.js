@@ -31,11 +31,20 @@ FormView.prototype = {
             }
         }
     },
+    getPageText:function(){
+        return (this.currentPage+1)+"/"+this.pages.length;
+    },
     nextPage: function () {
-
+        this.currentPage+=1;
+        if(this.currentPage > this.pages.length-1){
+            this.currentPage=this.pages.length-1;
+        }
     },
     prevPage: function () {
-
+        this.currentPage-=1;
+        if(this.currentPage < 0){
+            this.currentPage=0;
+        }
     },
     getPageModel: function () {
         if (this.model && this.pages)
@@ -346,5 +355,5 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         });
     }
 
-
+    
 });
