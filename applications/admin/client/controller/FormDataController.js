@@ -1,7 +1,77 @@
+var FormView = function (item) {
+    this.model = null;
+    this.pages = [];
+    this.data = null;
+    this.currentPage = 0;
+    this.selected = item;
+    this.model = item.model;
+    this.data = {};
+    for (var m in item.data) {
+        this.data[item.data[m]._i] = item.data[m]._v;
+    }
+
+    this.pages = Object.keys(item.model);
+
+    for (var iPage in this.model) {
+        this._setData(this.model[iPage]);
+    }
+};
+FormView.prototype = {
+    _setData: function (ins) {
+        if (ins._n && ins._a.value && this.data[ins._d]) {
+            var val = this.data[ins._d];
+            if (val && (val.indexOf("[") > -1 && val.indexOf("]") > -1) || (val.indexOf("{") > -1 && val.indexOf(":") > -1)) {
+                val = JSON.parse(val);
+            }
+            ins._a.value.value = val;
+        }
+        if (ins._c && ins._c.length) {
+            for (var m in ins._c) {
+                this._setData(ins._c[m]);
+            }
+        }
+    },
+    nextPage: function () {
+
+    },
+    prevPage: function () {
+
+    },
+    getPageModel: function () {
+        if (this.model && this.pages)
+            return this.model[this.pages[this.currentPage]];
+        return null;
+    },
+    getStage: function () {
+        if(this.stage){
+            return this.stage;
+        }
+        this.stage = {};
+        for (var m in this.selected.flow) {
+            var f = this.selected.flow[m];
+            this.stage[f.uid] = {
+                type: f._t,
+                id: f.uid,
+                done: false
+            };
+        }
+        for (var i in this.selected.stage_history) {
+            var st = this.selected.stage_history[i];
+            if (this.stage[st.uid]) {
+                this.stage[st.uid].done = true;
+                this.stage[st.uid].data = this.stage[st.uid];
+            }
+        }
+        return this.stage;
+    }
+};
+
 core.createController('FormDataController', function ($scope, FormMeta, Message, uiGmapIsReady, UserList, $http, FormData, GlobalVar, NgTableParams) {
 
     jQuery(".small_view").height(window.innerHeight * 0.79).css("overflow-y", "auto").css("overflow-x", "hidden");
     jQuery(".scroll_view").height(window.innerHeight * 0.70).css("overflow-y", "auto").css("overflow-x", "hidden");
+//    jQuery(".page_view").height(window.innerHeight * 0.53).css("overflow-y", "auto").css("overflow-x", "hidden");
+
 
     $scope.UserMap = {};
     UserList.load(function (res) {
@@ -11,55 +81,25 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
 
     });
 
-    $scope.FormDataView = {
-        selected: null,
-        currentPage: 0,
-        pages: [],
-        model: null,
-        data: null,
-        init: function (item) {
-            this.selected = item;
-            this.model = item.model;
-            this.data ={};
-            for(var m in item.data){
-                this.data[item.data[m]._i]=item.data[m]._v;
-            }
-            
-            this.pages = Object.keys(item.model);
 
-            for (var iPage in this.model) {
-                $scope.FormDataView._setData(this.model[iPage]);
-            }
 
-            jQuery("#viewFormModal").modal("show");
-        },
-        _setData: function (ins) {
-            if (ins._n && ins._a.value && this.data[ins._d]) {
-                var val = this.data[ins._d];
-                if (val && (val.indexOf("[") > -1 && val.indexOf("]") > -1) || (val.indexOf("{") > -1 && val.indexOf(":") > -1)) {
-                    val = JSON.parse(val);
-                }
-                ins._a.value.value = val;
-            }
-            if (ins._c && ins._c.length) {
-                for (var m in ins._c) {
-                    $scope.FormDataView._setData(ins._c[m]);
-                }
-            }
-        },
-        nextPage: function () {
 
-        },
-        prevPage: function () {
+    $scope.tabSelect = 0;
+    $scope.FormDataView = {};
 
+    $scope.TabNav = {
+        cdata: null,
+        live: "0",
+        select: function (idx, data) {
+            this.live = "" + idx;
+            this.cdata = data;
         },
-        getPageModel: function () {
-            if (this.model && this.pages)
-                return this.model[this.pages[this.currentPage]];
-            return null;
+        remove: function (idx) {
+            this.cdata = null;
+            this.live = '1';
+            delete($scope.FormDataView[idx]);
         }
     };
-
 
     $scope.FormData = {
         selected: null,
@@ -79,7 +119,12 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         },
         select: function (item) {
             this.selected = item;
-            $scope.FormDataView.init(item);
+
+
+            if (!$scope.FormDataView[item._id]) {
+                $scope.FormDataView[item._id] = new FormView(item);
+            }
+            $scope.TabNav.select(item._id, $scope.FormDataView[item._id]);
         }
     };
 
@@ -244,10 +289,17 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
                 }
             }
         },
-        selected: function (item) {
+        selected: function (item, bOpen) {
             this.selectedfrm = item;
             if (item && item.stage_history && item.stage_history.length) {
                 this.moveToLocation(item.stage_history[this.curStage - 1].lat, item.stage_history[this.curStage - 1].lng);
+            }
+
+            if (bOpen) {
+                if (!$scope.FormDataView[item._id]) {
+                    $scope.FormDataView[item._id] = new FormView(item);
+                }
+                $scope.TabNav.select(item._id, $scope.FormDataView[item._id]);
             }
         },
         moveToLocation: function (lat, lng) {

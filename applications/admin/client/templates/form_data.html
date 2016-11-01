@@ -1,16 +1,19 @@
 <div class="container-fluid" ng-controller="FormDataController">
     <div class="side-body padding-top">
         <div class="row">
-            <div class="col-sm-12 no-padding" ng-init="tabSelect = 0">
+            <div class="col-sm-12 no-padding">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <!--<li class="pull-left" style="padding-left: 30px;padding-right: 20px"><button style="margin-top: 4px" class="btn btn-sm">New</button></li>-->
-                        <li ng-class="tabSelect == 0 ? 'active' : ''"><a ng-click="tabSelect = 0" href="javascript:void(0);" data-toggle="tab"><i class="fa fa-bar-chart"></i> Analytics</a></li>
-                        <li ng-class="tabSelect == 1 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 1" data-toggle="tab"><i class="fa fa-table"></i> Records</a></li>
-                        <li ng-class="tabSelect == 2 ? 'active' : ''"><a href="javascript:void(0);"  ng-click="tabSelect = 2;MapViewConfig.init(true)" data-toggle="tab"><i class="fa fa-map"></i> Map View</a></li>
+                        <li ng-class="TabNav.live == '0' ? 'active' : ''"><a ng-click="TabNav.select(0)" href="javascript:void(0);" data-toggle="tab"><i class="fa fa-bar-chart"></i> Analytics</a></li>
+                        <li ng-class="TabNav.live == '1' ? 'active' : ''"><a href="javascript:void(0);"  ng-click="TabNav.select(1)" data-toggle="tab"><i class="fa fa-table"></i> Records</a></li>
+                        <li ng-class="TabNav.live == '2' ? 'active' : ''"><a href="javascript:void(0);"  ng-click="TabNav.select(2);MapViewConfig.init(true)" data-toggle="tab"><i class="fa fa-map"></i> Map View</a></li>
+
+
+                        <li ng-class="TabNav.live == fid ? 'active' : ''" ng-repeat="(fid,itm) in FormDataView"><a  ng-click="TabNav.select(fid, itm)" data-toggle="tab"><i class="fa fa-file-text"></i> {{itm.selected.internal_id}} &nbsp; &nbsp; <i style="cursor: pointer" ng-click="TabNav.remove(fid)" class="fa fa-times"></i></a></li>
                     </ul>
                     <div class="tab-content small_view">
-                        <div class="tab-pane active" ng-show="tabSelect == 0">
+                        <div class="tab-pane active" ng-show="TabNav.live == '0'">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <button class="btn btn-sm btn-info" ng-click="FormChart.createNewChart()">New</button>
@@ -70,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane active"  ng-show="tabSelect == 1">
+                        <div class="tab-pane active"  ng-show="TabNav.live == '1'">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="box">
@@ -97,7 +100,7 @@
                                                     <td data-title="'ID'"  ><a href="javascript:void(0)" ng-click="FormData.select(row)" ng-bind="row.internal_id"></a></td>
                                                     <td data-title="'Form Name'"   ng-bind="row.form_name"></td>
                                                     <td data-title="'Version'"   ng-bind="row.version"></td>
-                                                    <td data-title="'Create Date'"   ng-bind="row.create_date|date"></td>
+                                                    <td data-title="'Create Date'"   ng-bind="row.create_date | date"></td>
                                                     <td data-title="'Create User'"   ><a href="/#/Users::{{row.stage_history[0].user}}" ng-click="$parent.reload()" ng-bind="UserMap[row.stage_history[0].user].name"></a></td>
                                                     <td data-title="'Stage Status'"   ><span class="label" ng-class="row.next_stage ? 'label-danger' : 'label-success'" ng-bind="row.next_stage ? row.next_stage._t + ' PENDING' : 'FINISHED'"></span></td>
                                                     <td data-title="'Form Status'"   ><span class="label" ng-class="row.next_stage ? 'label-danger' : 'label-success'" ng-bind="row.next_stage ? 'IN PROGRESS' : 'COMPLETED'">Denied</span></td>                
@@ -110,7 +113,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane active"  ng-show="tabSelect == 2">
+                        <div class="tab-pane active"  ng-show="TabNav.live == '2'">
                             <div class="row" style="padding-left: 40px">
                                 <div class="col-sm-2">
                                     <div class="has-feedback">
@@ -142,9 +145,9 @@
                                             <div class="timeline-item">
                                                 <span class="time"><i class="fa fa-clock-o"></i> {{fd.create_date|date}}</span>
 
-                                                <h3 class="timeline-header" ng-click="MapViewConfig.selected(fd)"><a href="javascript:void(0)">{{fd.internal_id|uppercase}}</a></h3>
+                                                <h3 class="timeline-header" ng-click="MapViewConfig.selected(fd, true)"><a href="javascript:void(0)">{{fd.internal_id|uppercase}}</a></h3>
 
-                                                <div class="timeline-body">
+                                                <div class="timeline-body" ng-click="MapViewConfig.selected(fd)" style="cursor: pointer">
                                                     <small ng-if="fd.next_stage" class="label label-danger pull-right">In Progress</small>
                                                     <small ng-if="!fd.next_stage" class="label label-success pull-right">Completed</small>
                                                     <p>v{{fd.version}}</p>
@@ -162,13 +165,125 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div  class="col-sm-8" ng-if="tabSelect == 2">
+                                <div  class="col-sm-8" ng-if="TabNav.live == '2'">
                                     <ui-gmap-google-map center="MapViewConfig.config.center" zoom="MapViewConfig.config.zoom" refresh="true" events="MapViewConfig.config.events">
                                         <ui-gmap-marker ng-repeat="m in MapViewConfig.config.markers" coords="m.coords" idkey="m.id"></ui-gmap-marker>
                                     </ui-gmap-google-map>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane active"  ng-show="TabNav.cdata">
+                            <div class="row">
+                                <div class="col-sm-12" style="margin-bottom: 0px">
+                                    <div class="box box-solid bg-blue-gradient">
+                                        <div class="box-body" style="padding: 20px">
+                                            <div class="row">
+                                                <div class="col-sm-2 text-right">
+                                                    <label>INTERNAL ID:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="TabNav.cdata.selected.internal_id"></span>
+                                                </div>
+
+                                                <div class="col-sm-2 text-right">
+                                                    <label>UUID:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="TabNav.cdata.selected._id"></span>
+                                                </div>
+
+
+                                                <div class="col-sm-2 text-right">
+                                                    <label>FORM NAME:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="TabNav.cdata.selected.form_name"></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-2 text-right">
+                                                    <label>CREATE DATE:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="TabNav.cdata.selected.create_date | date"></span>
+                                                </div>
+
+                                                <div class="col-sm-2 text-right">
+                                                    <label>FORM v:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="TabNav.cdata.selected.version"></span>
+                                                </div>
+
+                                                <div class="col-sm-2 text-right">
+                                                    <label>STATUS:</label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span ng-bind="!TabNav.cdata.selected.next_stage ? 'COMPLETED' : 'IN PROGRESS'"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="margin: 50px 50px 0px 50px;">
+                                                <div class="col-sm-8 col-sm-offset-2">
+                                                    <div class="process">
+                                                        <div class="process-row">
+                                                            <div class="process-step" ng-repeat="(id,st) in TabNav.cdata.getStage()">
+                                                                <button type="button" class="btn btn-circle" ng-class="st.done ? 'btn-success' : 'btn-default'" ng-switch="st.type">
+                                                                    <i ng-switch-when="CREATE" class="fa fa-file-o fa-2x"></i>
+                                                                    <i ng-switch-when="USER" class="fa fa-user fa-2x"></i>
+                                                                    <i ng-switch-when="GROUP" class="fa fa-users fa-2x"></i>
+                                                                    <i ng-switch-when="API" class="fa fa-plug fa-2x"></i>
+                                                                    <i ng-switch-when="FTP" class="fa fa-cloud-upload fa-2x"></i>
+                                                                    <i ng-switch-when="NOTIF" class="fa fa-bell fa-2x"></i>
+                                                                    <i ng-switch-when="EMAIL" class="fa fa-envelope fa-2x"></i>
+                                                                    <i ng-switch-when="SMS" class="fa fa-comments fa-2x"></i>
+                                                                    <i ng-switch-when="WALL" class="fa fa-desktop fa-2x"></i>
+                                                                </button>
+                                                                <p ng-bind="st.type"></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="box-header text-center">
+                                            <button type="button" class="btn bg-blue btn-sm" data-widget="collapse"><i class="fa fa-minus"></i> Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-12 page_view" style="padding: 0px 10px;">
+                                    <div class="col-sm-6 col-sm-offset-3 box-shadow" style="min-height: 200px;background-color: #fff;padding: 30px">
+                                        <div class="row">
+                                            <pre:page node="TabNav.cdata.getPageModel()"></pre:page>
+                                        </div>
+                                    </div> 
+                                    <div class="col-sm-2 text-center">
+                                        <div class="btn-group">
+                                            <button type="button" data-toogle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-pencil"></i></button>
+                                            <button type="button" data-toogle="tooltip" title="Print" class="btn btn-default"><i class="fa fa-print"></i></button>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Template 1</a></li>
+                                                    <li><a href="#">Template 2</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -240,8 +355,8 @@
             </div>
         </div>
     </div>
-    
-     <div class="modal fade" tabindex="-1" role="dialog" id="viewFormModal" aria-hidden="true" >
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="viewFormModal" aria-hidden="true" >
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">        
@@ -256,9 +371,9 @@
                     <button type="button" class="btn btn-warning" ng-click=""><<</button>
                     1/2
                     <button type="button" class="btn btn-warning" ng-click="">>></button>
-                    
-                    
-                    
+
+
+
                     <button type="button" class="btn btn-primary" style="visibility: hidden" ng-click="">Save</button>
                     <button type="button" class="btn btn-primary" ng-click="">Print</button>
                     <button type="button" class="btn btn-primary" ng-click="">Export</button>
