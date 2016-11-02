@@ -126,6 +126,34 @@
                 }
             }
         }, {
+            "_i": "fa fa-caret-square-o-down ",
+            "_t": "f",
+            "_n": "dropdown",
+            "_d": "dropdown_{1}",
+            "_a": {
+                "label": {
+                    "type": "string",
+                    "value": "Label"
+                },
+                "value": {
+                    "type": "string",
+                    "value": ""
+                },
+                "options": {
+                    "type": "list",
+                    "value": ["option 1"]
+                },
+                "hints": {
+                    "type": "string",
+                    "value": ""
+                },
+                "space": {
+                    "type": "options",
+                    "value": "Relative",
+                    "list": ["Full", "Relative"]
+                }
+            }
+        },{
             "_i": "ca-radio-on-button",
             "_t": "f",
             "_n": "single_option",
