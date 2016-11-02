@@ -317,7 +317,7 @@ var helper = {
 
             if (result && result.length) {
                 result = result.map(function (v) {
-                    var m = v.create_date.split(" ");
+                    var m = typeof(v.create_date)=="string"?v.create_date.split(" "):v.create_date;
                     var key = m[1] + " " + m[2] + " " + m[5];
 
                     if (!data.daily[key]) {

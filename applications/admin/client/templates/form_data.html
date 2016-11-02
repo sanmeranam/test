@@ -172,7 +172,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tab-pane active"  ng-show="TabNav.cdata">
                             <div class="row">
                                 <div class="col-sm-12" style="margin-bottom: 0px">
@@ -268,13 +267,13 @@
                                     </div> 
                                     <div class="col-sm-3 text-center">
                                         <div class="btn-group">
-                                            <button type="button" data-toggle="tooltip" title="Previous Page" class="btn btn-info"><i class="fa fa-angle-double-left"></i></button>
-                                            <button type="button" data-toggle="tooltip" title="Next Page" class="btn btn-info"><i class="fa fa-angle-double-right"></i></button>
+                                            <button type="button" ng-click="TabNav.cdata.prevPage()" data-toggle="tooltip" title="Previous Page" class="btn btn-info"><i class="fa fa-angle-double-left"></i></button>
+                                            <button type="button" ng-click="TabNav.cdata.nextPage()" data-toggle="tooltip" title="Next Page" class="btn btn-info"><i class="fa fa-angle-double-right"></i></button>
                                         </div>
                                         
                                         <div class="btn-group">
-                                            <button type="button" ng-click="TabNav.cdata.prevPage()" data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" ng-click="TabNav.cdata.nextPage()" data-toggle="tooltip" title="Print" class="btn btn-default"><i class="fa fa-print"></i></button>
+                                            <button type="button" ng-click="" data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-pencil"></i></button>
+                                            <button type="button" ng-click="" data-toggle="tooltip" title="Print" class="btn btn-default"><i class="fa fa-print"></i></button>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                     <i class="fa fa-file-pdf-o"></i>

@@ -95,7 +95,7 @@ appUi.directive('preSwitch', function () {
         },
         template: "<div class='textView'>" +
                 "	<label class='label'>{{node._a.label.value}}</label>" +
-                "	<span>{{node._a.value.value?'YES':'NO'}}</span>" +
+                "	<span>{{node._a.value.value==true?'YES':'NO'}}</span>" +
                 "</div>"
     };
 });
@@ -123,8 +123,16 @@ appUi.directive('preMultiOptions', function () {
         },
         template: "<div class='textView'>" +
                 "	<label class='label'>{{node._a.label.value}}</label>" +
-                "	<span>{{node._a.value.value}}</span>" +
-                "</div>"
+                "	<span ng-repeat='v in vals'>{{v}}</span>" +
+                "</div>",
+        controller: function ($scope) {
+            $scope.vals=[];
+            for(var i in $scope.node._a.options.value){
+                if($scope.node._a.value.value[i]){
+                    $scope.vals.push($scope.node._a.options.value[i]);
+                }
+            }
+        }
     };
 });
 
@@ -163,7 +171,12 @@ appUi.directive('prePhotoAttach', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: "<div class='box box-widget'>" +
+                "<div class='box-body'>" +
+                "  <img class='img-responsive pad' src='/service/file/image?id={{node._a.value.value}}' alt='Photo'>" +
+                "  <p>{{node._a.label.value}}</p>" +
+                "</div>" +
+                "</div>",
         link: function (scope, element, attrs) {
 
         }
@@ -177,9 +190,23 @@ appUi.directive('preRating', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: '<div class="row" id="{{node._d}}">' +
+                '	<div class="col-sm-12" style="margin-bottom: 0px">' +
+                '		<label for="{{node._d}}">{{node._a.label.value}}</label>' +
+                '	</div>' +
+                '	<div class="col-sm-12" style="margin-bottom: 15px;font-size:30px">' +
+                '		<a ng-repeat="s in stars track by $index" ><i class="fa" ng-class="(s==0?\'fa-star-o\':\'fa-star\')"></i></a>' +
+                '	</div>' +
+                '</div>',
         link: function (scope, element, attrs) {
+        },
+        controller: function ($scope) {
 
+            $scope.stars = [];
+
+            for (var i = 0; i < $scope.node._a.stars.value; i++) {
+                $scope.stars[i] = ((i + 1) <= $scope.node._a.value.value ? 1 : 0);
+            }
         }
     };
 });
@@ -191,11 +218,11 @@ appUi.directive('preHeading', function () {
         scope: {
             node: '='
         },
-        template: '<section><h1 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 1\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h1>' +
+        template: '<h1 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 1\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h1>' +
                 '<h2 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 2\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h2>' +
                 '<h3 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 3\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h3>' +
-                '<h4 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 4\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h4></section>'
-        
+                '<h4 class="content-sub-heading" id="{{node._d}}" ng-if="node._a.type.value==\'Style 4\'" style="text-align:{{node._a.align.value}}">{{node._a.title.value}} <small>{{node._a.sub_title.value}}</small></h4>'
+
     };
 });
 
@@ -276,9 +303,23 @@ appUi.directive('preAudioRecord', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: "<div class='box box-widget'>" +
+                "<div class='box-body'>" +
+                "  <p>{{node._a.label.value}}</p>" +
+                "<audio controls='controls'>" +
+                "       <source ng-src='{{getSourceURL()}}' type='audio/mpeg'/>" +
+                "       <source ng-src='{{getSourceURL()}}' type='audio/ogg'/>" +
+                "	Unable to play,Download <a href='{{getSourceURL()}}' target='_blank'>here</a>" +
+                "</audio>" +
+                "</div>" +
+                "</div>",
         link: function (scope, element, attrs) {
 
+        },
+        controller: function ($scope) {
+            $scope.getSourceURL = function () {
+                return "/service/file/audio?id=" + $scope.node._a.value.value;
+            };
         }
     };
 });
@@ -290,9 +331,22 @@ appUi.directive('preVideoRecord', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: "<div class='box box-widget'>" +
+                "<div class='box-body'>" +
+                "  <p>{{node._a.label.value}}</p>" +
+                "<video controls='controls'>" +
+                "       <source ng-src='{{getSourceURL()}}' type='audio/mp4'/>" +
+                "	Unable to play,Download <a href='{{getSourceURL()}}' target='_blank'>here</a>" +
+                "</video>" +
+                "</div>" +
+                "</div>",
         link: function (scope, element, attrs) {
 
+        },
+        controller: function ($scope) {
+            $scope.getSourceURL = function () {
+                return "/service/file/video?id=" + $scope.node._a.value.value;
+            };
         }
     };
 });
@@ -304,7 +358,12 @@ appUi.directive('preSign_input', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: "<div class='box box-widget'>" +
+                "<div class='box-body'>" +
+                "  <img class='img-responsive pad' src='/service/file/image?id={{node._a.value.value}}' alt='Photo'>" +
+                "  <p>{{node._a.label.value}}</p>" +
+                "</div>" +
+                "</div>",
         link: function (scope, element, attrs) {
 
         }
@@ -318,9 +377,26 @@ appUi.directive('preLocation', function () {
         scope: {
             node: '='
         },
-        template: "<div></div>",
+        template: "<div class='box box-widget'>" +
+                "<div class='box-body'><a href='{{getMapNavURL()}}' target='_blank'>" +
+                "  <img class='img-responsive pad' src='{{getMapImageURL()}}' alt='Photo'>" +
+                "  <p>{{node._a.label.value}}</p>" +
+                "</a></div>" +
+                "</div>",
         link: function (scope, element, attrs) {
 
+        },
+        controller:function($scope){
+            
+            $scope.getMapImageURL=function(){
+                var addr=$scope.node._a.value.value.lat+","+$scope.node._a.value.value.lng;
+                return "https://maps.googleapis.com/maps/api/staticmap?center="+addr+"&zoom=13&size=400x300&markers=color:red|label:C|"+addr
+            };
+            
+            $scope.getMapNavURL=function(){
+                var addr=$scope.node._a.value.value.lat+","+$scope.node._a.value.value.lng;
+                return "http://maps.google.com/?q="+addr;  
+            };
         }
     };
 });
