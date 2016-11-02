@@ -45,10 +45,11 @@ var Dashboard = {
 
                     data[name] = data[name] || {daily: {}};
 
-                    var date = v.create_date.indexOf(" ") == -1 ? new Date(v.create_date) : v.create_date;
-
+                    var date = (new Date(v.create_date)).toString();
+                    
+                    
                     var m = date.split(" ");
-                    var key = m[1] + " " + m[2] + " " + m[5];
+                    var key = m[1] + " " + m[2] + " " + m[3];
 
                     if (!data[name].daily[key]) {
                         data[name].daily[key] = 0;
