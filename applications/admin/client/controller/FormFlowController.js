@@ -58,7 +58,7 @@ core.createController('FormFlowController', function ($scope, GlobalConfig, Glob
         }
 
         $scope.durty = 1;
-        $scope.$parent.onUpdateForm("Form model updated.", true);
+        $scope.onUpdateForm("Form model updated.", true);
 
         Message.alert("Saved successfully!");
     };

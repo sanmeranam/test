@@ -31,19 +31,19 @@ FormView.prototype = {
             }
         }
     },
-    getPageText:function(){
-        return (this.currentPage+1)+"/"+this.pages.length;
+    getPageText: function () {
+        return (this.currentPage + 1) + "/" + this.pages.length;
     },
     nextPage: function () {
-        this.currentPage+=1;
-        if(this.currentPage > this.pages.length-1){
-            this.currentPage=this.pages.length-1;
+        this.currentPage += 1;
+        if (this.currentPage > this.pages.length - 1) {
+            this.currentPage = this.pages.length - 1;
         }
     },
     prevPage: function () {
-        this.currentPage-=1;
-        if(this.currentPage < 0){
-            this.currentPage=0;
+        this.currentPage -= 1;
+        if (this.currentPage < 0) {
+            this.currentPage = 0;
         }
     },
     getPageModel: function () {
@@ -52,7 +52,7 @@ FormView.prototype = {
         return null;
     },
     getStage: function () {
-        if(this.stage){
+        if (this.stage) {
             return this.stage;
         }
         this.stage = {};
@@ -61,15 +61,18 @@ FormView.prototype = {
             this.stage[f.uid] = {
                 type: f._t,
                 id: f.uid,
-                done: false
+                done: 0
             };
         }
         for (var i in this.selected.stage_history) {
             var st = this.selected.stage_history[i];
             if (this.stage[st.uid]) {
-                this.stage[st.uid].done = true;
+                this.stage[st.uid].done = 2;
                 this.stage[st.uid].data = this.stage[st.uid];
-            }
+            }            
+        }
+        if(this.selected.next_stage && this.stage[this.selected.next_stage.uid]){
+            this.stage[this.selected.next_stage.uid].done = 1;
         }
         return this.stage;
     }
@@ -167,7 +170,7 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         },
         options: {
             legend: {
-                display: true,
+                display: false,
                 labels: {
                     fontColor: 'rgb(255, 99, 132)'
                 }
@@ -355,5 +358,5 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         });
     }
 
-    
+
 });

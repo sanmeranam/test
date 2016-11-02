@@ -229,7 +229,7 @@
                                                     <div class="process">
                                                         <div class="process-row">
                                                             <div class="process-step" ng-repeat="(id,st) in TabNav.cdata.getStage()">
-                                                                <button type="button" class="btn btn-circle"  ng-class="st.done ? 'btn-success' : 'btn-default'" ng-switch="st.type">
+                                                                <button type="button" class="btn btn-circle"  ng-class="st.done==2 ? 'btn-success' : (st.done==1?'btn-warning':'btn-default')" ng-switch="st.type">
                                                                     <i ng-switch-when="CREATE" class="fa fa-file-o fa-2x"></i>
                                                                     <i ng-switch-when="USER" class="fa fa-user fa-2x"></i>
                                                                     <i ng-switch-when="GROUP" class="fa fa-users fa-2x"></i>

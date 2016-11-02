@@ -95,8 +95,8 @@
                         More <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li role="presentation"><a role="menuitem" ng-click="stageChange(1,FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Design</a></li>
-                        <li role="presentation"><a role="menuitem" ng-click="stageChange(2,FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Flow</a></li>
+                        <li role="presentation"><a role="menuitem" ng-click="stageChange(1, FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Design</a></li>
+                        <li role="presentation"><a role="menuitem" ng-click="stageChange(2, FormMetaConfig.selected)" tabindex="-1" href="javascript:void(0);">Form Flow</a></li>
                         <li role="presentation" class="divider"></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" ng-click="FormMetaConfig.remove(FormMetaConfig.selected._id)">Delete Form</a></li>
                     </ul>
@@ -192,7 +192,14 @@
                                     <h3 class="box-title" ng-bind="chart.title"></h3>
 
                                     <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        <button type="button" class="btn btn-box-tool" data-toggle="dropdown"><i class="fa fa-pie-chart"></i></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="javascript:void(0)" ng-click="chart.type = 'pie'">PIE</a></li>
+                                            <li><a href="javascript:void(0)" ng-click="chart.type = 'bar'">BAR</a></li>
+                                            <li><a href="javascript:void(0)" ng-click="chart.type = 'polarArea'">POLAR AREA</a></li>
+                                            <li><a href="javascript:void(0)" ng-click="chart.type = 'radar'">RADAR</a></li>
+                                            <li><a href="javascript:void(0)" ng-click="chart.type = 'doughnut'">DOUGHNUT</a></li>
+                                        </ul>
                                     </div>
                                     <!-- /.box-tools -->
                                 </div>
