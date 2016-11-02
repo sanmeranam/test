@@ -313,7 +313,7 @@ appUi.directive('preAudioRecord', function () {
         template: "<div class='box box-widget'>" +
                 "<div class='box-body'>" +
                 "  <p>{{node._a.label.value}}</p>" +
-                "<audio controls='controls' ng-if='node._a.value.value'>" +
+                "<audio controls='controls' preload='auto' ng-if='node._a.value.value'>" +
                 "       <source ng-src='{{getSourceURL()}}' type='video/3gpp; codecs=\"mp4v.20.8, samr\"'/>" +
                 "	Unable to play,Download <a href='{{getSourceURL()}}' target='_blank'>here</a>" +
                 "</audio>" +
@@ -340,7 +340,7 @@ appUi.directive('preVideoRecord', function () {
         template: "<div class='box box-widget'>" +
                 "<div class='box-body'>" +
                 "  <p>{{node._a.label.value}}</p>" +
-                "<video controls='controls' ng-if='node._a.value.value'>" +
+                "<video controls='controls' preload='auto' ng-if='node._a.value.value'>" +
                 "       <source ng-src='{{getSourceURL()}}' type='audio/mp4'/>" +
                 "	Unable to play,Download <a href='{{getSourceURL()}}' target='_blank'>here</a>" +
                 "</video>" +
