@@ -104,6 +104,11 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         live: "0",
         select: function (idx, data) {
             this.live = "" + idx;
+            if(data){
+                core.setHash("Form",$scope.oCurrenctFormMeta.value,idx);
+            }else{
+                core.setHash("Form",$scope.oCurrenctFormMeta.value);
+            }
             this.cdata = data;
         },
         remove: function (idx) {
@@ -124,6 +129,16 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
                 $scope.FormData.table.settings({
                     dataset: oData
                 });
+                
+                var prm=core.getHashParams();
+                if(prm.length==2){
+                    for(var m in oData){
+                        if(oData[m]._id==prm[1]){
+                            $scope.FormData.select(oData[m]);
+                            break;
+                        }
+                    }
+                }
             });
         },
         search: function () {
@@ -137,6 +152,10 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
                 $scope.FormDataView[item._id] = new FormView(item);
             }
             $scope.TabNav.select(item._id, $scope.FormDataView[item._id]);
+            
+            
+            core.setHash("Form",$scope.oCurrenctFormMeta.value,item._id);
+            
         }
     };
 
@@ -154,8 +173,6 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
             });
         }
     };
-
-
 
     $scope.FormChart = {
         newChart: null,
@@ -252,6 +269,7 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
     $scope.$watch('MapViewConfig.curStage', function () {
         $scope.MapViewConfig.init();
     });
+    
     $scope.MapViewConfig = {
         flow: [],
         curStage: "1",
@@ -333,9 +351,6 @@ core.createController('FormDataController', function ($scope, FormMeta, Message,
         google.maps.event.trigger(map, 'resize');
         map.setZoom(map.getZoom());
     });
-
-
-
 
 
     var ps = core.getHashParams();

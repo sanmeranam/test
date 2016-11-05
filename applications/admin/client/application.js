@@ -35,6 +35,10 @@ window.core = {
 
 
     },
+    setHash:function(base,p1,p2){
+        var hash = window.location.hash=base+"::"+p1+(p2?":"+p2:"");
+        
+    },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
         if (hash.indexOf("::") > -1) {

@@ -76,7 +76,7 @@
                             <!-- User image -->
                             <li class="user-header">
                                 <img ng-src="/service/avtar?_s=100&_u={{Profile._id}}" class="img-circle" alt="User Image">
-                                <p ng-bind="Profile.user.first_name + ' ' + Profile.user.last_name">User</p>
+                                <p ng-bind="Profile.first_name + ' ' + Profile.last_name">User</p>
                             </li>
                             <!-- Menu Body -->
                             <li class="user-body">
@@ -115,22 +115,44 @@
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img ng-src="/service/avtar?_s=100&_u={{Profile._id}}" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p ng-bind="Profile.first_name + ' ' + Profile.last_name"></p>
+                    <a ng-click="toPagehash('#/Users::' + Profile._id)"><i class="fa fa-circle text-success"></i> Online</a>
+                </div>
+            </div>
+
+
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
+            
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu menu_section">
                 <li class="active" menu="Dashboard"><a ng-click="PageConfig._switch('Dashboard')"><i class="fa fa-home"></i><span> Home</span></a></li>
-                <li menu="Forms"  class="treeview">
-                    <a ng-click="PageConfig._switch('Forms')">
+                <li  class="treeview">
+                    <a href="javascript:void(0)">
                         <i class="fa fa-file"></i><span> Forms</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
-                     <ul class="treeview-menu">
-                         <li menu="Form" ng-repeat="f in forms"><a ng-click="PageConfig._switch('Form','Form::'+f.value,f)" class="text-uppercase"><i class="fa fa-file"></i> {{f.name}}</a></li>
+                    <ul class="treeview-menu">
+                        <li menu="Forms"><a ng-click="PageConfig._switch('Forms')" class="text-uppercase"><i class="fa fa-pencil-square-o"></i> Details</a></li>
+                        <li menu="Form" ng-repeat="f in forms"><a ng-click="PageConfig._switch('Form', 'Form::' + f.value, f)" class="text-uppercase"><i class="fa fa-file"></i> {{f.name}}</a></li>
                     </ul>
                 </li>
-                
-                
+
+
                 <li menu="Data Factory"><a ng-click="PageConfig._switch('Data Factory')"><i class="fa fa-database"></i><span> Data Factory</span></a></li>
                 <li menu="Doc Output"><a ng-click="PageConfig._switch('Doc Output')"><i class="fa fa-file-pdf-o"></i><span> Doc Output</span></a></li>
                 <li menu="Users"><a ng-click="PageConfig._switch('Users')"><i class="fa fa-users"></i><span> Users</span></a></li>

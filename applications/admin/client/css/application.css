@@ -286,3 +286,26 @@ input:checked + .slider:before {
     line-height: 1.428571429;
     border-radius: 15px;
 }
+
+@media print {
+    .no-print{ display:none; }
+    .print { 
+        display:block; 
+        margin: 0px;
+        width: auto;
+        height: auto;
+        overflow:hidden;
+        zoom: 80%;
+    }
+    .print .label{
+        border: 0px;
+        color: darkgray;
+        text-transform: uppercase;
+    }
+    .small_view{
+        height: auto !important;
+        overflow: hidden;
+    }
+    
+    
+}

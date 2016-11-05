@@ -79,12 +79,78 @@ FlowManager.prototype._processNext = function (oNewAction) {
 };
 
 FlowManager.prototype._processSMSAction = function (oAction) {
-    /**
-     * collect template
-     * fill template
-     * create sms server connection
-     * send sms
-     */
+    var querystring = require('querystring');
+    var http = require('http');
+    var tempalte = oAction._f.template.value;
+    var that = this;
+    var tableName = this.tenant.dbname + ".template_factory";
+
+    var fntaskDone = function (err, ok, options) {
+        var oFormData = JSON.parse(JSON.stringify(that.data));
+        oFormData.stage_history = oFormData.stage_history || [];
+        oFormData.stage_history.push({
+            type: oAction._t,
+            uid: oAction.uid,
+            user: 'NA',
+            date: Date.now(),
+            to: options.to,
+            text: options.body
+        });
+        oFormData.next_stage = null;
+        if (oAction._a && oAction._a.length) {
+            oFormData.current_action = {
+                name: oAction._a[0].n,
+                uid: oAction.uid,
+                index: 0
+            };
+        } else {
+            oFormData.current_action = {};
+        }
+        require('./FormFactory').updateForm(tenant, oFormData);
+    };
+
+    var fnSendSMS = function (to, body) {
+        var post_data = querystring.stringify({
+            'username': 'ADVANCED_OPTIMIZATIONS',
+            'hash': 'aece16081abe35b3cd6e35b3b9c72d7979c047f0',
+            'message': body,
+            'sender': 'EGFORM',
+            'numbers': to
+        });
+
+        var post_options = {
+            host: 'api.textlocal.in',
+            port: '80',
+            path: '/send',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(post_data)
+            }
+        };
+
+        var post_req = http.request(post_options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                fntaskDone("","",{to:to,body:body})
+            });
+        });
+
+        // post the data
+        post_req.write(post_data);
+        post_req.end();
+    };
+
+    GLOBAL.db.findById(tableName, tempalte, function (data) {
+        if (data) {
+            var text = that._compileData(data.body, that.data);
+            var to = data.to;
+            if (to) {
+                to = to.indexOf("91") === 0 ? to : "91" + to;
+                fnSendSMS(to, text);
+            }
+        }
+    });
 };
 
 FlowManager.prototype._processEmailAction = function (oAction) {
@@ -151,13 +217,6 @@ FlowManager.prototype._processEmailAction = function (oAction) {
             }
         }
     });
-
-    /**
-     * collect template
-     * fill template
-     * create sms server connection
-     * send sms
-     */
 };
 
 FlowManager.prototype._processUserAction = function (oAction) {

@@ -14,6 +14,7 @@
                     </div>
                     <a href="#/Forms" ng-click="$parent.PageConfig._switch('Forms')" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
+
             </div>
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
@@ -69,7 +70,7 @@
                     <!-- Tabs within a box -->
                     <ul class="nav nav-tabs pull-right">
 
-                        <li ng-repeat="(k,v) in BaseData.form_data.usage" ng-init="onSelectUsage(k)" ng-class="k == fu ? 'active' : ''"><a href="#revenue-chart" data-toggle="tab">{{formatText(k)}}</a></li>
+                        <li ng-repeat="(k, v) in BaseData.form_data.usage" ng-init="onSelectUsage(k)" ng-class="k == fu ? 'active' : ''"><a href="#revenue-chart" data-toggle="tab">{{formatText(k)}}</a></li>
 
                         <li class="pull-left header"><i class="fa fa-inbox"></i>Form Usage</li>
                     </ul>
