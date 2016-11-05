@@ -107,7 +107,7 @@ FlowManager.prototype._processSMSAction = function (oAction) {
         } else {
             oFormData.current_action = {};
         }
-        require('./FormFactory').updateForm(this.tenant, oFormData);
+        require('./FormFactory').updateForm(that.tenant, oFormData);
     };
 
     var fnSendSMS = function (to, body) {
@@ -122,7 +122,7 @@ FlowManager.prototype._processSMSAction = function (oAction) {
         var post_options = {
             host: 'api.textlocal.in',
             port: '80',
-            path: '/send',
+            path: '/send/',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -133,7 +133,7 @@ FlowManager.prototype._processSMSAction = function (oAction) {
         var post_req = http.request(post_options, function (res) {
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
-                fntaskDone("", "", {to: to, body: body})
+                fntaskDone("", "", {to: to, body: body});
             });
         });
 
@@ -187,7 +187,7 @@ FlowManager.prototype._processEmailAction = function (oAction) {
         } else {
             oFormData.current_action = {};
         }
-        require('./FormFactory').updateForm(this.tenant, oFormData);
+        require('./FormFactory').updateForm(that.tenant, oFormData);
     };
 
     GLOBAL.db.findById(tableName, tempalte, function (data) {
