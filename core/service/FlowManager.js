@@ -1,4 +1,6 @@
 var GLOBAL = require('../GLOBAL');
+var querystring = require('querystring');
+var http = require('http');
 
 var FlowManager = function (formData, tenant) {
     this.data = formData;
@@ -79,8 +81,7 @@ FlowManager.prototype._processNext = function (oNewAction) {
 };
 
 FlowManager.prototype._processSMSAction = function (oAction) {
-    var querystring = require('querystring');
-    var http = require('http');
+
     var tempalte = oAction._f.template.value;
     var that = this;
     var tableName = this.tenant.dbname + ".template_factory";
@@ -106,12 +107,12 @@ FlowManager.prototype._processSMSAction = function (oAction) {
         } else {
             oFormData.current_action = {};
         }
-        require('./FormFactory').updateForm(tenant, oFormData);
+        require('./FormFactory').updateForm(this.tenant, oFormData);
     };
 
     var fnSendSMS = function (to, body) {
         var post_data = querystring.stringify({
-            'username': 'ADVANCED_OPTIMIZATIONS',
+            'username': 'sanmeranam@gmail.com',
             'hash': 'aece16081abe35b3cd6e35b3b9c72d7979c047f0',
             'message': body,
             'sender': 'EGFORM',
@@ -132,7 +133,7 @@ FlowManager.prototype._processSMSAction = function (oAction) {
         var post_req = http.request(post_options, function (res) {
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
-                fntaskDone("","",{to:to,body:body})
+                fntaskDone("", "", {to: to, body: body})
             });
         });
 
@@ -186,7 +187,7 @@ FlowManager.prototype._processEmailAction = function (oAction) {
         } else {
             oFormData.current_action = {};
         }
-        require('./FormFactory').updateForm(tenant, oFormData);
+        require('./FormFactory').updateForm(this.tenant, oFormData);
     };
 
     GLOBAL.db.findById(tableName, tempalte, function (data) {
