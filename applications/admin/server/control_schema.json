@@ -554,14 +554,10 @@
                     "value": [],
                     "source": "$products"
                 },
-                "hints": {
-                    "type": "string",
-                    "value": ""
-                },
                 "space": {
-                    "type": "options",
-                    "value": "Relative",
-                    "list": ["Full", "Relative"]
+                    "type": "string",
+                    "value": "Full",
+                    "hidden":true
                 }
             }
         }

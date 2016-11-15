@@ -1,0 +1,97 @@
+<div class="row" ng-init="editable = false">
+    <div class="col-sm-6">
+        <div id="pid_{{tval.code}}" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#pid_{{tval.code}}" data-slide-to="{{$index}}" ng-class="{active:!$index}" ng-repeat="img in tval.images"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="item" ng-repeat="img in tval.images" ng-class="{active:!$index}">
+                    <img ng-src="{{'/service/file/image?id='+img._id}}" alt="{{img.name}}">
+                    <div class="carousel-caption">
+                        {{img.name}}
+                    </div>
+                </div>
+            </div>
+            <a class="left carousel-control" href="#pid_{{tval.code}}" data-slide="prev">
+                <span class="fa fa-angle-left"></span>
+            </a>
+            <a class="right carousel-control" href="#pid_{{tval.code}}" data-slide="next">
+                <span class="fa fa-angle-right"></span>
+            </a>
+        </div>
+
+
+        <div class="col-sm-12"> 
+            <label>Description</label>
+            <div ng-bind-html="tval.description"></div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <h3 ng-bind="tval.name"></h3>        
+        <table class="table table-borderless">
+            <tr>
+                <td style="text-align: right;vertical-align: middle"><label>Product Code</label></td>
+                <td style="width: 50%">
+                    <barcode format="upc" value="tval.code"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;vertical-align: middle"><label>Stock</label></td>
+                <td style="width: 50%">
+                    <div class="input-group input-group-sm col-xs-6">
+                        <input type="number" min="1" ng-disabled="!editable" ng-model="tval.stock" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" ng-show="!editable" ng-click="editable=true" class="btn btn-default btn-flat">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" ng-show="editable" ng-click="editable=false" class="btn btn-default btn-flat">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;vertical-align: middle"><label>Price</label></td>
+                <td style="width: 50%">
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon">$</span>
+                        <input type="number" min="0" ng-disabled="!editable" ng-model="tval.price" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" ng-show="!editable" ng-click="editable=true" class="btn btn-default btn-flat">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" ng-show="editable" ng-click="editable=false" class="btn btn-default btn-flat">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            
+             <tr>
+                <td style="text-align: right;vertical-align: middle"><label>Discount</label></td>
+                <td style="width: 50%">
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon">%</span>
+                        <input type="number" min="0" ng-disabled="!editable" ng-model="tval.discount.percent" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" ng-show="!editable" ng-click="editable=true" class="btn btn-default btn-flat">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" ng-show="editable" ng-click="editable=false" class="btn btn-default btn-flat">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+
+
+
+
+</div>

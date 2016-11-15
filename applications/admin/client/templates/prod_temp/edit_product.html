@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <ul class="mailbox-attachments clearfix">
+            <li ng-repeat="img in tval.images">
+                <span class="mailbox-attachment-icon has-img"><img style="height: 100px" ng-src="{{'/service/file/image?id='+img._id}}" alt="P"></span>
+                <div class="mailbox-attachment-info">
+                    <a href="#" class="mailbox-attachment-name" ng-bind="img.name"></a>
+                    <span class="mailbox-attachment-size">                        
+                        <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-trash"></i></a>
+                        <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
+                    </span>
+                </div>
+            </li>
+            <li>
+                <label ng-hide="_fileUploading" class="mailbox-attachment-icon" style="font-size: 40px;cursor: pointer">
+                    <input type="file" onchange="angular.element(this).scope().onFileImageChange(this)" style="width: 0px;height: 0px" accept="image/*">
+                    <i class="fa fa-cloud-upload"></i>
+                </label>
+                <label ng-show="_fileUploading" class="mailbox-attachment-icon" style="font-size: 40px;">
+                    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                    Uploading..
+                </label>
+                
+            </li>
+        </ul>
+        <table class="table">
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Product Name:</label></td>
+                <td>
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon"><i class="fa fa-shopping-bag"></i></span>
+                        <input type="text" min="0" ng-model="tval.name" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-min" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Product Code:</label></td>
+                <td>
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
+                        <input type="text" min="0" ng-model="tval.code" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-min" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Price:</label></td>
+                <td>
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon"><i class="fa fa-rupee"></i></span>
+                        <input type="number" min="0" ng-model="tval.price" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-min" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Stock:</label></td>
+                <td>
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
+                        <input type="number" min="0" ng-model="tval.stock" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-min" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Discount:</label></td>
+                <td>
+                    <div class="input-group input-group-sm col-xs-6">
+                        <span class="input-group-addon">%</span>
+                        <input type="number" min="0" ng-model="tval.discount" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-min" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 40%;text-align: right"><label>Description</label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+            <wysiwyg-edit content="tval.description" api="api"></wysiwyg-edit>
+            </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-sm-2">
+        <button class="btn btn-sm btn-success" ng-click="saveNewProduct()">Save</button>
+        <button class="btn btn-sm btn-default" ng-click="TabNav.remove('_temp_id')">Cancel</button>
+    </div>
+</div>

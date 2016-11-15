@@ -8,11 +8,9 @@ var oAnalytics = require('./analytics');
 var oDashBoard = require('./dashboard');
 var oExcelExpo = require('./export_excel');
 
-var tableNameFormat = function (text) {
-    return text.replace(/\.?([A-Z]+)/g, function (x, y) {
-        return "_" + y.toLowerCase();
-    }).replace(/^_/, "");
-};
+var Accounts = require('../../../core/db/entity/Accounts');
+var FormMeta = require('../../../core/db/entity/FormMeta');
+var FileEntry = require('../../../core/db/entity/FileEntry');
 
 var helper = {
     _getObject: function (ins, trg) {
@@ -41,13 +39,13 @@ var helper = {
 
         var qury = sIs ? {_id: sIs} : {};
 
-        req.db.find(req.tenant.dbname + ".form_meta", qury, function (result) {
+        FormMeta.find(req.tenant.dbname, qury, function (result) {
             if (result) {
                 result = result.map(function (f) {
                     return {
-                        name: f.form_name,
-                        value: f._id,
-                        fields: helper._collectFields(f.model_view)
+                        name: f._.form_name,
+                        value: f._._id,
+                        fields: helper._collectFields(f._.model_view)
                     };
                 });
 
@@ -60,22 +58,18 @@ var helper = {
     doLogin: function (req, res, next) {
         var user = req.body.email;
         var password = req.body.secret;
-        req.db.find(req.tenant.dbname + ".accounts", {"email": user}, function (result) {
-            var oData = result.length ? result[0] : null;
-            if (oData && oData.secret === password) {
-                oData.profile = "";
-                oData.tenant = req.tenant;
-                delete(oData.secret);
-                delete(oData.cgm_token);
-                delete(oData.web_token);
 
+        Accounts.find(req.tenant.dbname, {"email": user, secret: password}, function (result) {
+            result = result.length ? result[0] : null;
+            if (result) {
+                var oData = result.getForSession();
+                oData.tenant = req.tenant;
                 req.session.user = oData;
                 res.redirect("/");
             } else {
                 res.redirect("/login?error=true");
             }
-        }
-        );
+        });
     },
     doLogout: function (req, res, next) {
         req.session.destroy();
@@ -93,9 +87,10 @@ var helper = {
         var USER_ID = req.query._u;
         var size = req.query._s;
         var tenant = req.tenant;
-        req.db.findById(tenant.dbname + ".accounts", USER_ID, function (result) {
-            if (result && result.profile) {
-                var base64Data = result.profile.replace(/^data:image\/(png|gif|jpeg);base64,/, "");
+
+        Accounts.findById(tenant.dbname, USER_ID, function (account) {
+            if (account && account._.profile) {
+                var base64Data = account._.profile.replace(/^data:image\/(png|gif|jpeg);base64,/, "");
                 var binaryData = new Buffer(base64Data, 'base64');
                 res.set('Content-Type', 'image/png');
 
@@ -175,11 +170,6 @@ var helper = {
 
                         return v;
                     });
-
-//                    users = users.filter(function (v) {
-//                        return user._id != v._id;
-//                    });
-
                     res.json(users);
                 });
                 break;
@@ -306,8 +296,7 @@ var helper = {
                 res.end("File not found !!");
             }
         });
-    }
-    ,
+    },
     getFormUsage: function (req, res, next) {
         req.db.find(req.tenant.dbname + ".form_data", {meta_id: req.query.id}, function (result) {
             var data = {
@@ -351,8 +340,8 @@ var helper = {
             aPro.process(res);
         }
     },
-    exportForm:function(req, res, next){
-        var ee=new oExcelExpo(req.query.id,res,req.tenant.dbname,req.tenant.domain);
+    exportForm: function (req, res, next) {
+        var ee = new oExcelExpo(req.query.id, res, req.tenant.dbname, req.tenant.domain);
     },
     getDashboardData: function (req, res) {
         oDashBoard.data(req.tenant.dbname, res);
@@ -373,6 +362,61 @@ var helper = {
             }
         });
     },
+    fileUpload: function (req, res, next) {
+        var fstream;
+        var oParams = req.query;
+        req.pipe(req.busboy);
+        var tenant = req.tenant;
+        var files = 0;
+        var fRes = [];
+
+        var fnGetMime = function (file) {
+            if (file.toLowerCase().indexOf(".pdf") > -1) {
+                return "application/pdf";
+            }
+            if (file.toLowerCase().indexOf(".jpg") > -1 || file.toLowerCase().indexOf(".jpeg") > -1) {
+                return "image/jpeg";
+            }
+
+            if (file.toLowerCase().indexOf(".png") > -1) {
+                return "image/png";
+            }
+
+            if (file.toLowerCase().indexOf(".3gp") > -1) {
+                return "video/3gpp";
+            }
+
+            if (file.toLowerCase().indexOf(".mp4") > -1) {
+                return "video/mp4";
+            }
+            return "text/plain";
+        };
+
+
+        req.busboy.on('file', function (fieldname, file, filename) {
+            ++files;
+            var sFilePath = req.up + "/" + filename;
+            fstream = fs.createWriteStream(sFilePath);
+            file.pipe(fstream);
+            fstream.on('close', function () {
+                var ofile = new FileEntry({
+                    name: filename,
+                    path: sFilePath,
+                    field: fieldname,
+                    create: (new Date()).getTime(),
+                    mime: fnGetMime(filename),
+                    params: oParams
+                });
+                ofile.setDB(tenant.dbname);
+                ofile.save(function (oResult) {
+                    fRes.push(oResult);
+                    if (files === fRes.length) {
+                        res.json(fRes);
+                    }
+                });
+            });
+        });
+    },
     restAccountsHook: function (table, data) {
         if (table.toLowerCase() == "accounts") {
             return data.map(function (v) {
@@ -383,15 +427,13 @@ var helper = {
         return data;
     },
     restGet: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
-        var sId = req.params.id;
-
-        req.db.findById(sTable, sId, function (result) {
-            res.json(result);
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        oTable.findById(req.tenant.dbname, req.params.id, function (result) {
+            res.json(result._);
         });
     },
     restGetField: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
+//        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         var sKey = req.params.field;
         var sValue = req.params.val;
 
@@ -400,35 +442,49 @@ var helper = {
         }
         var oFilter = {};
         oFilter[sKey] = sValue;
-        req.db.find(sTable, oFilter, function (result) {
+
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        oTable.find(req.tenant.dbname, oFilter, function (result) {
+            result=result.map(function(v){
+               return v._; 
+            });
             res.json(result);
         });
     },
     restGetAll: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
-        req.db.find(sTable, req.query, function (result) {
-            res.json(helper.restAccountsHook(req.params.table, result));
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        oTable.find(req.tenant.dbname, req.query, function (result) {
+            result=result.map(function(v){
+               return v._; 
+            });
+            res.json(result);
         });
     },
     restCreate: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
-        var oData = req.body;
-        req.db.insertToTable(sTable, oData, function (result) {
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        var tbl = new oTable(req.body);
+        tbl.setDB(req.tenant.dbname);
+        tbl.save(function (result) {
             res.json(result);
         });
     },
     restUpdate: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         var sId = req.params.id;
-        var oData = req.body;
-        req.db.updateById(sTable, sId, oData, function (result) {
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        var tbl = new oTable(req.body);
+        tbl.setDB(req.tenant.dbname);
+        tbl._id = sId;
+        tbl.save(function (result) {
             res.json(result);
         });
     },
     restDelete: function (req, res, next) {
-        var sTable = req.tenant.dbname + "." + tableNameFormat(req.params.table);
         var sId = req.params.id;
-        req.db.removeById(sTable, sId, function (result) {
+        var oTable = require('../../../core/db/entity/' + req.params.table);
+        var tbl = new oTable();
+        tbl.setDB(req.tenant.dbname);
+        tbl._id = sId;
+        tbl.remove(function (result) {
             res.json(result);
         });
     },
@@ -446,7 +502,6 @@ var helper = {
         });
     },
     sendGroupMessage: function (req, res, next) {
-
     }
 };
 

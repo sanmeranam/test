@@ -113,8 +113,8 @@ core.createController('RootController', function ($scope, Session, Message, Clou
         "Doc Output": {
             path: "/_self/templates/docoutput.html"
         },
-        "Data Factory": {
-            path: "/_self/templates/dataprocess.html"
+        "Products": {
+            path: "/_self/templates/products.html"
         },
         "Users": {
             path: "/_self/templates/users.html"

@@ -113,7 +113,7 @@ FlowManager.prototype._processSMSAction = function (oAction) {
     var fnSendSMS = function (to, body) {
         var post_data = querystring.stringify({
             'username': 'sanmeranam@gmail.com',
-            'hash': 'aece16081abe35b3cd6e35b3b9c72d7979c047f0',
+            'apiKey': 'AIwpehugrnk-h1Wk5MLlObGTbxeMX1lWY602rLE6Le',
             'message': body,
             'sender': 'EGFORM',
             'numbers': to

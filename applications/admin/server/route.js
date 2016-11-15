@@ -61,6 +61,7 @@ router.delete('/rest/:table/:id', helper.restDelete);
 router.get('/service/avtar', helper.getAvtar);
 router.get('/service/control_schema', helper.getControlSchema);
 
+router.post('/service/file/upload', helper.fileUpload);
 router.get('/service/file/video', helper.getVideoFile);
 router.get('/service/file/image', helper.getImageFile);
 router.get('/service/file/audio', helper.getAudioFile);

@@ -1,0 +1,49 @@
+<div class="container-fluid" ng-controller="ProductController">
+    <div class="side-body padding-top">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Product List</h3>
+                        <div class="box-tools pull-right"></div>
+                    </div>
+                    <div class="box-body">
+                        <div class="input-group input-group-sm">
+                            <input type="text" ng-model="productFilterText" name="table_search" class="form-control pull-right" placeholder="Search">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="FormData.search()"><i class="fa fa-search"></i></button>
+                                <button ng-disabled="TabNav.selected._id=='_temp_id'" title="Add New" ng-click="createNewProduct()" class="btn btn-info btn-sm"><i class="fa fa-plus"></i></button>
+                                <button ng-disabled="TabNav.selected._id=='_temp_id'||!TabNav.selected" title="Delete" ng-click="deleteProduct()" class="btn btn-info btn-sm"><i class="fa fa-trash"></i></button>
+                                <button ng-disabled="TabNav.selected._id=='_temp_id'||!TabNav.selected" title="Clone" ng-click="cloneProduct()" class="btn btn-info btn-sm"><i class="fa fa-copy"></i></button>
+                            </div>
+                        </div>
+
+                        <ul class="nav nav-stacked">
+                            <li ng-repeat="item in ProductList|filter:productFilterText">
+                                <a ng-click="TabNav.addTab(item)" href="javascript:void(0);">
+                                    <img src="/_self/img/box.png" style="width: 32px" class="user-image" alt="">&nbsp;&nbsp;&nbsp;
+                                    {{item.name}} <span class="pull-right badge bg-blue" ng-bind="item.stock"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-9" ng-show="TabNav.isShow()">
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="pull-left header"><strong class="text-uppercase">Details</strong></li>
+                        <li ng-class="TabNav.selected == tval ? 'active' : ''" ng-repeat="(tid,tval) in TabNav.tabs"><a href="#Products\:{{tid}}" data-toggle="tab" aria-expanded="false"><img src="/_self/img/new-label.png" ng-if="tid=='_temp_id'" style="width: 16px" class="user-image" alt=""><img ng-src="{{DefaultImage}}" ng-if="tid!='_temp_id'" style="width: 16px" class="user-image" alt="">&nbsp;&nbsp;{{tid=='_temp_id'?'New Product':tval.name}}  &nbsp;&nbsp;&nbsp;<span ng-click="TabNav.remove(tid)" style="cursor: pointer"><i class="fa fa-times"></i></span></a></li>
+                        
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane small_view" style="min-height: 78vh" ng-class="TabNav.selected == tval ? 'active' : ''" ng-repeat="(tid,tval) in TabNav.tabs" id="Products:{{tid}}">
+                            <div ng-include="tval._id=='_temp_id'?ProductTempEdit:ProductTempView"></div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -142,11 +142,12 @@ module.exports.prototype.find = function (sTable, oFilter, callback) {
     callback = callback || function () {
     };
 
-    if(oFilter.hasOwnProperty("_id")){
-        try{
-            oFilter._id=new mongoAPI.ObjectId(oFilter._id);
-        }catch (e){}
+    if (oFilter.hasOwnProperty("_id")) {
+        try {
+            oFilter._id = new mongoAPI.ObjectId(oFilter._id);
+        } catch (e) {
         }
+    }
 
     this.openConnection(sTable, function (db, conn, err) {
         if (db && conn) {

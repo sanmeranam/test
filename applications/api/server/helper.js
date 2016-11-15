@@ -5,6 +5,8 @@ var oFormFactory = require('../../../core/service/FormFactory');
 var oMessager = require('../../../core/service/MessageProcess');
 var GLOBAL = require('../../../core/GLOBAL');
 
+var Test = require('../../../core/db/entity/Test');
+
 var helper = {
     _local: {
         getAllUser: function (req, callback) {
@@ -137,7 +139,7 @@ var helper = {
             var tenant = req.tenant;
             var userId = req.query.user_id;
             var meta_id = req.query.meta_id;
-            req.db.find(tenant.dbname + ".form_data",{"next_stage._f.user.value":userId,'meta_id':meta_id},function(result){
+            req.db.find(tenant.dbname + ".form_data", {"next_stage._f.user.value": userId, 'meta_id': meta_id}, function (result) {
                 res.json(helper.services._createSuccessPacket(result, true));
             });
         },
@@ -339,11 +341,11 @@ var helper = {
         onmessage: function (req, res) {
             var system_key = GLOBAL.Config.gcm.system_key;
             var tenant = req.tenant;
-            
+
             oMessager.setSystemKey(system_key, req.db, tenant.dbname);
 
             oMessager.onMessage(req.body, function (err, response) {
-                
+
                 if (err) {
                     res.json(helper.services._createErrorPacket(err));
                 } else {
@@ -428,6 +430,19 @@ var helper = {
                     res.end("File not found !!");
                 }
             });
+        },
+        create: function (req, res) {
+
+            Test.find("dashboard",req.body,function(test){
+                res.json(test);
+            });
+
+
+//            var test = new Test(req.body);
+//            test.setDB("dashboard");
+//            test.save(function (result) {
+//                res.json(result);
+//            });
         }
     },
     offline: {

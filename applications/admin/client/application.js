@@ -35,9 +35,9 @@ window.core = {
 
 
     },
-    setHash:function(base,p1,p2){
-        var hash = window.location.hash=base+"::"+p1+(p2?":"+p2:"");
-        
+    setHash: function (base, p1, p2) {
+        var hash = window.location.hash = base + "::" + p1 + (p2 ? ":" + p2 : "");
+
     },
     getHashParams: function () {
         var hash = window.location.hash.replace("#/", "");
@@ -189,8 +189,8 @@ window.core = {
             return data;
         });
 
-        this.ngApp.factory('DataFactoryMeta', function ($resource) {
-            var data = $resource('/rest/DataFactoryMeta/:id', {}, {
+        this.ngApp.factory('Products', function ($resource) {
+            var data = $resource('/rest/Products/:id', {}, {
                 'get': {method: 'GET', id: '@id', isArray: true},
                 'save': {method: 'POST', id: '@id'},
                 'getAll': {method: 'GET', isArray: true},
@@ -320,7 +320,7 @@ window.core = {
                 link: function (scope, element, attrs) {
                     $(element[0]).val(scope.val).knob();
                 }
-            }
+            };
         });
 
         this.ngApp.directive("contenteditable", function () {
@@ -354,7 +354,34 @@ window.core = {
                 template: "<svg height='150' width='200' style='background:rgba(255, 0, 0, 0);'></svg>",
                 link: function postLink(scope, iElement, iAttrs) {
                     var paper = Snap(iElement[0]);
-                    var b = new Block(10, 10, paper, scope.node)
+                    var b = new Block(10, 10, paper, scope.node);
+                }
+            };
+        });
+
+        this.ngApp.directive('barcode', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                scope: {
+                    format: '=',
+                    color: '=',
+                    width: '=',
+                    height: '=',
+                    display: '=',
+                    value: '='
+                },
+                template: "<canvas></canvas>",
+                link: function postLink(scope, iElement, iAttrs) {
+                    var sId='ids_'+Math.round(Math.random()*9999);
+                    iElement[0].id=sId;
+                    JsBarcode(iElement[0], scope.value+"", {
+                        format: scope.format,
+                        lineColor: scope.color,
+                        width: scope.width || 2,
+                        height: scope.height || 50,
+                        displayValue: scope.display
+                    });
                 }
             };
         });
