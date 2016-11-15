@@ -5,8 +5,6 @@ var oFormFactory = require('../../../core/service/FormFactory');
 var oMessager = require('../../../core/service/MessageProcess');
 var GLOBAL = require('../../../core/GLOBAL');
 
-var Test = require('../../../core/db/entity/Test');
-
 var helper = {
     _local: {
         getAllUser: function (req, callback) {
@@ -430,19 +428,6 @@ var helper = {
                     res.end("File not found !!");
                 }
             });
-        },
-        create: function (req, res) {
-
-            Test.find("dashboard",req.body,function(test){
-                res.json(test);
-            });
-
-
-//            var test = new Test(req.body);
-//            test.setDB("dashboard");
-//            test.save(function (result) {
-//                res.json(result);
-//            });
         }
     },
     offline: {
