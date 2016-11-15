@@ -38,9 +38,6 @@ router.get("/service/form/inbox", helper.services.getInboxForUser);
 router.post("/service/file/upload", helper.services.fileUpload);
 router.get("/service/file/download", helper.services.fileDownload);
 
-
-router.post("/service/file/test", helper.services.create);
-
 router.get("/rest/:table", helper.rest.findAll);
 router.get("/rest/:table/:id", helper.rest.findById);
 router.get("/rest/:table/:key/:value", helper.rest.findByField);
